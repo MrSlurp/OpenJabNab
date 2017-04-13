@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = acapela google
+SUBDIRS = acapela google pico
