@@ -22,7 +22,7 @@ PluginMusic::PluginMusic():PluginInterface("music", "Music", BunnyZtampPlugin) {
 
 bool PluginMusic::Init()
 {
-	std::auto_ptr<QDir> dir(GetLocalHTTPFolder());
+	std::unique_ptr<QDir> dir(GetLocalHTTPFolder());
 	if(dir.get())
 	{
 		QStringList filters;

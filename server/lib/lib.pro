@@ -9,10 +9,29 @@ QT += network
 QT -= gui
 TARGET = common
 INCLUDEPATH += . ../main
+INCLUDEPATH += ../thirdparties
 DEPENDPATH += . ../main
 MOC_DIR = ./tmp/moc
 OBJECTS_DIR = ./tmp/obj
 DESTDIR = ../bin/
+LIBS += -L"../thirdparties/qjson/lib" -lqjson
+
+defineTest(copyToDestdir) {
+    files = $$1
+
+    for(FILE, files) {
+        DDIR = $$DESTDIR
+
+        # Replace slashes in paths with backslashes for Windows
+        win32:FILE ~= s,/,\\,g
+        win32:DDIR ~= s,/,\\,g
+
+        QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DDIR) $$escape_expand(\\n\\t)
+    }
+
+    export(QMAKE_POST_LINK)
+}
+
 win32 {
 	DEFINES += WIN32 OJN_MAKEDLL
 	QMAKE_CXXFLAGS_WARN_ON += -WX

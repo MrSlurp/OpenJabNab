@@ -17,7 +17,7 @@ Q_EXPORT_PLUGIN2(plugin_memo, PluginMemo)
 
 PluginMemo::PluginMemo():PluginInterface("memo", "Memo", BunnyPlugin)
 {
-	std::auto_ptr<QDir> dir(GetLocalHTTPFolder());
+	std::unique_ptr<QDir> dir(GetLocalHTTPFolder());
 	if(dir.get())
 	{
 		memoFolder = *dir;

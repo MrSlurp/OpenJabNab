@@ -43,15 +43,15 @@ QByteArray TTSPico::CreateNewSound(QString text, QString voice, bool forceOverwr
 
 	QString cmd = "pico2wave -w ";
 	QString waveFileName = fileName.append("*.wav");
-	cmd += waveFileNam;
+	cmd += waveFileName;
 	cmd += " \""+text+"\"";
-	system(cmd.c_str());
+	system(cmd.toStdString().c_str());
 	
 	cmd = "aplay ";
-	cmd+= waveFileNam;
+	cmd+= waveFileName;
 	// now command is pico2wave -w res.wav whatever the user entered
-	system(cmd.c_str());	
+	system(cmd.toStdString().c_str());	
 
-	return ttsHTTPUrl.arg(voice, waveFileName).toAscii();*/
+	return ttsHTTPUrl.arg(voice, waveFileName).toAscii();
 }
 

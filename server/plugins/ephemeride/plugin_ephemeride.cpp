@@ -62,7 +62,7 @@ void PluginEphemeride::getEphemeridePage(Bunny * b)
 
 void PluginEphemeride::analyseXml()
 {
-	std::auto_ptr<QHttp> http(qobject_cast<QHttp *>(sender()));
+	std::unique_ptr<QHttp> http(qobject_cast<QHttp *>(sender()));
 	Bunny * bunny = BunnyManager::GetBunny(this, http->property("BunnyID").toByteArray());
 	if(!bunny)
 		return;

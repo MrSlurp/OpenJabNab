@@ -17,6 +17,9 @@
 #include "xmpphandler.h"
 #include "account.h"
 #include "ttsmanager.h"
+#include "qjson/parser.h"
+#include "qjson/qobjecthelper.h"
+#include "qjson/serializer.h"
 
 #define SINGLE_CLICK_PLUGIN_SETTINGNAME "singleClickPlugin"
 #define DOUBLE_CLICK_PLUGIN_SETTINGNAME "doubleClickPlugin"
@@ -325,14 +328,58 @@ void Bunny::LoadConfig()
 void Bunny::SaveConfig()
 {
 	QFile file(configFileName);
+	QFile jsonfile(configFileName+".json");
 	if (!file.open(QIODevice::WriteOnly))
 	{
 		LogError(QString("Cannot open config file for writing : %1").arg(configFileName));
 		return;
 	}
+	if (!jsonfile.open(QIODevice::WriteOnly))
+	{
+		LogError(QString("Cannot open json config file for writing : %1").arg(configFileName));
+		return;
+	}
+  
 	QDataStream out(&file);
 	out.setVersion(QDataStream::Qt_4_3);
 	out << GlobalSettings << PluginsSettings << listOfPlugins << knownRFIDTags;
+  
+  /************************************************************/
+  /************************************************************/
+  
+  QVariantMap bunnySettings;
+  bunnySettings.insert("GlobalSettings", GlobalSettings);
+  
+  QVariantList pluginsForJson;
+  for (const auto& key : PluginsSettings.keys())
+  {
+    
+    QVariantMap pluginItem;
+    QVariantMap pluginProperties;
+    pluginItem.insert("Name", key);
+    auto pluginItemSettings = PluginsSettings.value(key);
+    for (const auto& prop : pluginItemSettings.keys())
+    {
+      pluginProperties.insert(prop, pluginItemSettings.value(prop));
+    }
+    pluginItem.insert("properties", pluginProperties);
+    pluginsForJson << pluginItem;
+  }
+  bunnySettings.insert("PluginsSettings", pluginsForJson);
+  QVariantList pluginsJsonList;
+  //for (const auto& item : listOfPlugins)
+  foreach(QString plugin, listOfPlugins)
+  {
+    pluginsJsonList<<plugin;
+  }
+  bunnySettings.insert("ListOfPlugins", pluginsJsonList);
+  LogWarning(QString("saving file : %1").arg(configFileName));
+  QJson::Serializer serializer;
+  bool ok;
+  QByteArray json = serializer.serialize(bunnySettings, &ok);
+  //cout << json;
+  QTextStream  outjson(&jsonfile);
+  outjson << json;
 }
 
 void Bunny::SetXmppHandler(XmppHandler * x)

@@ -11,7 +11,7 @@ TARGET = openjabnab
 DESTDIR = ../bin/
 DEPENDPATH += . ../lib/
 INCLUDEPATH += ../lib/
-LIBS += -L../bin/ -lcommon
+LIBS += -L../bin/ -lcommon -L"../thirdparties/qjson/lib"
 MOC_DIR = ./tmp/moc
 OBJECTS_DIR = ./tmp/obj
 win32 {

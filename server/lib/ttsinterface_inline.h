@@ -21,7 +21,7 @@ inline TTSInterface::TTSInterface(QString name, QString visualName):ttsName(name
 	{
 		if (!folder.mkdir(TTS_FOLDER))
 		{
-			LogError(QString("Unable to create "TTS_FOLDER" directory !\n"));
+			LogError(QString("Unable to create " TTS_FOLDER " directory !\n"));
 			return;
 		}
 		folder.cd(TTS_FOLDER);
@@ -36,7 +36,7 @@ inline TTSInterface::TTSInterface(QString name, QString visualName):ttsName(name
 		folder.cd(name);
 	}
 	ttsFolder = folder;
-	ttsHTTPUrl = "broadcast/ojn_local/"TTS_FOLDER"/"+name+"/%1/%2"; // %1 For voice, %2 for FileName
+	ttsHTTPUrl = "broadcast/ojn_local/" TTS_FOLDER "/"+name+"/%1/%2"; // %1 For voice, %2 for FileName
 	// Compute TTS's Http path
 }
 

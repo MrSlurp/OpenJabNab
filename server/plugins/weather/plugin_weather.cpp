@@ -21,7 +21,7 @@ Q_EXPORT_PLUGIN2(plugin_weather, PluginWeather)
 
 PluginWeather::PluginWeather():PluginInterface("weather", "Météo",BunnyZtampPlugin)
 {
-	std::auto_ptr<QDir> dir(GetLocalHTTPFolder());
+	std::unique_ptr<QDir> dir(GetLocalHTTPFolder());
 	if(dir.get())
 	{
 		weatherFolder = *dir;

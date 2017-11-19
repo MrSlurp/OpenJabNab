@@ -61,7 +61,7 @@ void PluginTV::getTVPage(Bunny * b)
 
 void PluginTV::analyseXml()
 {
-	std::auto_ptr<QHttp> http(qobject_cast<QHttp *>(sender()));
+	std::unique_ptr<QHttp> http(qobject_cast<QHttp *>(sender()));
 	Bunny * bunny = BunnyManager::GetBunny(this, http->property("BunnyID").toByteArray());
 	if(!bunny)
 		return;

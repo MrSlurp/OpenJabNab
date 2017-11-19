@@ -119,8 +119,8 @@ private:
 	QByteArray id;
 	QByteArray xmppResource;
 	QString configFileName;
-	QHash<QString, QVariant> GlobalSettings;
-	QHash<QString, QHash<QString, QVariant> > PluginsSettings;
+	QVariantMap GlobalSettings;
+	QHash<QString, QVariantMap > PluginsSettings;
 	QList<QString> listOfPlugins;
 	QList<PluginInterface*> listOfPluginsPtr;
 	QTimer * saveTimer;

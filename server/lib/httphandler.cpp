@@ -40,7 +40,7 @@ void HttpHandler::HandleBunnyHTTPRequest()
 		NetworkDump::Log("Api Call", request.GetRawURI());
 		if(httpApi)
 		{
-			std::auto_ptr<ApiManager::ApiAnswer> apianswer(ApiManager::Instance().ProcessApiCall(uri.mid(9), request));
+			std::unique_ptr<ApiManager::ApiAnswer> apianswer(ApiManager::Instance().ProcessApiCall(uri.mid(9), request));
 			QByteArray answer = apianswer->GetData();
 			incomingHttpSocket->write(answer);
 			NetworkDump::Log("Api Answer", answer);
@@ -53,7 +53,7 @@ void HttpHandler::HandleBunnyHTTPRequest()
 		NetworkDump::Log("Violet Api Call", request.GetRawURI());
 		if(httpVioletApi)
 		{
-			std::auto_ptr<ApiManager::ApiAnswer> apianswer(ApiManager::Instance().ProcessApiCall(uri, request));
+			std::unique_ptr<ApiManager::ApiAnswer> apianswer(ApiManager::Instance().ProcessApiCall(uri, request));
 			QByteArray answer = apianswer->GetData();
 			incomingHttpSocket->write(answer);
 			NetworkDump::Log("Violet Api Answer", answer);
