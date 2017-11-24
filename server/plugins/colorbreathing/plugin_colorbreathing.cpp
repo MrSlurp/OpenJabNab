@@ -40,7 +40,7 @@ PLUGIN_BUNNY_API_CALL(PluginColorbreathing::Api_GetColor)
         Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-        return new ApiManager::ApiOk(bunny->GetPluginSetting(GetName(), "color", QString("violet")).toString());
+        return ApiManager::ApiOk(bunny->GetPluginSetting(GetName(), "color", QString("violet")).toString());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginColorbreathing::Api_SetColor)
@@ -56,9 +56,9 @@ PLUGIN_BUNNY_API_CALL(PluginColorbreathing::Api_SetColor)
 		// Send color to bunny
 		bunny->SendPacket(AmbientPacket(AmbientPacket::Service_BottomLed, availableColors[color]));
 
-		return new ApiManager::ApiOk(QString("Bottom Color set to '%1'").arg(color));
+		return ApiManager::ApiOk(QString("Bottom Color set to '%1'").arg(color));
 	}
-        return new ApiManager::ApiError(QString("Unknown '%1' color").arg(color));
+        return ApiManager::ApiError(QString("Unknown '%1' color").arg(color));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginColorbreathing::Api_GetColorList)
@@ -67,6 +67,6 @@ PLUGIN_BUNNY_API_CALL(PluginColorbreathing::Api_GetColorList)
 	Q_UNUSED(bunny);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiList(availableColors.keys());
+	return ApiManager::ApiList(availableColors.keys());
 }
 

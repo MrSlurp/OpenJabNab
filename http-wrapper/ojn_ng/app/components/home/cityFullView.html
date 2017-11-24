@@ -1,0 +1,274 @@
+﻿<div class="row">
+    <div class="col-sm-24">
+        <div class="row">
+            <!-- elec -->
+            <div class="col-sm-6">
+                <panel-conso-distrib
+                    production-service="CityData.GlobalDistrict.Productions.Electricity.TotalCurrent"
+                    consumption-service="CityData.GlobalDistrict.Consumptions.Electricity.TotalCurrent"
+                    distribution-service="CityData.GlobalDistrict.Consumptions.Electricity"
+                    service-icon="ToolbarIconElectricity.png"
+                    distrib-icon="ToolbarIconZoning.png"
+                    panel-title="Electricity"
+                    description="City electricity production usage"
+                    distribution-description="City electricity consumption distribution by building type"
+                    percent-color-family="power"
+                    distrib-color-family="service">
+                </panel-conso-distrib>
+            </div>
+            <!-- Water -->
+            <div class="col-sm-9">
+                <panel-conso-distrib-conso
+                    production-service-a="CityData.GlobalDistrict.Productions.Water.TotalCurrent"
+                    consumption-service-a="CityData.GlobalDistrict.Consumptions.Water.TotalCurrent"
+                    production-service-b="CityData.GlobalDistrict.Productions.Sewage.TotalCurrent"
+                    consumption-service-b="CityData.GlobalDistrict.Consumptions.Sewage.TotalCurrent"
+                    distribution-service="CityData.GlobalDistrict.Consumptions.Water"
+                    description-service-a="City water capacity usage"
+                    description-service-b="City sewage capacity usage"
+                    distribution-description="City water consumption distribution by building type"
+                    service-icon-a="ToolbarIconWater.png"
+                    distrib-icon="ToolbarIconZoning.png"
+                    service-icon-b="ToolbarIconSewage.png"
+                    panel-title="Water"
+                    percent-color-family-a="water"
+                    percent-color-family-b="sewage"
+                    distrib-color-family="service">
+                </panel-conso-distrib-conso>
+            </div>
+            <!-- garbage -->
+            <div class="col-sm-9">
+                <panel-conso-distrib-conso
+                    production-service-a="CityData.GlobalDistrict.Productions.GarbageA.TotalCurrent"
+                    consumption-service-a="CityData.GlobalDistrict.Productions.GarbageC.TotalCurrent"
+                    production-service-b="CityData.GlobalDistrict.Productions.Incineration.TotalCurrent"
+                    consumption-service-b="CityData.GlobalDistrict.Consumptions.Garbage.TotalCurrent"
+                    distribution-service="CityData.GlobalDistrict.Consumptions.Garbage"
+                    description-service-a="City landfills usage"
+                    description-service-b="City incineration capacity usage"
+                    distribution-description="City garbage production distribution by building type"
+                    service-icon-a="InfoIconGarbage.png"
+                    distrib-icon="ToolbarIconZoning.png"
+                    service-icon-b="InfoIconIncineration.png"
+                    panel-title="Garbage"
+                    percent-color-family-a="garbage"
+                    percent-color-family-b="garbage"
+                    distrib-color-family="service">
+                </panel-conso-distrib-conso>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- Educated/work -->
+    <div class="col-sm-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Workers</span></div></div>
+            <div class="row">
+                <div class ="col-xs-6" >
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Population.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Educated.EligibleWorkers.TotalCurrent"
+                        color-family="workers"
+                        description="City workers in population">
+                    </service-pie-chart-usage>
+                </div>
+                <div class ="col-xs-6">
+                    <service-pie-chart 
+                        data="CityData.GlobalDistrict.Educated.EligibleWorkers" 
+                        color-family="education" 
+                        description="City workers education level distribution">
+                    </service-pie-chart>
+                </div>
+                <div class ="col-xs-6">
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Educated.EligibleWorkers.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Educated.Unemployed.TotalCurrent"
+                        color-family="unumployed"
+                        description="City unemployed workers">
+                    </service-pie-chart-usage>
+                </div>
+                <div class ="col-xs-6">
+                    <service-pie-chart 
+                        data="CityData.GlobalDistrict.Educated.Unemployed" 
+                        color-family="education" 
+                        description="City unemployed people education level distribution">
+                    </service-pie-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Education -->
+    <div class="col-sm-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Education</span></div></div>
+            <div class="row">
+                <div class ="col-xs-6">
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.LowEducation.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Population.Categories[0].Current"
+                        color-family="education1"
+                        description="City elementary schools usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class ="col-xs-6">
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.MediumEducation.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Population.Categories[1].Current"
+                        color-family="education2"
+                        description="City colleges usage">
+                    </service-pie-chart-usage>
+                    
+                </div>
+                <div class ="col-xs-6">
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.HighEducation.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Population.Categories[2].Current / 2"
+                        color-family="education3"
+                        description="City university usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class ="col-xs-6">
+                    <service-pie-chart 
+                        data="CityData.GlobalDistrict.Educated.Total" 
+                        color-family="education" 
+                        description="City population education level distribution">
+                    </service-pie-chart>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>
+<div class="row">
+        
+    <div class="col-sm-8">
+        <panel-job panel-title="Jobs"
+            job-data="CityData.GlobalDistrict.Jobs"
+            percentage-of-label="(% of city)">
+        </panel-job>
+    </div>
+    <!--happiness / crime-->
+    <div class="col-sm-8">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Happiness & Criminality</span></div></div>
+            <div class="row">
+                <div class ="col-xs-12" >
+                    <service-bargraph-percent
+                        service-data="CityData.GlobalDistrict.Happiness"
+                        xaxis-label="Happiness in %">
+                    </service-bargraph-percent>
+                </div>
+                <div class ="col-xs-12" >
+                    <service-bargraph-percent
+                        service-data="CityData.GlobalDistrict.Crime"
+                        xaxis-label="Criminality in %">
+                    </service-bargraph-percent>
+                </div>
+            </div>
+        </div>
+    </div>  
+    <!-- Import/export -->
+    <div class="col-sm-8">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Import/Export</span></div></div>
+            <div class="row">
+                <div class ="col-xs-8">
+                    <service-pie-chart 
+                        data="CityData.GlobalDistrict.ImportExport.Import" 
+                        color-family="service" 
+                        description="City imports distribution by ressources">
+                    </service-pie-chart>
+                </div>
+                <div class ="col-xs-8">
+                    <service-pie-chart 
+                        data="CityData.GlobalDistrict.ImportExport.Export" 
+                        color-family="service" 
+                        description="City exports distribution by ressources">
+                    </service-pie-chart>
+                </div>
+                <div class ="col-xs-8">
+                    <service-import-export-repartition-chart
+                        color-family="service"
+                        import-total="{{CityData.GlobalDistrict.ImportExport.Import.TotalCurrent}}"
+                        export-total="{{CityData.GlobalDistrict.ImportExport.Export.TotalCurrent}}"
+                        description="Imports exports distribution">
+                    </service-import-export-repartition-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-24">
+        <div class="row">
+            <!-- Others -->
+            <div class="col-sm-9">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><div class="panel-title"><span >Others</span></div></div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <indicator-widget 
+                                total="CityData.GlobalDistrict.Households.TotalAvailable"
+                                actual="CityData.GlobalDistrict.Households.TotalCurrent" 
+                                description-tip="Households usage">
+                            </indicator-widget>
+                        </div>
+                        <div class="col-xs-8">
+                            <service-pie-chart 
+                                data="CityData.GlobalDistrict.Consumptions.Building" 
+                                color-family="service" 
+                                description="City buildings distribution">
+                            </service-pie-chart>
+                        </div>
+                        <div class="col-xs-8">
+                            <service-pie-chart 
+                                data="CityData.GlobalDistrict.Population" 
+                                color-family="populationages"
+                                description="City population age distribution" >
+                            </service-pie-chart>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- DeathCare -->
+            <div class="col-sm-6">
+                <panel-conso-conso
+                    production-service-a="CityData.GlobalDistrict.Productions.DeadC.TotalCurrent"
+                    consumption-service-a="CityData.GlobalDistrict.Productions.DeadA.TotalCurrent"
+                    production-service-b="CityData.GlobalDistrict.Productions.Cremate.TotalCurrent"
+                    consumption-service-b="CityData.GlobalDistrict.Consumptions.Dead.TotalCurrent"
+                    description-service-a="City cemetery usage"
+                    description-service-b="City cremation capacity usage"
+                    panel-title="Deathcare"
+                    percent-color-family-a="death"
+                    percent-color-family-b="garbage"
+                    service-icon-a="ToolbarIconCemetery.png"
+                    service-icon-b="ToolbarIconCremation.png">
+                </panel-conso-conso>
+            </div>
+            <!-- Healthcare -->
+            <div class="col-sm-6">
+                <panel-conso-distrib
+                    production-service="CityData.GlobalDistrict.Productions.Heal.TotalCurrent"
+                    consumption-service="CityData.GlobalDistrict.Consumptions.Sick.TotalCurrent"
+                    distribution-service="CityData.GlobalDistrict.BirthDeath"
+                    service-icon="ToolbarIconHealthcare.png"
+                    panel-title="Healthcare"
+                    description="Percentage of clinics & hospitals occupied places"
+                    distribution-description="Births/Deaths balance"
+                    percent-color-family="health"
+                    distrib-color-family="birthdeath">
+                </panel-conso-distrib>
+            </div>
+        </div>
+    </div>
+</div>
+        <!--
+<div class="row">
+    <div class="col-sm-24">
+        <panel-policies
+            policies="CityData.GlobalDistrict.Policies">
+        </panel-policies>
+    </div>
+</div>
+            -->

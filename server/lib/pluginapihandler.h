@@ -14,21 +14,21 @@ class PluginApiFunctor
 {
 public:
 	virtual ApiManager::ApiAnswer * call(Account const&, HTTPRequest const&) = 0;
-	virtual ~PluginApiFunctor() {};
+    virtual ~PluginApiFunctor() {}
 };
 
 class PluginBunnyApiFunctor
 {
 public:
 	virtual ApiManager::ApiAnswer * call(Bunny *, Account const&, HTTPRequest const&) = 0;
-	virtual ~PluginBunnyApiFunctor() {};
+    virtual ~PluginBunnyApiFunctor() {}
 };
 
 class PluginZtampApiFunctor
 {
 public:
 	virtual ApiManager::ApiAnswer * call(Ztamp *, Account const&, HTTPRequest const&) = 0;
-	virtual ~PluginZtampApiFunctor() {};
+    virtual ~PluginZtampApiFunctor() {}
 };
 
 template <class T> class PluginApiSpecificFunctor : public PluginApiFunctor
@@ -38,9 +38,9 @@ private:
 	T * obj;
 
 public:
-	PluginApiSpecificFunctor(T* _obj, ApiManager::ApiAnswer * (T::*_pFunc)(Account const&, HTTPRequest const&)):pFunc(_pFunc),obj(_obj) {};
-	virtual ApiManager::ApiAnswer * call(Account const& a, HTTPRequest const& h) { return (obj->*pFunc)(a, h); };
-	virtual ~PluginApiSpecificFunctor() {};
+    PluginApiSpecificFunctor(T* _obj, ApiManager::ApiAnswer * (T::*_pFunc)(Account const&, HTTPRequest const&)):pFunc(_pFunc),obj(_obj) {}
+    virtual ApiManager::ApiAnswer * call(Account const& a, HTTPRequest const& h) { return (obj->*pFunc)(a, h); }
+    virtual ~PluginApiSpecificFunctor() {}
 };
 
 template <class T> class PluginBunnyApiSpecificFunctor : public PluginBunnyApiFunctor
@@ -50,9 +50,9 @@ private:
 	T * obj;
 
 public:
-	PluginBunnyApiSpecificFunctor(T* _obj, ApiManager::ApiAnswer * (T::*_pFunc)(Bunny*, Account const&, HTTPRequest const&)):pFunc(_pFunc),obj(_obj) {};
-	virtual ApiManager::ApiAnswer * call(Bunny* b, Account const& a, HTTPRequest const& h) { return (obj->*pFunc)(b, a, h); };
-	virtual ~PluginBunnyApiSpecificFunctor() {};
+    PluginBunnyApiSpecificFunctor(T* _obj, ApiManager::ApiAnswer * (T::*_pFunc)(Bunny*, Account const&, HTTPRequest const&)):pFunc(_pFunc),obj(_obj) {}
+    virtual ApiManager::ApiAnswer * call(Bunny* b, Account const& a, HTTPRequest const& h) { return (obj->*pFunc)(b, a, h); }
+    virtual ~PluginBunnyApiSpecificFunctor() {}
 };
 
 
@@ -89,14 +89,14 @@ public:
 		QHash<QString, apiFunction>::iterator it = apiCalls.find(request);
 		// If request wasn't found, return an error
 		if(it == apiCalls.end())
-			return new ApiManager::ApiError(QString("This plugin doesn't support this api call"));
+			return ApiManager::ApiError(QString("This plugin doesn't support this api call"));
 
 		// Check args
 		foreach(QString arg, it->second)
 		{
 			if(!hRequest.HasArg(arg))
 			{
-				return new ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
+				return ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
 			}
 		}
 
@@ -110,14 +110,14 @@ public:
 		QHash<QString, bunnyApiFunction>::iterator it = bunnyApiCalls.find(request);
 		// If request wasn't found, return an error
 		if(it == bunnyApiCalls.end())
-			return new ApiManager::ApiError(QString("This plugin doesn't support this api call"));
+			return ApiManager::ApiError(QString("This plugin doesn't support this api call"));
 
 		// Check args
 		foreach(QString arg, it->second)
 		{
 			if(!hRequest.HasArg(arg))
 			{
-				return new ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
+				return ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
 			}
 		}
 
@@ -132,14 +132,14 @@ public:
 		QHash<QString, ztampApiFunction>::iterator it = ztampApiCalls.find(request);
 		// If request wasn't found, return an error
 		if(it == ztampApiCalls.end())
-			return new ApiManager::ApiError(QString("This plugin doesn't support this api call"));
+			return ApiManager::ApiError(QString("This plugin doesn't support this api call"));
 
 		// Check args
 		foreach(QString arg, it->second)
 		{
 			if(!hRequest.HasArg(arg))
 			{
-				return new ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
+				return ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
 			}
 		}
 
@@ -148,8 +148,40 @@ public:
 
 	};
 
-	virtual void InitApiCalls() {};
+    virtual void InitApiCalls() {}
 
+    QVariantMap GetApis()
+    {
+        QVariantMap func;
+        foreach(QString s, apiCalls.keys())
+        {
+            func.insert("functionName", s);
+            func.insert("parameters", apiCalls.value(s).second);
+        }
+        return func;
+    }
+
+    QVariantMap GetBunniesApis()
+    {
+        QVariantMap func;
+        foreach(QString s, bunnyApiCalls.keys())
+        {
+            func.insert("functionName", s);
+            func.insert("parameters", bunnyApiCalls.value(s).second);
+        }
+        return func;
+    }
+
+    QVariantMap GetZtampsApis()
+    {
+        QVariantMap func;
+        foreach(QString s, ztampApiCalls.keys())
+        {
+            func.insert("functionName", s);
+            func.insert("parameters", ztampApiCalls.value(s).second);
+        }
+        return func;
+    }
 protected:
 	template<class T>
 	void createApiCall(QHash<QString, typename function<T>::Type> & apiList, QString funcSig, T * f)

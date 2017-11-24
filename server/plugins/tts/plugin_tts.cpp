@@ -29,10 +29,10 @@ PLUGIN_BUNNY_API_CALL(PluginTTS::Api_Say)
 	Q_UNUSED(account);
 
 	if(!bunny->IsConnected())
-		return new ApiManager::ApiError(QString("Bunny '%1' is not connected").arg(QString(bunny->GetID())));
+		return ApiManager::ApiError(QString("Bunny '%1' is not connected").arg(QString(bunny->GetID())));
 
 	QByteArray fileName = TTSManager::CreateNewSound(hRequest.GetArg("text"), "Claire");
 
 	bunny->SendPacket(MessagePacket("MU " + fileName + "\nMW\n"));
-	return new ApiManager::ApiOk(QString("Sending '%1' to bunny '%2'").arg(hRequest.GetArg("text"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Sending '%1' to bunny '%2'").arg(hRequest.GetArg("text"), QString(bunny->GetID())));
 }

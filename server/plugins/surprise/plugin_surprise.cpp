@@ -114,9 +114,9 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_SetFolder)
 		// Save new config
 		bunny->SetPluginSetting(GetName(), "folder", folder);
 
-		return new ApiManager::ApiOk(QString("Folder changed to '%1'").arg(folder));
+		return ApiManager::ApiOk(QString("Folder changed to '%1'").arg(folder));
 	}
-	return new ApiManager::ApiError(QString("Unknown '%1' folder").arg(folder));
+	return ApiManager::ApiError(QString("Unknown '%1' folder").arg(folder));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFolder)
@@ -124,7 +124,7 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFolder)
         Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-        return new ApiManager::ApiOk(bunny->GetPluginSetting(GetName(), "folder", QString()).toString());
+        return ApiManager::ApiOk(bunny->GetPluginSetting(GetName(), "folder", QString()).toString());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_SetFrequency)
@@ -134,7 +134,7 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_SetFrequency)
 	bunny->SetPluginSetting(GetName(), "frequency", QVariant(hRequest.GetArg("value").toInt()));
 	OnBunnyDisconnect(bunny);
 	OnBunnyConnect(bunny);
-	return new ApiManager::ApiOk(QString("Plugin configuration updated."));
+	return ApiManager::ApiOk(QString("Plugin configuration updated."));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFrequency)
@@ -142,7 +142,7 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFrequency)
         Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-        return new ApiManager::ApiOk(QString::number(bunny->GetPluginSetting(GetName(), "frequency", (uint)0).toInt()));
+        return ApiManager::ApiOk(QString::number(bunny->GetPluginSetting(GetName(), "frequency", (uint)0).toInt()));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFolderList)
@@ -159,5 +159,5 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFolderList)
 		delete httpFolder;
 	}
 
-	return new ApiManager::ApiList(availableSurprises);
+	return ApiManager::ApiList(availableSurprises);
 }

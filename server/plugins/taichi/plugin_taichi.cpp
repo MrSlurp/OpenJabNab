@@ -57,7 +57,7 @@ PLUGIN_BUNNY_API_CALL(PluginTaichi::Api_SetFrequency)
 
 	bunny->SetPluginSetting(GetName(), "frequency", QVariant(hRequest.GetArg("value").toInt()));
 	SendTaichiFrequency(bunny);
-	return new ApiManager::ApiOk(QString("Plugin configuration updated."));
+	return ApiManager::ApiOk(QString("Plugin configuration updated."));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginTaichi::Api_GetFrequency)
@@ -65,5 +65,5 @@ PLUGIN_BUNNY_API_CALL(PluginTaichi::Api_GetFrequency)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiString(QString::number(bunny->GetPluginSetting(GetName(), "frequency", 0).toInt()));
+	return ApiManager::ApiString(QString::number(bunny->GetPluginSetting(GetName(), "frequency", 0).toInt()));
 }

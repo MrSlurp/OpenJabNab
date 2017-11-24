@@ -51,7 +51,7 @@ PLUGIN_BUNNY_API_CALL(PluginEars::Api_setFriend)
 	Q_UNUSED(account);
 	/* Update Configuration */
 	bunny->SetPluginSetting(GetName(), "Friend", QVariant(hRequest.GetArg("id")));
-	return new ApiManager::ApiOk(QString("Plugin configuration updated."));
+	return ApiManager::ApiOk(QString("Plugin configuration updated."));
 }
 
 
@@ -60,5 +60,5 @@ PLUGIN_BUNNY_API_CALL(PluginEars::Api_getFriend)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 	/* Get Configuration */
-	return new ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Friend", "").toString());
+	return ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Friend", "").toString());
 }

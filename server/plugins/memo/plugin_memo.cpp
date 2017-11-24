@@ -86,9 +86,9 @@ PLUGIN_BUNNY_API_CALL(PluginMemo::Api_AddWebcast)
 		Cron::RegisterWeekly(this, (Qt::DayOfWeek)hDay, QTime::fromString(hTime, "hh:mm"), bunny, QVariant::fromValue(message));
 		list.insert(QString::number(hDay)+"|"+hTime,message);
 		bunny->SetPluginSetting(GetName(), "Webcasts", list);
-		return new ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
+		return ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
 	}
-	return new ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginMemo::Api_RemoveWebcast)
@@ -97,7 +97,7 @@ PLUGIN_BUNNY_API_CALL(PluginMemo::Api_RemoveWebcast)
 
 	int hDay = hRequest.GetArg("day").toInt();
 	if(!hRequest.HasArg("time"))
-		return new ApiManager::ApiError(QString("Missing argument 'time' for plugin Memo"));
+		return ApiManager::ApiError(QString("Missing argument 'time' for plugin Memo"));
 
 	QMap<QString, QVariant> list = bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap();
 	QString time = hRequest.GetArg("time");
@@ -109,16 +109,16 @@ PLUGIN_BUNNY_API_CALL(PluginMemo::Api_RemoveWebcast)
 		// Recreate crons
         OnBunnyDisconnect(bunny);
         OnBunnyConnect(bunny);
-        return new ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+        return ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
     }
-    return new ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+    return ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginMemo::Api_ListWebcast)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
+	return ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginMemo::Api_AddDailyWebcast)
@@ -133,9 +133,9 @@ PLUGIN_BUNNY_API_CALL(PluginMemo::Api_AddDailyWebcast)
 		Cron::RegisterDaily(this, QTime::fromString(hTime, "hh:mm"), bunny, QVariant::fromValue(message));
 		list.insert(hTime,message);
 		bunny->SetPluginSetting(GetName(), "DailyWebcasts", list);
-		return new ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
+		return ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
 	}
-	return new ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginMemo::Api_RemoveDailyWebcast)
@@ -143,7 +143,7 @@ PLUGIN_BUNNY_API_CALL(PluginMemo::Api_RemoveDailyWebcast)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("time"))
-		return new ApiManager::ApiError(QString("Missing argument 'time' for plugin Memo"));
+		return ApiManager::ApiError(QString("Missing argument 'time' for plugin Memo"));
 
 	QMap<QString, QVariant> list = bunny->GetPluginSetting(GetName(), "DailyWebcasts", QMap<QString, QVariant>()).toMap();
 	QString time = hRequest.GetArg("time");
@@ -155,14 +155,14 @@ PLUGIN_BUNNY_API_CALL(PluginMemo::Api_RemoveDailyWebcast)
 		// Recreate crons
         OnBunnyDisconnect(bunny);
         OnBunnyConnect(bunny);
-        return new ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+        return ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
     }
-    return new ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+    return ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginMemo::Api_ListDailyWebcast)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "DailyWebcasts", QMap<QString, QVariant>()).toMap());
+	return ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "DailyWebcasts", QMap<QString, QVariant>()).toMap());
 }

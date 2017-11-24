@@ -32,14 +32,14 @@ public:
 		typename ApiCallsMap<T>::iterator it = apiCalls.find(request);
 		// If request wasn't found, return an error
 		if(it == apiCalls.end())
-			return new ApiManager::ApiError(QString("Unknown Api Call : %1<br />Request was : %2").arg(request, hRequest.toString()));
+            return ApiManager::ApiError(QString("Unknown Api Call : %1<br />Request was : %2").arg(request, hRequest.toString()));
 
 		// Check args
 		foreach(QString arg, it->second)
 		{
 			if(!hRequest.HasArg(arg))
 			{
-				return new ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
+                return ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));
 			}
 		}
 

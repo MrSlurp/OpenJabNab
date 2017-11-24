@@ -1,4 +1,9 @@
 Makefile
+Makefile.Debug
+Makefile.Release
+*.Debug
+*-Debug
+*.user
 bin/
 tmp/
 ojn_local/

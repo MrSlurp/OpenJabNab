@@ -1,0 +1,39 @@
+﻿<div class="panel panel-info">
+    <div class="panel-heading"><div class="panel-title"><span >{{panelTitle}}</span></div></div>
+    <div class="row">
+        <div class="col-xs-12">
+            <nvd3-multi-bar-chart
+        
+    	        data="occupiedData"
+                xAxisTickFormat="xAxisTickFormatFunction()"
+                x="xFunction()"
+                y="yFunction()"
+                width="180"
+                height="130"
+                showXAxis="true"
+                showYAxis="true"
+                color="colorFunction()"
+                margin="{left:35,top:10,bottom:25,right:5}"
+                tooltips="true"
+                tooltipcontent="toolTipContentFunction()">
+        	        <svg></svg>
+            </nvd3-multi-bar-chart>
+        </div> 
+        <div class="col-xs-12">
+            <nvd3-multi-bar-chart
+    	        data="availableData"
+                xAxisTickFormat="xAxisTickFormatFunction()"
+                x="xFunction()"
+                y="yFunction()"
+                width="180"
+                height="130"
+                showXAxis="true"
+                showYAxis="true"
+                color="colorFunction()"
+                margin="{left:35,top:10,bottom:25,right:5}"
+                tooltips="true"
+                tooltipcontent="toolTipContentFunction()">
+        	        <svg></svg>
+            </nvd3-multi-bar-chart>
+    </div>
+</div>

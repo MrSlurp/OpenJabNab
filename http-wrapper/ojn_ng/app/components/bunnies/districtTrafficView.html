@@ -1,0 +1,124 @@
+﻿<div class="row">
+    <div class="col-sm-24">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Vehicles</span></div></div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Total vehicles</td><td>{{dist.Vehicles.General.ActiveVehicles}}</td></tr>
+                            <tr><td>Garbage trucks</td><td>{{dist.Vehicles.CityMaintenanceVehicle.GarbageTrucks}}</td></tr>
+                            <tr><td>Fire trucks</td><td>{{dist.Vehicles.CityMaintenanceVehicle.FireTrucks}}</td></tr>
+                            <tr><td>Police cars</td><td>{{dist.Vehicles.CityMaintenanceVehicle.PoliceCars}}</td></tr>
+                            <tr><td>Ambulances</td><td>{{dist.Vehicles.CityMaintenanceVehicle.Ambulances}}</td></tr>
+                            <tr><td>Hearses</td><td>{{dist.Vehicles.CityMaintenanceVehicle.Hearses}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-6">
+                    <div>Intra city circulation reason</div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Reasons</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reason in dist.Vehicles.CityServicesVehicles.Residential.IntraReasons | orderBy:'-Count' | limitTo:5">
+                                <td>{{reason.Name}}</td><td>{{reason.Count}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-5">
+                    <div>Resource import type vehicles</div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Reasons</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reason in dist.Vehicles.CityServicesVehicles.Industrial.ImportingReasons | orderBy:'-Count' | limitTo:5">
+                                <td>{{reason.Name}}</td><td>{{reason.Count}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-5">
+                    <div>Resource export type vehicles</div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Reasons</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reason in dist.Vehicles.CityServicesVehicles.Industrial.ExportingReasons | orderBy:'-Count' | limitTo:5">
+                                <td>{{reason.Name}}</td><td>{{reason.Count}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div>Citizen vehicles destination districts</div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>District name</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Total</td><td>{{dist.Vehicles.CityServicesVehicles.Residential.Total}}</td></tr>
+                            <tr ng-repeat="district in dist.Vehicles.CityServicesVehicles.Residential.DstDistricts | orderBy:'-Count' | limitTo:5">
+                                <td>{{district.Name}}</td><td>{{district.Count}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <div>Industrial vehicles owner districts</div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>District name</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="district in dist.Vehicles.CityServicesVehicles.Industrial.SrcDistricts | orderBy:'-Count' | limitTo:5">
+                                <td>{{district.Name}}</td><td>{{district.Count}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-sm-6">
+                    <div>Industrial vehicles destination districts</div>
+                    <table class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>District name</th>
+                                <th>Vehicle count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="district in dist.Vehicles.CityServicesVehicles.Industrial.DstDistricts | orderBy:'-Count' | limitTo:5">
+                                <td>{{district.Name}}</td><td>{{district.Count}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

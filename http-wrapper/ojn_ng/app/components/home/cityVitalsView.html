@@ -1,0 +1,189 @@
+﻿<div class="row">
+    <!-- elec - water - sewage-->
+    <div class="col-sm-12">
+        <div class="panel panel-info">
+
+            <div class="panel-heading">
+                <div class="panel-title"><span >Electricity / Water / Sewage</span></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconElectricity.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.Electricity.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Consumptions.Electricity.TotalCurrent"
+                        color-family="power"
+                        description="City electricity production usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconWater.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.Water.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Consumptions.Water.TotalCurrent"
+                        color-family="water"
+                        description="City water capacity usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconSewage.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.Sewage.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Consumptions.Sewage.TotalCurrent"
+                        color-family="sewage"
+                        description="City sewage capacity usage">
+                    </service-pie-chart-usage>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Healthcare & death care -->
+
+    <div class="col-sm-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Health services usage / Deathcare</span></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconHealthcare.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.Heal.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Consumptions.Sick.TotalCurrent"
+                        color-family="health"
+                        description="Clinics & hospitals usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconCemetery.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.DeadC.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Productions.DeadA.TotalCurrent"
+                        color-family="death"
+                        description="City cemetery usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconCremation.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.Cremate.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Consumptions.Dead.TotalCurrent"
+                        color-family="garbage"
+                        description="City crematorium capacity usage">
+                    </service-pie-chart-usage>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<div class="row">
+    <!--education-->
+    <div class="col-sm-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Schools usage</span></div></div>
+            <div class="row">
+                <div class ="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconEducation1.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.LowEducation.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Population.Categories[0].Current"
+                        color-family="education1"
+                        description="City elementary schools usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class ="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconEducation2.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.MediumEducation.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Population.Categories[1].Current"
+                        color-family="education2"
+                        description="City colleges usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class ="col-xs-8" style="position:relative">
+                    <img ng-src="assets/img/game/ToolbarIconEducation3.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.HighEducation.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Population.Categories[2].Current / 2"
+                        color-family="education3"
+                        description="City university usage">
+                    </service-pie-chart-usage>
+                </div>
+            </div>
+        </div>
+    </div>  
+    <!-- Unemployement -->
+    
+    <div class ="col-sm-4">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Unemployement</span></div>
+            </div>
+            <div style="position:relative">
+    
+                <service-pie-chart-usage
+                    production-data="CityData.GlobalDistrict.Educated.EligibleWorkers.TotalCurrent"
+                    consumption-data="CityData.GlobalDistrict.Educated.Unemployed.TotalCurrent"
+                    color-family="unumployed"
+                    description="City unemployed workers">
+                </service-pie-chart-usage>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Garbage -->
+    <div class="col-sm-8">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Garbage Treatment</span></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12" style="position:relative">
+                    <img ng-src="assets/img/game/InfoIconGarbage.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.GarbageA.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Productions.GarbageC.TotalCurrent"
+                        color-family="garbage"
+                        description="City landfills usage">
+                    </service-pie-chart-usage>
+                </div>
+                <div class="col-xs-12" style="position:relative">
+                    <img ng-src="assets/img/game/InfoIconIncineration.png" style="position:absolute;width:20%;height:20%;" />
+                    <service-pie-chart-usage
+                        production-data="CityData.GlobalDistrict.Productions.Incineration.TotalCurrent"
+                        consumption-data="CityData.GlobalDistrict.Consumptions.Garbage.TotalCurrent"
+                        color-family="garbage"
+                        description="City incineration capacity usage">
+                    </service-pie-chart-usage>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- jobs graph -->
+    <div class="col-sm-12">
+        <panel-job panel-title="Jobs"
+            job-data="CityData.GlobalDistrict.Jobs"
+            percentage-of-label="(% of city)">
+        </panel-job>
+    </div>        
+    <!--happiness / crime-->
+    <div class="col-sm-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><div class="panel-title"><span >Happiness & Criminality</span></div></div>
+            <div class="row">
+                <div class ="col-xs-12" >
+                    <service-bargraph-percent
+                        service-data="CityData.GlobalDistrict.Happiness"
+                        xaxis-label="Happiness in %">
+                    </service-bargraph-percent>
+                </div>
+                <div class ="col-xs-12" >
+                    <service-bargraph-percent
+                        service-data="CityData.GlobalDistrict.Crime"
+                        xaxis-label="Criminality in %">
+                    </service-bargraph-percent>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>

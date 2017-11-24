@@ -94,10 +94,10 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_setDefaultUrl)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("url"))
-		return new ApiManager::ApiError(QString("Missing argument 'url' for plugin CallURL"));
+		return ApiManager::ApiError(QString("Missing argument 'url' for plugin CallURL"));
 
 	bunny->SetPluginSetting(GetName(), "Default/CallURL", hRequest.GetArg("url"));
-	return new ApiManager::ApiOk(QString("New default url defined '%1' for bunny '%2'").arg(hRequest.GetArg("url"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("New default url defined '%1' for bunny '%2'").arg(hRequest.GetArg("url"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_getDefaultUrl)
@@ -105,7 +105,7 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_getDefaultUrl)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Default/CallURL",QString()).toString());
+	return ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Default/CallURL",QString()).toString());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_AddWebcast)
@@ -120,9 +120,9 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_AddWebcast)
 		Cron::RegisterDaily(this, QTime::fromString(hTime, "hh:mm"), bunny, QVariant::fromValue(url));
 		list.insert(hTime,url);
 		bunny->SetPluginSetting(GetName(), "Webcasts", list);
-		return new ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
+		return ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
 	}
-	return new ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_RemoveWebcast)
@@ -130,7 +130,7 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_RemoveWebcast)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("time"))
-		return new ApiManager::ApiError(QString("Missing argument 'time' for plugin CallURL"));
+		return ApiManager::ApiError(QString("Missing argument 'time' for plugin CallURL"));
 
 	QMap<QString, QVariant> list = bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap();
 	QString time = hRequest.GetArg("time");
@@ -142,16 +142,16 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_RemoveWebcast)
 		// Recreate crons
         OnBunnyDisconnect(bunny);
         OnBunnyConnect(bunny);
-        return new ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+        return ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
     }
-    return new ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+    return ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_ListWebcast)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
+	return ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_AddRFID)
@@ -160,7 +160,7 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_AddRFID)
 
 	bunny->SetPluginSetting(GetName(), QString("RFIDCallURL/%1").arg(hRequest.GetArg("tag")), hRequest.GetArg("url"));
 
-	return new ApiManager::ApiOk(QString("Add weather for '%1' for RFID '%2', bunny '%3'").arg(hRequest.GetArg("url"), hRequest.GetArg("tag"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Add weather for '%1' for RFID '%2', bunny '%3'").arg(hRequest.GetArg("url"), hRequest.GetArg("tag"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_RemoveRFID)
@@ -169,20 +169,20 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_RemoveRFID)
 
 	bunny->RemovePluginSetting(GetName(), QString("RFIDCallURL/%1").arg(hRequest.GetArg("tag")));
 
-	return new ApiManager::ApiOk(QString("Remove RFID '%2' for bunny '%3'").arg(hRequest.GetArg("tag"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Remove RFID '%2' for bunny '%3'").arg(hRequest.GetArg("tag"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_addUrl) {
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("url"))
-		return new ApiManager::ApiError(QString("Missing argument 'url' for plugin CallURL"));
+		return ApiManager::ApiError(QString("Missing argument 'url' for plugin CallURL"));
 	QString url = hRequest.GetArg("url");
 	QStringList list = bunny->GetPluginSetting(GetName(), "Urls", QStringList()).toStringList();
 	list.append(url);
 	bunny->SetPluginSetting(GetName(), "Urls", list);
 
-	return new ApiManager::ApiOk(QString("Added url '%1' for bunny '%2'").arg(url, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Added url '%1' for bunny '%2'").arg(url, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_removeUrl)
@@ -190,19 +190,19 @@ PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_removeUrl)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("url"))
-		return new ApiManager::ApiError(QString("Missing argument 'url' for plugin CallURL"));
+		return ApiManager::ApiError(QString("Missing argument 'url' for plugin CallURL"));
 
 	QString url = hRequest.GetArg("url");
 	QStringList list = bunny->GetPluginSetting(GetName(), "Urls", QStringList()).toStringList();
 	list.removeAll(url);
 	bunny->SetPluginSetting(GetName(), "Urls", list);
 
-	return new ApiManager::ApiOk(QString("Removed url '%1' for bunny '%2'").arg(url, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Removed url '%1' for bunny '%2'").arg(url, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCallURL::Api_getUrlsList) {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Urls", QStringList()).toStringList());
+	return ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Urls", QStringList()).toStringList());
 }
 

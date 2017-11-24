@@ -31,8 +31,8 @@ PLUGIN_BUNNY_API_CALL(PluginTest::Api_LaunchTests)
 	else if(test == "chor")
 		PluginTest::OnClick(bunny, PluginInterface::DoubleClick);
 	else
-		return new ApiManager::ApiError(QString("Unknown test: %1'").arg(test));
-	return new ApiManager::ApiOk(QString("Test \"%1\" started for bunny '%2'").arg(test, QString(bunny->GetID())));
+		return ApiManager::ApiError(QString("Unknown test: %1'").arg(test));
+	return ApiManager::ApiOk(QString("Test \"%1\" started for bunny '%2'").arg(test, QString(bunny->GetID())));
 }
 
 bool PluginTest::OnClick(Bunny * b, PluginInterface::ClickType type)

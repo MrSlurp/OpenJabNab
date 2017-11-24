@@ -1,0 +1,25 @@
+﻿<div class="panel panel-info">
+    <div class="panel-heading"><div class="panel-title"><span >{{panelTitle}}</span></div></div>
+    <div class="row">
+        <div class="col-sm-12 col-xs-8" style="position:relative">
+            <img ng-src="{{serviceIcon != undefined ? 'assets/img/game/'+serviceIcon : ''}}" style="position:absolute;width:20%;height:20%;" 
+                 ng-if="serviceIcon != undefined"/>
+            <service-pie-chart-usage
+                production-data="productionService"
+                consumption-data="consumptionService"
+                description="{{description}}"
+                color-family="{{percentColorFamily}}">
+            </service-pie-chart-usage>
+        </div>
+        <div class="col-sm-12 col-xs-8" style="position:relative">
+            <img ng-src="{{distribIcon != undefined ? 'assets/img/game/'+distribIcon : ''}}" style="position:absolute;width:20%;height:20%;" 
+                 ng-if="distribIcon != undefined"/>
+            <service-pie-chart 
+                data="distributionService" 
+                color-family="{{distribColorFamily}}" 
+                label="{{distribLabel}}"
+                description="{{distributionDescription}}">
+            </service-pie-chart>
+        </div>
+    </div>
+</div>

@@ -269,10 +269,10 @@ API_CALL(Ztamp::Api_AddPlugin)
 
 	QString error = CheckPlugin(plugin);
 	if(!error.isNull())
-		return new ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
+		return ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
 
 	AddPlugin(plugin);
-	return new ApiManager::ApiOk(QString("Added '%1' as active plugin").arg(plugin->GetVisualName()));
+	return ApiManager::ApiOk(QString("Added '%1' as active plugin").arg(plugin->GetVisualName()));
 }
 
 API_CALL(Ztamp::Api_RemovePlugin)
@@ -282,10 +282,10 @@ API_CALL(Ztamp::Api_RemovePlugin)
 	PluginInterface * plugin = PluginManager::Instance().GetPluginByName(hRequest.GetArg("name"));
 	QString error = CheckPlugin(plugin);
 	if(!error.isNull())
-		return new ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
+		return ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
 
 	RemovePlugin(plugin);
-	return new ApiManager::ApiOk(QString("Removed '%1' as active plugin").arg(plugin->GetVisualName()));
+	return ApiManager::ApiOk(QString("Removed '%1' as active plugin").arg(plugin->GetVisualName()));
 }
 
 API_CALL(Ztamp::Api_GetListOfAssociatedPlugins)
@@ -297,7 +297,7 @@ API_CALL(Ztamp::Api_GetListOfAssociatedPlugins)
 	foreach (PluginInterface * p, listOfPluginsPtr)
 		list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 
 }
 
@@ -307,7 +307,7 @@ API_CALL(Ztamp::Api_SetZtampName)
 
 	SetZtampName( hRequest.GetArg("name") );
 
-	return new ApiManager::ApiOk(QString("Ztamp '%1' is now named '%2'").arg(GetID(), hRequest.GetArg("name")));
+	return ApiManager::ApiOk(QString("Ztamp '%1' is now named '%2'").arg(GetID(), hRequest.GetArg("name")));
 }
 
 API_CALL(Ztamp::Api_RemoveOwner)
@@ -316,12 +316,12 @@ API_CALL(Ztamp::Api_RemoveOwner)
 
 	QString owner = hRequest.GetArg("login");
 	if(owner == "")
-		return new ApiManager::ApiError("Bad login");
+		return ApiManager::ApiError("Bad login");
 
 	QStringList owners = GetGlobalSetting("OwnerAccounts","").toStringList();
 	owners.removeAll(owner);
 	SetGlobalSetting("OwnerAccounts", owners);
-	return new ApiManager::ApiOk(QString("Owner '%1' removed").arg(owner));
+	return ApiManager::ApiOk(QString("Owner '%1' removed").arg(owner));
 }
 
 API_CALL(Ztamp::Api_ResetOwner)
@@ -330,5 +330,5 @@ API_CALL(Ztamp::Api_ResetOwner)
 	Q_UNUSED(hRequest);
 
 	RemoveGlobalSetting("OwnerAccounts");
-	return new ApiManager::ApiOk("Owner cleared");
+	return ApiManager::ApiOk("Owner cleared");
 }

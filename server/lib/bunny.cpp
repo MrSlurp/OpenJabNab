@@ -57,7 +57,7 @@ Bunny::Bunny(QByteArray const& bunnyID)
 
 ApiManager::ApiAnswer * Bunny::ProcessVioletApiCall(HTTPRequest const& hRequest)
 {
-	ApiManager::ApiViolet* answer = new ApiManager::ApiViolet();
+    ApiManager::ApiViolet* answer = new ApiManager::ApiViolet();
 
 	if(hRequest.HasArg("sn") && hRequest.HasArg("token")) {
   		QString serial = hRequest.GetArg("sn").toLower();
@@ -252,25 +252,57 @@ QString Bunny::CheckPlugin(PluginInterface * plugin, bool isAssociated)
 
 void Bunny::LoadConfig()
 {
-	QFile file(configFileName);
-	if (!file.open(QIODevice::ReadOnly))
+    if (!LoadJsonConfig(configFileName+".json"))
+        LoadBinaryConfig(configFileName);
+
+    PostLoadConfig();
+}
+
+
+void Bunny::SaveConfig()
+{
+    SaveJsonConfig(configFileName+".json");
+    SaveBinaryConfig(configFileName);
+}
+
+
+void Bunny::SaveBinaryConfig(QString fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        LogError(QString("Cannot open config file for writing : %1").arg(fileName));
+        return;
+    }
+}
+
+bool Bunny::LoadBinaryConfig(QString fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly))
 	{
-		LogError(QString("Cannot open config file for reading : %1").arg(configFileName));
-		return;
+        LogError(QString("Cannot open config file for reading : %1").arg(fileName));
+        return false;
 	}
 
+    QHash<QString, QVariant> oldGlobalSettings;
+    QHash<QString, QHash<QString, QVariant> > oldPluginsSettings;
+    QList<QString> oldListOfPlugins;
 	QDataStream in(&file);
 	in.setVersion(QDataStream::Qt_4_3);
-	in >> GlobalSettings >> PluginsSettings >> listOfPlugins;
+    in >> oldGlobalSettings >> oldPluginsSettings >> oldListOfPlugins;
 	if (in.status() != QDataStream::Ok)
 	{
 		LogWarning(QString("Problem when loading config file for bunny : %1").arg(QString(id.toHex())));
+        return false;
 	}
 
 	// "Load" associated bunny plugins
-	foreach(QString s, listOfPlugins)
+    listOfPluginsPtr.clear();
+    foreach(QString s, oldListOfPlugins)
 	{
-		PluginInterface * p = PluginManager::Instance().GetPluginByName(s);
+        listOfPlugins.append(s);
+        PluginInterface * p = PluginManager::Instance().GetPluginByName(s);
 		if(p)
 		{
 			listOfPluginsPtr.append(p);
@@ -280,42 +312,23 @@ void Bunny::LoadConfig()
 		else
 			LogError(QString("Bunny %1 has invalid plugin (%2)!").arg(QString(GetID()), s));
 	}
-
-	// Load single/doubleClickPlugin preferences
-	if(GlobalSettings.contains(SINGLE_CLICK_PLUGIN_SETTINGNAME))
-	{
-		QString pluginName = GlobalSettings.value(SINGLE_CLICK_PLUGIN_SETTINGNAME).toString();
-		PluginInterface * plugin = PluginManager::Instance().GetPluginByName(pluginName);
-		QString error = CheckPlugin(plugin, true);
-		if(error.isNull())
-			singleClickPlugin = plugin;
-		else
-		{
-			singleClickPlugin = NULL;
-			LogError(error.arg(pluginName));
-		}
-	}
-	else
-	{
-		singleClickPlugin = NULL;
-	}
-	if(GlobalSettings.contains(DOUBLE_CLICK_PLUGIN_SETTINGNAME))
-	{
-		QString pluginName = GlobalSettings.value(DOUBLE_CLICK_PLUGIN_SETTINGNAME).toString();
-		PluginInterface * plugin = PluginManager::Instance().GetPluginByName(pluginName);
-		QString error = CheckPlugin(plugin, true);
-		if(error.isNull())
-			doubleClickPlugin = plugin;
-		else
-		{
-			doubleClickPlugin = NULL;
-			LogError(error.arg(pluginName));
-		}
-	}
-	else
-	{
-		doubleClickPlugin = NULL;
-	}
+    //PluginsSettings
+    foreach(QString pluginName, oldPluginsSettings.keys())
+    {
+        QVariantMap pluginProps;
+        const QHash<QString, QVariant>& oldPluginProps = oldPluginsSettings.value(pluginName);
+        foreach(QString propName, oldPluginProps.keys())
+        {
+            pluginProps.insert(propName, oldPluginsSettings.value(pluginName).value(propName));
+        }
+        PluginsSettings.insert(pluginName, pluginProps);
+        //PluginsSettings.
+    }
+    //GlobalSettings
+    foreach(QString settingName, oldGlobalSettings.keys())
+    {
+        GlobalSettings.insert(settingName, oldGlobalSettings.value(settingName));
+    }
 
 	// Added to config file, listOfRFIDTags
 	if(!in.atEnd())
@@ -323,64 +336,106 @@ void Bunny::LoadConfig()
 		// Load Known RFID Tags
 		in >> knownRFIDTags;
 	}
+    return true;
 }
 
-void Bunny::SaveConfig()
+void Bunny::PostLoadConfig()
 {
-	QFile file(configFileName);
-	QFile jsonfile(configFileName+".json");
-	if (!file.open(QIODevice::WriteOnly))
-	{
-		LogError(QString("Cannot open config file for writing : %1").arg(configFileName));
-		return;
-	}
-	if (!jsonfile.open(QIODevice::WriteOnly))
-	{
-		LogError(QString("Cannot open json config file for writing : %1").arg(configFileName));
-		return;
-	}
-  
-	QDataStream out(&file);
-	out.setVersion(QDataStream::Qt_4_3);
-	out << GlobalSettings << PluginsSettings << listOfPlugins << knownRFIDTags;
-  
-  /************************************************************/
-  /************************************************************/
-  
-  QVariantMap bunnySettings;
-  bunnySettings.insert("GlobalSettings", GlobalSettings);
-  
-  QVariantList pluginsForJson;
-  for (const auto& key : PluginsSettings.keys())
-  {
-    
-    QVariantMap pluginItem;
-    QVariantMap pluginProperties;
-    pluginItem.insert("Name", key);
-    auto pluginItemSettings = PluginsSettings.value(key);
-    for (const auto& prop : pluginItemSettings.keys())
+    // Load single/doubleClickPlugin preferences
+    if(GlobalSettings.contains(SINGLE_CLICK_PLUGIN_SETTINGNAME))
     {
-      pluginProperties.insert(prop, pluginItemSettings.value(prop));
+        QString pluginName = GlobalSettings.value(SINGLE_CLICK_PLUGIN_SETTINGNAME).toString();
+        PluginInterface * plugin = PluginManager::Instance().GetPluginByName(pluginName);
+        QString error = CheckPlugin(plugin, true);
+        if(error.isNull())
+            singleClickPlugin = plugin;
+        else
+        {
+            singleClickPlugin = NULL;
+            LogError(error.arg(pluginName));
+        }
     }
-    pluginItem.insert("properties", pluginProperties);
-    pluginsForJson << pluginItem;
-  }
-  bunnySettings.insert("PluginsSettings", pluginsForJson);
-  QVariantList pluginsJsonList;
-  //for (const auto& item : listOfPlugins)
-  foreach(QString plugin, listOfPlugins)
-  {
-    pluginsJsonList<<plugin;
-  }
-  bunnySettings.insert("ListOfPlugins", pluginsJsonList);
-  LogWarning(QString("saving file : %1").arg(configFileName));
-  QJson::Serializer serializer;
-  bool ok;
-  QByteArray json = serializer.serialize(bunnySettings, &ok);
-  //cout << json;
-  QTextStream  outjson(&jsonfile);
-  outjson << json;
+    else
+    {
+        singleClickPlugin = NULL;
+    }
+    if(GlobalSettings.contains(DOUBLE_CLICK_PLUGIN_SETTINGNAME))
+    {
+        QString pluginName = GlobalSettings.value(DOUBLE_CLICK_PLUGIN_SETTINGNAME).toString();
+        PluginInterface * plugin = PluginManager::Instance().GetPluginByName(pluginName);
+        QString error = CheckPlugin(plugin, true);
+        if(error.isNull())
+            doubleClickPlugin = plugin;
+        else
+        {
+            doubleClickPlugin = NULL;
+            LogError(error.arg(pluginName));
+        }
+    }
+    else
+    {
+        doubleClickPlugin = NULL;
+    }
 }
+
+bool Bunny::LoadJsonConfig(QString fileName)
+{
+    QFile jsonfile(fileName);
+    if (!jsonfile.open(QIODevice::ReadOnly))
+    {
+        LogError(QString("Cannot open json config file for writing : %1").arg(fileName));
+        return false;
+    }
+    QDataStream injson(&jsonfile);
+    QJson::Parser parser;
+    QByteArray  injsonArray;
+    injson>>injsonArray;
+
+    bool ok;
+    QVariantMap result = parser.parse(injsonArray, &ok).toMap();
+    if (!ok)
+    {
+        LogError(QString("Problem when parsing json config file for bunny : %1").arg(QString(id.toHex())));
+        return false;
+    }
+
+    if (result["GlobalSettings"].isNull()
+        || result["PluginsSettings"].isNull()
+        || result["ListOfPlugins"].isNull())
+    {
+        LogError(QString("Problem when loading json config file for bunny : %1, missing field").arg(QString(id.toHex())));
+        return false;
+    }
+
+    GlobalSettings = result["GlobalSettings"].toMap();
+    PluginsSettings = result["PluginsSettings"].toMap();
+    listOfPlugins = result["ListOfPlugins"].toStringList();
+
+    return true;
+}
+
+void Bunny::SaveJsonConfig(QString fileName)
+{
+    QFile jsonfile(fileName);
+    if (!jsonfile.open(QIODevice::WriteOnly))
+    {
+        LogError(QString("Cannot open json config file for writing : %1").arg(fileName));
+        return;
+    }
+
+    QVariantMap bunnySettings;
+    bunnySettings.insert("GlobalSettings", GlobalSettings);
+    bunnySettings.insert("PluginsSettings", PluginsSettings);
+    bunnySettings.insert("ListOfPlugins", listOfPlugins);
+    LogWarning(QString("saving file : %1").arg(fileName));
+    QJson::Serializer serializer;
+    bool ok;
+    QByteArray json = serializer.serialize(bunnySettings, &ok);
+    //cout << json;
+    QTextStream  outjson(&jsonfile);
+    outjson << json;
+}
+
 
 void Bunny::SetXmppHandler(XmppHandler * x)
 {
@@ -484,8 +539,8 @@ void Bunny::RemoveGlobalSetting(QString const& key)
 
 QVariant Bunny::GetPluginSetting(QString const& pluginName, QString const& key, QVariant const& defaultValue) const
 {
-	if (PluginsSettings[pluginName].contains(key))
-		return PluginsSettings[pluginName].value(key);
+    if (PluginsSettings[pluginName].toMap().contains(key))
+        return PluginsSettings[pluginName].toMap().value(key);
 	else
 		return defaultValue;
 
@@ -493,12 +548,12 @@ QVariant Bunny::GetPluginSetting(QString const& pluginName, QString const& key, 
 
 void Bunny::SetPluginSetting(QString const& pluginName, QString const& key, QVariant const& value)
 {
-	PluginsSettings[pluginName].insert(key, value);
+    PluginsSettings[pluginName].toMap().insert(key, value);
 }
 
 void Bunny::RemovePluginSetting(QString const& pluginName, QString const& key)
 {
-	PluginsSettings[pluginName].remove(key);
+    PluginsSettings[pluginName].toMap().remove(key);
 }
 
 // API Add plugin to this bunny
@@ -756,10 +811,10 @@ API_CALL(Bunny::Api_AddPlugin)
 
 	QString error = CheckPlugin(plugin);
 	if(!error.isNull())
-		return new ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
+        return ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
 
 	AddPlugin(plugin);
-	return new ApiManager::ApiOk(QString("Added '%1' as active plugin").arg(plugin->GetVisualName()));
+    return ApiManager::ApiOk(QString("Added '%1' as active plugin").arg(plugin->GetVisualName()));
 }
 
 API_CALL(Bunny::Api_RemovePlugin)
@@ -769,10 +824,10 @@ API_CALL(Bunny::Api_RemovePlugin)
 	PluginInterface * plugin = PluginManager::Instance().GetPluginByName(hRequest.GetArg("name"));
 	QString error = CheckPlugin(plugin);
 	if(!error.isNull())
-		return new ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
+        return ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
 
 	RemovePlugin(plugin);
-	return new ApiManager::ApiOk(QString("Removed '%1' as active plugin").arg(plugin->GetVisualName()));
+    return ApiManager::ApiOk(QString("Removed '%1' as active plugin").arg(plugin->GetVisualName()));
 }
 
 API_CALL(Bunny::Api_GetListOfAssociatedPlugins)
@@ -784,7 +839,7 @@ API_CALL(Bunny::Api_GetListOfAssociatedPlugins)
 	foreach (PluginInterface * p, listOfPluginsPtr)
 		list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+    return ApiManager::ApiList(list);
 
 }
 
@@ -796,18 +851,18 @@ API_CALL(Bunny::Api_SetSingleClickPlugin)
 	{
 		RemoveGlobalSetting(SINGLE_CLICK_PLUGIN_SETTINGNAME);
 		singleClickPlugin = NULL;
-		return new ApiManager::ApiOk(QString("Removed preferred single click plugin"));
+        return ApiManager::ApiOk(QString("Removed preferred single click plugin"));
 	}
 
 	PluginInterface * plugin = PluginManager::Instance().GetPluginByName(hRequest.GetArg("name"));
 
 	QString error = CheckPlugin(plugin, true);
 	if(!error.isNull())
-		return new ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
+        return ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
 
 	singleClickPlugin = plugin;
 	SetGlobalSetting(SINGLE_CLICK_PLUGIN_SETTINGNAME, plugin->GetName());
-	return new ApiManager::ApiOk(QString("Set '%1' as single click plugin").arg(plugin->GetVisualName()));
+    return ApiManager::ApiOk(QString("Set '%1' as single click plugin").arg(plugin->GetVisualName()));
 }
 
 API_CALL(Bunny::Api_SetDoubleClickPlugin)
@@ -818,18 +873,18 @@ API_CALL(Bunny::Api_SetDoubleClickPlugin)
 	{
 		RemoveGlobalSetting(DOUBLE_CLICK_PLUGIN_SETTINGNAME);
 		doubleClickPlugin = NULL;
-		return new ApiManager::ApiOk(QString("Removed preferred double click plugin"));
+        return ApiManager::ApiOk(QString("Removed preferred double click plugin"));
 	}
 
 	PluginInterface * plugin = PluginManager::Instance().GetPluginByName(hRequest.GetArg("name"));
 
 	QString error = CheckPlugin(plugin, true);
 	if(!error.isNull())
-		return new ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
+        return ApiManager::ApiError(error.arg(hRequest.GetArg("name")));
 
 	doubleClickPlugin = plugin;
 	SetGlobalSetting(DOUBLE_CLICK_PLUGIN_SETTINGNAME, plugin->GetName());
-	return new ApiManager::ApiOk(QString("Set '%1' as double click plugin").arg(plugin->GetVisualName()));
+    return ApiManager::ApiOk(QString("Set '%1' as double click plugin").arg(plugin->GetVisualName()));
 }
 
 API_CALL(Bunny::Api_GetClickPlugins)
@@ -841,7 +896,7 @@ API_CALL(Bunny::Api_GetClickPlugins)
 	list.append(GetGlobalSetting(SINGLE_CLICK_PLUGIN_SETTINGNAME, QString()).toString());
 	list.append(GetGlobalSetting(DOUBLE_CLICK_PLUGIN_SETTINGNAME, QString()).toString());
 
-	return new ApiManager::ApiList(list);
+    return ApiManager::ApiList(list);
 }
 
 API_CALL(Bunny::Api_GetListOfKnownRFIDTags)
@@ -855,7 +910,7 @@ API_CALL(Bunny::Api_GetListOfKnownRFIDTags)
 	for (i = knownRFIDTags.constBegin(); i != knownRFIDTags.constEnd(); ++i)
 		list.insert(QString(i.key()), i.value());
 
-	return new ApiManager::ApiMappedList(list);
+    return ApiManager::ApiMappedList(list);
 }
 
 API_CALL(Bunny::Api_SetRFIDTagName)
@@ -864,11 +919,11 @@ API_CALL(Bunny::Api_SetRFIDTagName)
 
 	QByteArray tagName = hRequest.GetArg("tag").toAscii();
 	if(!knownRFIDTags.contains(tagName))
-		return new ApiManager::ApiError(QString("Tag '%1' is unkown").arg(hRequest.GetArg("tag")));
+        return ApiManager::ApiError(QString("Tag '%1' is unkown").arg(hRequest.GetArg("tag")));
 
 	knownRFIDTags[tagName] = hRequest.GetArg("name");
 
-	return new ApiManager::ApiOk(QString("Name '%1' associated to tag '%2'").arg(hRequest.GetArg("name"), hRequest.GetArg("tag")));
+    return ApiManager::ApiOk(QString("Name '%1' associated to tag '%2'").arg(hRequest.GetArg("name"), hRequest.GetArg("tag")));
 }
 
 API_CALL(Bunny::Api_SetBunnyName)
@@ -877,7 +932,7 @@ API_CALL(Bunny::Api_SetBunnyName)
 
 	SetBunnyName( hRequest.GetArg("name") );
 
-	return new ApiManager::ApiOk(QString("Bunny '%1' is now named '%2'").arg(GetID(), hRequest.GetArg("name")));
+    return ApiManager::ApiOk(QString("Bunny '%1' is now named '%2'").arg(GetID(), hRequest.GetArg("name")));
 }
 
 API_CALL(Bunny::Api_SetService)
@@ -890,7 +945,7 @@ API_CALL(Bunny::Api_SetService)
 	AmbientPacket a((AmbientPacket::Services)service, value);
 	SendPacket(a);
 
-	return new ApiManager::ApiOk(QString("Set value '%2' for service '%1'").arg(QString::number(service), QString::number(value)));
+    return ApiManager::ApiOk(QString("Set value '%2' for service '%1'").arg(QString::number(service), QString::number(value)));
 }
 
 API_CALL(Bunny::Api_ResetPassword)
@@ -899,7 +954,7 @@ API_CALL(Bunny::Api_ResetPassword)
 	Q_UNUSED(hRequest);
 
 	ClearBunnyPassword();
-	return new ApiManager::ApiOk("Password cleared");
+    return ApiManager::ApiOk("Password cleared");
 }
 
 API_CALL(Bunny::Api_ResetOwner)
@@ -908,7 +963,7 @@ API_CALL(Bunny::Api_ResetOwner)
 	Q_UNUSED(hRequest);
 
 	RemoveGlobalSetting("OwnerAccount");
-	return new ApiManager::ApiOk("Owner cleared");
+    return ApiManager::ApiOk("Owner cleared");
 }
 
 API_CALL(Bunny::Api_Disconnect)
@@ -922,7 +977,7 @@ API_CALL(Bunny::Api_Disconnect)
                 xmppHandler = 0;
         }
 
-	return new ApiManager::ApiOk("Connexion closed");
+    return ApiManager::ApiOk("Connexion closed");
 }
 
 API_CALL(Bunny::Api_setInsomniac)
@@ -931,7 +986,7 @@ API_CALL(Bunny::Api_setInsomniac)
         bool i = (bool)(hRequest.GetArg("insomniac").toInt());
         QString night = i ? "insomniac" : "a good sleeper";
         SetGlobalSetting("Insomniac",i);
-        return new ApiManager::ApiOk(QString("Bunny is now %1").arg(night));
+        return ApiManager::ApiOk(QString("Bunny is now %1").arg(night));
 }
 
 API_CALL(Bunny::Api_getInsomniac)
@@ -939,7 +994,7 @@ API_CALL(Bunny::Api_getInsomniac)
         Q_UNUSED(account);
         Q_UNUSED(hRequest);
         QString night = GetGlobalSetting("Insomniac",false).toBool() ? "insomniac" : "a good sleeper";
-        return new ApiManager::ApiString(night);
+        return ApiManager::ApiString(night);
 }
 
 API_CALL(Bunny::Api_setPublicVApi)
@@ -948,7 +1003,7 @@ API_CALL(Bunny::Api_setPublicVApi)
         bool p = (bool)(hRequest.GetArg("public").toInt());
         QString pub = p ? "public" : "private";
         SetGlobalSetting("VApiPublic",p);
-        return new ApiManager::ApiOk(QString("Bunny is now %1 for VioletAPI").arg(pub));
+        return ApiManager::ApiOk(QString("Bunny is now %1 for VioletAPI").arg(pub));
 }
 
 API_CALL(Bunny::Api_getPublicVApi)
@@ -956,7 +1011,7 @@ API_CALL(Bunny::Api_getPublicVApi)
         Q_UNUSED(account);
         Q_UNUSED(hRequest);
         QString pub = GetGlobalSetting("VApiPublic",false).toBool() ? "public" : "private";
-        return new ApiManager::ApiString(pub);
+        return ApiManager::ApiString(pub);
 }
 
 API_CALL(Bunny::Api_enableVApi)
@@ -971,7 +1026,7 @@ API_CALL(Bunny::Api_enableVApi)
 		SetGlobalSetting("VApiToken",Token);
 	}
 	SetGlobalSetting("VApiEnable",true);
-	return new ApiManager::ApiOk(QString("VioletAPI enabled"));
+    return ApiManager::ApiOk(QString("VioletAPI enabled"));
 }
 
 API_CALL(Bunny::Api_disableVApi)
@@ -979,50 +1034,50 @@ API_CALL(Bunny::Api_disableVApi)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 	SetGlobalSetting("VApiEnable",false);
-	return new ApiManager::ApiOk(QString("VioletAPI disabled"));
+    return ApiManager::ApiOk(QString("VioletAPI disabled"));
 }
 
 API_CALL(Bunny::Api_getVApiStatus)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiString(GetGlobalSetting("VApiEnable", false).toBool() ? "enabled" : "disabled");
+    return ApiManager::ApiString(GetGlobalSetting("VApiEnable", false).toBool() ? "enabled" : "disabled");
 }
 
 API_CALL(Bunny::Api_getVApiToken)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiString(GetGlobalSetting("VApiToken", "").toString());
+    return ApiManager::ApiString(GetGlobalSetting("VApiToken", "").toString());
 }
 
 API_CALL(Bunny::Api_setVApiToken)
 {
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+        return ApiManager::ApiError("Access denied");
 
 	SetGlobalSetting("VApiToken",hRequest.GetArg("tk").toAscii());
-	return new ApiManager::ApiOk(QString("VioletAPI Token updated."));
+    return ApiManager::ApiOk(QString("VioletAPI Token updated."));
 }
 
 API_CALL(Bunny::Api_getOneLast)
 {
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+        return ApiManager::ApiError("Access denied");
 
 	QString hParam = hRequest.GetArg("param");
 	if(hParam == "Last JabberConnection" || hParam == "LastIP" || hParam == "LastRecord" || hParam == "LastLocate" || hParam == "LastLocateString" || hParam == "LastCron")
 	{
-		return new ApiManager::ApiString(GetGlobalSetting(hParam, QString("")).toString());
+        return ApiManager::ApiString(GetGlobalSetting(hParam, QString("")).toString());
 	}
-	return new ApiManager::ApiError(QString("'%1' is not a good parameter").arg(hParam));
+    return ApiManager::ApiError(QString("'%1' is not a good parameter").arg(hParam));
 }
 
 API_CALL(Bunny::Api_getAllLast)
 {
 	Q_UNUSED(hRequest);
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+        return ApiManager::ApiError("Access denied");
 
 	QStringList params;
 	params << "Last JabberConnection" << "LastIP" << "LastRecord" << "LastLocate" << "LastLocateString" << "LastCron";
@@ -1032,5 +1087,5 @@ API_CALL(Bunny::Api_getAllLast)
 		answer.insert(param, GetGlobalSetting(param, QString("")));
 	}
 
-	return new ApiManager::ApiMappedList(answer);
+    return ApiManager::ApiMappedList(answer);
 }

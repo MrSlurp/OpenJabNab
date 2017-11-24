@@ -144,10 +144,10 @@ PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Sleep)
 	Q_UNUSED(hRequest);
 
 	if(!bunny->IsIdle())
-		return new ApiManager::ApiError(QString("Bunny is not idle"));
+		return ApiManager::ApiError(QString("Bunny is not idle"));
 
 	bunny->SendPacket(SleepPacket(SleepPacket::Sleep));
-	return new ApiManager::ApiOk(QString("Bunny is going to sleep."));
+	return ApiManager::ApiOk(QString("Bunny is going to sleep."));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Wakeup)
@@ -156,10 +156,10 @@ PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Wakeup)
 	Q_UNUSED(hRequest);
 
 	if(!bunny->IsSleeping())
-		return new ApiManager::ApiError(QString("Bunny is not sleeping"));
+		return ApiManager::ApiError(QString("Bunny is not sleeping"));
 
 	bunny->SendPacket(SleepPacket(SleepPacket::Wake_Up));
-	return new ApiManager::ApiOk(QString("Bunny is waking up."));
+	return ApiManager::ApiOk(QString("Bunny is waking up."));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Setup)
@@ -170,7 +170,7 @@ PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Setup)
 	QStringList sleepList = hRequest.GetArg("sleepList").split(',');
 
 	if(wakeupList.count() != 7 || sleepList.count() != 7)
-		return new ApiManager::ApiError(QString("Bad list size"));
+		return ApiManager::ApiError(QString("Bad list size"));
 
 	// Transform QStringList to QList<QTime>
 	QList<QVariant> wList;
@@ -181,13 +181,13 @@ PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Setup)
 		if(w.isValid())
 			wList.append(w);
 		else
-			return new ApiManager::ApiError(QString("Bad time '%1'").arg(wakeupList.at(day)));
+			return ApiManager::ApiError(QString("Bad time '%1'").arg(wakeupList.at(day)));
 
 		QTime s = QTime::fromString(sleepList.at(day), "hh:mm");
 		if(s.isValid())
 			sList.append(s);
 		else
-			return new ApiManager::ApiError(QString("Bad time '%1'").arg(sleepList.at(day)));
+			return ApiManager::ApiError(QString("Bad time '%1'").arg(sleepList.at(day)));
 	}
 
 	bunny->SetPluginSetting(GetName(), "wakeupList", wList);
@@ -197,7 +197,7 @@ PLUGIN_BUNNY_API_CALL(PluginSleep::Api_Setup)
 	RegisterCrons(bunny);
 	UpdateState(bunny);
 
-	return new ApiManager::ApiOk(QString("Plugin configuration updated."));
+	return ApiManager::ApiOk(QString("Plugin configuration updated."));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSleep::Api_GetSetup)
@@ -220,5 +220,5 @@ PLUGIN_BUNNY_API_CALL(PluginSleep::Api_GetSetup)
 		}
 	}
 
-	return new ApiManager::ApiList(setup);
+	return ApiManager::ApiList(setup);
 }

@@ -1,0 +1,47 @@
+﻿<div class="container" ng-controller="bunniesCtrl as vm">
+    <h1 class="page-header">Bunnies</h1>
+    <tabset justified="true">
+        <!--
+        <tab ng-repeat="selectionTab in DistrictSelectionsTabs" heading="{{selectionTab.TabTitle}}" active="selectionTab.active">
+            <div style="margin:10px;"></div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div ng-dropdown-multiselect="" 
+                        options="DistricMap" 
+                        selected-model="selectionTab.selectedDistricts" 
+                        extra-settings="selectBoxSettings" 
+                        style="width:100%;"
+                        events="selectionTab.events">
+
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Residential')">Select residential</button>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Industrial')">Select industrial</button>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Commercial')">Select commercial</button>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Office')">Select office</button>
+                </div>
+            </div>
+            <div style="margin:10px;"></div>
+            <tabset type="pills" >
+                <tab ng-repeat="dist in selectionTab.selectedDistricts" heading="{{dist.DistrictName}}" active="dist.districtVisible" ng-click="selectActiveDistrict(dist.DistrictID)">
+                    <ng-include
+                        src="'./app/components/district/districtFullView.html'">
+                    </ng-include>
+                    <ng-include
+                        src="'./app/components/district/districtTrafficView.html'">
+                    </ng-include>
+                    <div class="clearfix"></div>
+                </tab>
+            </tabset>
+        </tab>
+        -->
+    </tabset>
+</div>
+<!-- /.container -->

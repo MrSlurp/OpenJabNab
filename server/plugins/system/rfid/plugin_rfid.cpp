@@ -63,17 +63,17 @@ PLUGIN_API_CALL(PluginRFID::Api_GetLastTag)
 	Q_UNUSED(hRequest);
 
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
-	return new ApiManager::ApiString(GetSettings("global/LastTag", QString()).toString());
+	return ApiManager::ApiString(GetSettings("global/LastTag", QString()).toString());
 }
 
 PLUGIN_API_CALL(PluginRFID::Api_GetLastTagForBunny)
 {
 	Bunny * b = BunnyManager::GetBunny(this, hRequest.GetArg("sn").toAscii());
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
-	return new ApiManager::ApiString(b->GetPluginSetting(GetName(), "LastTag", QString()).toString());
+	return ApiManager::ApiString(b->GetPluginSetting(GetName(), "LastTag", QString()).toString());
 }
 

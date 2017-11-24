@@ -1,6 +1,8 @@
 #ifndef _APIMANAGER_H_
 #define _APIMANAGER_H_
 
+#include <functional>
+
 #include <QByteArray>
 #include <QList>
 #include <QMap>
@@ -28,64 +30,90 @@ public:
 	};
 
 	static ApiManager & Instance();
-	ApiAnswer * ProcessApiCall(QString const&, HTTPRequest &);
-	
+    ApiAnswer * ProcessApiCall(QString , HTTPRequest &);
+    bool IsJsonApiCall() {return isJsonApiCall;}
+    static ApiAnswer* ApiError(QString);
+    static ApiAnswer* ApiOk(QString);
+    static ApiAnswer* ApiXml(QString);
+    static ApiAnswer* ApiString(QString);
+    static ApiAnswer* ApiList(QList<QString> l);
+    static ApiAnswer* ApiMappedList(QMap<QString, QVariant> l);
+    static ApiAnswer* ApiVariantMap(QVariantMap m);
+
 	// Internal classes
-	class OJN_EXPORT ApiError : public ApiAnswer
+    class OJN_EXPORT ApiErrorObj : public ApiAnswer
 	{
 		public:
-			ApiError(QString s):error(s) {}
+            ApiErrorObj(QString s):error(s) {}
 			QString GetInternalData();
 		private:
 			QString error;
 	};
 
-	class OJN_EXPORT ApiXml : public ApiAnswer
+    class OJN_EXPORT ApiXmlObj : public ApiAnswer
 	{
 		public:
-			ApiXml():string(QString()) {}
-			ApiXml(QString s):string(s) {}
+            ApiXmlObj():string(QString()) {}
+            ApiXmlObj(QString s):string(s) {}
 			QString GetInternalData() { return string; }
 		private:
 			QString string;
 	};
 
-	class OJN_EXPORT ApiOk : public ApiAnswer
+    class OJN_EXPORT ApiOkObj : public ApiAnswer
 	{
 		public:
-			ApiOk():string(QString()) {}
-			ApiOk(QString s):string(s) {}
+            ApiOkObj():string(QString()) {}
+            ApiOkObj(QString s):string(s) {}
 			QString GetInternalData();
 		private:
 			QString string;
 	};
 
-	class OJN_EXPORT ApiString : public ApiAnswer
+	class OJN_EXPORT ApiStringObj : public ApiAnswer
 	{
 		public:
-			ApiString(QString s):string(s) {}
+            ApiStringObj(QString s):string(s) {}
 			QString GetInternalData();
 		private:
 			QString string;
 	};
 
-	class OJN_EXPORT ApiList : public ApiAnswer
+    class OJN_EXPORT ApiListObj : public ApiAnswer
 	{
 		public:
-			ApiList(QList<QString> l):list(l) {}
+            ApiListObj(QList<QString> l):list(l) {}
 			QString GetInternalData();
 		private:
 			QList<QString> list;
 	};
 
-	class OJN_EXPORT ApiMappedList : public ApiAnswer
+    class OJN_EXPORT ApiMappedListObj : public ApiAnswer
 	{
 		public:
-			ApiMappedList(QMap<QString, QVariant> l):list(l) {}
+            ApiMappedListObj(QMap<QString, QVariant> l):list(l) {}
 			QString GetInternalData();
 		private:
 			QMap<QString, QVariant> list;
 	};
+
+    class OJN_EXPORT ApiJsonVariantMap : public ApiAnswer
+    {
+        public:
+            typedef enum {
+                error=0,
+                ok=1,
+            }StatusMessage;
+            ApiJsonVariantMap(StatusMessage st, QString msg);
+            ApiJsonVariantMap(QString s);
+            ApiJsonVariantMap(QList<QString> s);
+            //ApiJsonVariantMap(QMap<QString, QVariant>);
+            ApiJsonVariantMap(QVariantMap m):map(m) {}
+            QByteArray GetData(); // UTF8
+            QString GetInternalData();
+        private:
+            QVariantMap map;
+    };
 
 	class OJN_EXPORT ApiViolet : public ApiAnswer
 	{
@@ -109,5 +137,6 @@ private:
 	ApiAnswer * ProcessBunnyApiCall(Account const&, QString const&, HTTPRequest const&);
 	ApiAnswer * ProcessZtampApiCall(Account const&, QString const&, HTTPRequest const&);
 	ApiAnswer * ProcessBunnyVioletApiCall(QString const&, HTTPRequest const&);
+    static bool isJsonApiCall;
 };
 #endif

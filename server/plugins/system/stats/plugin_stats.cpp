@@ -38,7 +38,7 @@ PLUGIN_API_CALL(PluginStats::Api_GetPlugins)
 			list.insert(plugin, list.value(plugin).toInt() + 1);
 	}
 
-	return new ApiManager::ApiMappedList(list);
+	return ApiManager::ApiMappedList(list);
 }
 
 PLUGIN_API_CALL(PluginStats::Api_GetColors)
@@ -56,7 +56,7 @@ PLUGIN_API_CALL(PluginStats::Api_GetColors)
 		list.insert(color, list.value(color).toInt() + 1);
 	}
 
-	return new ApiManager::ApiMappedList(list);
+	return ApiManager::ApiMappedList(list);
 }
 
 PLUGIN_API_CALL(PluginStats::Api_GetBunniesIP)
@@ -73,7 +73,7 @@ PLUGIN_API_CALL(PluginStats::Api_GetBunniesIP)
 		list.insert(QString(b->GetID()), b->GetGlobalSetting("LastIP"));
 	}
 
-	return new ApiManager::ApiMappedList(list);
+	return ApiManager::ApiMappedList(list);
 }
 
 PLUGIN_API_CALL(PluginStats::Api_GetBunniesName)
@@ -90,7 +90,7 @@ PLUGIN_API_CALL(PluginStats::Api_GetBunniesName)
 		list.insert(QString(b->GetID()), b->GetBunnyName());
 	}
 
-	return new ApiManager::ApiMappedList(list);
+	return ApiManager::ApiMappedList(list);
 }
 
 PLUGIN_API_CALL(PluginStats::Api_GetBunniesStatus)
@@ -110,7 +110,7 @@ PLUGIN_API_CALL(PluginStats::Api_GetBunniesStatus)
 		list.insert(awake, list.value(awake).toInt() + 1);
 	}
 
-	return new ApiManager::ApiMappedList(list);
+	return ApiManager::ApiMappedList(list);
 }
 
 PLUGIN_API_CALL(PluginStats::Api_GetBunniesInformation)
@@ -140,5 +140,5 @@ PLUGIN_API_CALL(PluginStats::Api_GetBunniesInformation)
                 xml += "  <LastCron>" + b->GetGlobalSetting("LastCron","").toString() + "</LastCron>";
                 xml += "</bunny>";
         }
-        return new ApiManager::ApiXml(xml);
+        return ApiManager::ApiXml(xml);
 }

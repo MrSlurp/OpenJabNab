@@ -1,0 +1,13 @@
+﻿<div class="panel panel-info">
+    <div class="panel-heading"><div class="panel-title"><span >Policies</span></div></div>
+    <div class="row">
+        <div class="col-xs-24">
+            <div ng-repeat="policy in policies" style="float:left;margin:3px;" ng-if="policy.Enabled">
+                <img ng-src="{{'assets/img/game/'+ getPolicyIconFromName(policy.Name)}}" style="width:30px;height:30px;" 
+                    tooltip-popup-delay='500' tooltip="{{policy.Name}}" />
+                <span>{{policy.Name}}</span>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

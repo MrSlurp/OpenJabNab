@@ -32,7 +32,7 @@ public:
 	virtual ~PluginInterface();
 	
 	// Called to init plugin, return false if something is wrong
-	virtual bool Init() { return true; };
+    virtual bool Init() { return true; }
 
 	virtual void HttpRequestBefore(HTTPRequest &) {}
 	// If the plugin returns true, the plugin should handle the request

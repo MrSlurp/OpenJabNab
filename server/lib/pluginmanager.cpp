@@ -147,6 +147,22 @@ bool PluginManager::ReloadPlugin(QString const& name)
 	return false;
 }
 
+QVariantList PluginManager::GetPluginsApis() const
+{
+    LogInfo(QString("GetPluginsApi"));
+    QVariantList fullList;
+    foreach(PluginInterface * plg , listOfPlugins)
+    {
+        QVariantMap map;
+        map.insert("name", plg->GetName());
+        map.insert("Apis", plg->GetApis());
+        map.insert("Bunnies", plg->GetBunniesApis());
+        map.insert("Ztamps", plg->GetZtampsApis());
+        fullList.append(map);
+    }
+    return fullList;
+}
+
 /**************************************************/
 /* HTTP requests are sent to ALL 'active' plugins */
 /**************************************************/
@@ -308,13 +324,13 @@ API_CALL(PluginManager::Api_GetListOfPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcPlugins,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QMap<QString, QVariant> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		list.insert(p->GetName(), p->GetVisualName());
 
-	return new ApiManager::ApiMappedList(list);
+	return ApiManager::ApiMappedList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfEnabledPlugins)
@@ -322,14 +338,14 @@ API_CALL(PluginManager::Api_GetListOfEnabledPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcPlugins,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		if(p->GetEnable())
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfBunnyPlugins)
@@ -337,14 +353,14 @@ API_CALL(PluginManager::Api_GetListOfBunnyPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcPluginsBunny,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		if(p->GetType() == PluginInterface::BunnyPlugin || p->GetType() == PluginInterface::BunnyZtampPlugin)
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfZtampPlugins)
@@ -352,14 +368,14 @@ API_CALL(PluginManager::Api_GetListOfZtampPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcPluginsZtamp,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		if(p->GetType() == PluginInterface::ZtampPlugin || p->GetType() == PluginInterface::BunnyZtampPlugin)
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfSystemPlugins)
@@ -367,14 +383,14 @@ API_CALL(PluginManager::Api_GetListOfSystemPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfSystemPlugins)
 		if(p->GetType() == PluginInterface::SystemPlugin)
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfSystemEnabledPlugins)
@@ -382,14 +398,14 @@ API_CALL(PluginManager::Api_GetListOfSystemEnabledPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfSystemPlugins)
 		if(p->GetType() == PluginInterface::SystemPlugin && p->GetEnable())
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfRequiredPlugins)
@@ -397,14 +413,14 @@ API_CALL(PluginManager::Api_GetListOfRequiredPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		if(p->GetType() == PluginInterface::RequiredPlugin)
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfBunnyEnabledPlugins)
@@ -412,14 +428,14 @@ API_CALL(PluginManager::Api_GetListOfBunnyEnabledPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcPluginsBunny,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		if((p->GetType() == PluginInterface::BunnyPlugin || p->GetType() == PluginInterface::BunnyZtampPlugin) && p->GetEnable())
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_GetListOfZtampEnabledPlugins)
@@ -427,14 +443,14 @@ API_CALL(PluginManager::Api_GetListOfZtampEnabledPlugins)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcPluginsZtamp,Account::Read))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QList<QString> list;
 	foreach (PluginInterface * p, listOfPlugins)
 		if((p->GetType() == PluginInterface::ZtampPlugin || p->GetType() == PluginInterface::BunnyZtampPlugin) && p->GetEnable())
 			list.append(p->GetName());
 
-	return new ApiManager::ApiList(list);
+	return ApiManager::ApiList(list);
 }
 
 API_CALL(PluginManager::Api_ActivatePlugin)
@@ -442,17 +458,17 @@ API_CALL(PluginManager::Api_ActivatePlugin)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Write))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	PluginInterface * p = listOfPluginsByName.value(hRequest.GetArg("name"));
 	if(!p)
-		return new ApiManager::ApiError(QString("Unknown plugin '%1'<br />Request was : %2").arg(hRequest.GetArg("name"),hRequest.toString()));
+		return ApiManager::ApiError(QString("Unknown plugin '%1'<br />Request was : %2").arg(hRequest.GetArg("name"),hRequest.toString()));
 
 	if(p->GetEnable())
-		return new ApiManager::ApiError(QString("Plugin '%1' is already enabled!").arg(hRequest.GetArg("name")));
+		return ApiManager::ApiError(QString("Plugin '%1' is already enabled!").arg(hRequest.GetArg("name")));
 
 	p->SetEnable(true);
-	return new ApiManager::ApiOk(QString("'%1' is now enabled").arg(p->GetName()));
+	return ApiManager::ApiOk(QString("'%1' is now enabled").arg(p->GetName()));
 }
 
 API_CALL(PluginManager::Api_DeactivatePlugin)
@@ -460,20 +476,20 @@ API_CALL(PluginManager::Api_DeactivatePlugin)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Write))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	PluginInterface * p = listOfPluginsByName.value(hRequest.GetArg("name"));
 	if(!p)
-		return new ApiManager::ApiError(QString("Unknown plugin '%1'<br />Request was : %2").arg(hRequest.GetArg("name"),hRequest.toString()));
+		return ApiManager::ApiError(QString("Unknown plugin '%1'<br />Request was : %2").arg(hRequest.GetArg("name"),hRequest.toString()));
 
 	if(p->GetType() == PluginInterface::RequiredPlugin)
-		return new ApiManager::ApiError(QString("Plugin '%1' can't be deactivated!").arg(hRequest.GetArg("name")));
+		return ApiManager::ApiError(QString("Plugin '%1' can't be deactivated!").arg(hRequest.GetArg("name")));
 
 	if(!p->GetEnable())
-		return new ApiManager::ApiError(QString("Plugin '%1' is already disabled!").arg(hRequest.GetArg("name")));
+		return ApiManager::ApiError(QString("Plugin '%1' is already disabled!").arg(hRequest.GetArg("name")));
 
 	p->SetEnable(false);
-	return new ApiManager::ApiOk(QString("'%1' is now disabled").arg(p->GetName()));
+	return ApiManager::ApiOk(QString("'%1' is now disabled").arg(p->GetName()));
 }
 
 API_CALL(PluginManager::Api_UnloadPlugin)
@@ -481,15 +497,15 @@ API_CALL(PluginManager::Api_UnloadPlugin)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Write))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QString name = hRequest.GetArg("name");
 	if(UnloadPlugin(name))
 	{
-		return new ApiManager::ApiOk(QString("'%1' is now unloaded").arg(name));
+		return ApiManager::ApiOk(QString("'%1' is now unloaded").arg(name));
 	}
 	else
-		return new ApiManager::ApiError(QString("Can't unload '%1'!").arg(name));
+		return ApiManager::ApiError(QString("Can't unload '%1'!").arg(name));
 }
 
 API_CALL(PluginManager::Api_LoadPlugin)
@@ -497,13 +513,13 @@ API_CALL(PluginManager::Api_LoadPlugin)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Write))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QString filename = hRequest.GetArg("filename");
 	if(LoadPlugin(filename))
-		return new ApiManager::ApiOk(QString("'%1' is now loaded").arg(filename));
+		return ApiManager::ApiOk(QString("'%1' is now loaded").arg(filename));
 	else
-		return new ApiManager::ApiError(QString("Can't load '%1'!").arg(filename));
+		return ApiManager::ApiError(QString("Can't load '%1'!").arg(filename));
 }
 
 API_CALL(PluginManager::Api_ReloadPlugin)
@@ -511,13 +527,13 @@ API_CALL(PluginManager::Api_ReloadPlugin)
 	Q_UNUSED(hRequest);
 
 	if(!account.HasAccess(Account::AcServer,Account::Write))
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QString name = hRequest.GetArg("name");
 	if(ReloadPlugin(name))
-		return new ApiManager::ApiOk(QString("'%1' is now reloaded").arg(name));
+		return ApiManager::ApiOk(QString("'%1' is now reloaded").arg(name));
 	else
-		return new ApiManager::ApiError(QString("Can't reload '%1'!").arg(name));
+		return ApiManager::ApiError(QString("Can't reload '%1'!").arg(name));
 }
 
 /********************

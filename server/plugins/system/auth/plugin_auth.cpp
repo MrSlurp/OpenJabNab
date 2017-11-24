@@ -234,7 +234,7 @@ PLUGIN_API_CALL(PluginAuth::Api_SelectAuth)
 	Q_UNUSED(hRequest);
 	Q_UNUSED(account);
 
-	return new ApiManager::ApiError(QString("This API is deprecated"));
+	return ApiManager::ApiError(QString("This API is deprecated"));
 }
 
 PLUGIN_API_CALL(PluginAuth::Api_GetListOfAuths)
@@ -242,7 +242,7 @@ PLUGIN_API_CALL(PluginAuth::Api_GetListOfAuths)
 	Q_UNUSED(hRequest);
 	Q_UNUSED(account);
 
-	return new ApiManager::ApiError(QString("This API is deprecated"));
+	return ApiManager::ApiError(QString("This API is deprecated"));
 }
 
 

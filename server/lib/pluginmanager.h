@@ -42,7 +42,7 @@ public:
 
 	QList<PluginInterface *> const& GetListOfPlugins() const;
 	PluginInterface * GetPluginByName(QString const& name) const;
-
+    QVariantList GetPluginsApis() const;
 	// API
 	static void InitApiCalls();
 

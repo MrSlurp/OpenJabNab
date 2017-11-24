@@ -25,7 +25,7 @@ void PluginMsgall::InitApiCalls()
 PLUGIN_API_CALL(PluginMsgall::Api_Say)
 {
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied.");
+		return ApiManager::ApiError("Access denied.");
 
 	QByteArray fileName = TTSManager::CreateNewSound(hRequest.GetArg("text"), "Claire");
 
@@ -36,5 +36,5 @@ PLUGIN_API_CALL(PluginMsgall::Api_Say)
 		b->SendPacket(MessagePacket("MU " + fileName + "\nMW\n"));
 	}
 
-	return new ApiManager::ApiOk("Message sent.");
+	return ApiManager::ApiOk("Message sent.");
 }

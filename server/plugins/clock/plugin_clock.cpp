@@ -125,9 +125,9 @@ PLUGIN_BUNNY_API_CALL(PluginClock::Api_SetVoice)
 		// Save new config
 		bunny->SetPluginSetting(GetName(), "voice", voice);
 
-		return new ApiManager::ApiOk(QString("Voices changed to '%1'").arg(voice));
+		return ApiManager::ApiOk(QString("Voices changed to '%1'").arg(voice));
 	}
-	return new ApiManager::ApiError(QString("Unknown '%1' voice").arg(voice));
+	return ApiManager::ApiError(QString("Unknown '%1' voice").arg(voice));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginClock::Api_GetVoiceList)
@@ -136,5 +136,5 @@ PLUGIN_BUNNY_API_CALL(PluginClock::Api_GetVoiceList)
 	Q_UNUSED(bunny);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiList(availableVoices);
+	return ApiManager::ApiList(availableVoices);
 }

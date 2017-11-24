@@ -1,0 +1,22 @@
+﻿
+body {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+/* mon height for colum => fix the fluid layout issue in FF*/
+@media (min-width: 768px) {
+    .panel [class*="col-"] {
+		min-height:70px;
+    }
+}
+@media (min-width: 992px) {
+    .panel [class*="col-"] {
+		min-height:100px;
+    }
+}
+@media (min-width: 1200px) {
+    .panel [class*="col-"] {
+		min-height:130px;
+    }
+}

@@ -1,0 +1,20 @@
+<svg fill="{{centerColor}}"
+     viewBox="0 0 200 200"
+    version="1.1" 
+    xmlns="http://www.w3.org/2000/svg"
+    tooltip-popup-delay='500' tooltip="{{descriptionTip}}">
+    <g>
+        <circle cx="50%" cy="50%" r="25%" />
+        <text text-anchor="middle" alignment-baseline="middle" dx="50%" dy="53%">
+            <tspan style="font-size: 2.3em;" fill="{{lblColor}}">{{ actual_formatted }}</tspan>
+            <tspan style="font-size: 2.3em;" fill="{{lblColor}}">%</tspan>
+        </text>
+    </g>
+    <g path-group>
+        <path stroke-width="10" stroke="#f1f1f1" stroke-linejoin="round" bg-path />
+        <!--
+        <path stroke-width="5" stroke="{{innerPathColor}}" stroke-linejoin="round" inner-path />
+        -->
+        <path stroke-width="10" stroke="{{outerPathColor}}" stroke-linejoin="round" outer-path />
+    </g>
+</svg>

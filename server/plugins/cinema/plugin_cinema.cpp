@@ -98,7 +98,7 @@ PLUGIN_BUNNY_API_CALL(PluginCinema::Api_GetWebcasts)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Webcast/List", QStringList()).toStringList());
+	return ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Webcast/List", QStringList()).toStringList());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCinema::Api_AddWebcast)
@@ -106,7 +106,7 @@ PLUGIN_BUNNY_API_CALL(PluginCinema::Api_AddWebcast)
 	Q_UNUSED(account);
 
 	if(!bunny->IsConnected())
-		return new ApiManager::ApiError(QString("Bunny '%1' is not connected").arg(hRequest.GetArg("to")));
+		return ApiManager::ApiError(QString("Bunny '%1' is not connected").arg(hRequest.GetArg("to")));
 
 	QString hTime = hRequest.GetArg("time");
 	QString hDay = hRequest.GetArg("day");
@@ -116,9 +116,9 @@ PLUGIN_BUNNY_API_CALL(PluginCinema::Api_AddWebcast)
 		QStringList bunnyWebcastList = bunny->GetPluginSetting(GetName(), "Webcast/List", QStringList()).toStringList() << hDay+"|"+hTime;
 		bunnyWebcastList.sort();
 		bunny->SetPluginSetting(GetName(), "Webcast/List", bunnyWebcastList);
-		return new ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+		return ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 	}
-	return new ApiManager::ApiError(QString("Webcast at '%1' already exists for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("Webcast at '%1' already exists for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginCinema::Api_RemoveWebcast)
@@ -126,7 +126,7 @@ PLUGIN_BUNNY_API_CALL(PluginCinema::Api_RemoveWebcast)
 	Q_UNUSED(account);
 
 	if(!bunny->IsConnected())
-		return new ApiManager::ApiError(QString("Bunny '%1' is not connected").arg(QString(bunny->GetID())));
+		return ApiManager::ApiError(QString("Bunny '%1' is not connected").arg(QString(bunny->GetID())));
 
 	QStringList bunnyWebcastList = bunny->GetPluginSetting(GetName(), "Webcast/List", QStringList()).toStringList();
 	QString time = hRequest.GetArg("day")+"|"+hRequest.GetArg("time");
@@ -140,9 +140,9 @@ PLUGIN_BUNNY_API_CALL(PluginCinema::Api_RemoveWebcast)
 		OnBunnyDisconnect(bunny);
 		OnBunnyConnect(bunny);
 
-		return new ApiManager::ApiOk(QString("Remove webcast at '%1' on '%3' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID()), hRequest.GetArg("day") ));
+		return ApiManager::ApiOk(QString("Remove webcast at '%1' on '%3' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID()), hRequest.GetArg("day") ));
 	}
-	return new ApiManager::ApiError(QString("No webcast on '%2' at '%1' for bunny '%3'").arg(hRequest.GetArg("time"), hRequest.GetArg("day"), QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("No webcast on '%2' at '%1' for bunny '%3'").arg(hRequest.GetArg("time"), hRequest.GetArg("day"), QString(bunny->GetID())));
 }
 
 /* WORKER THREAD */

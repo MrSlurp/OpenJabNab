@@ -115,17 +115,17 @@ Q_UNUSED(account);
 
 
 if(!hRequest.HasArg("Frequency"))
-return new ApiManager::ApiError(QString("Missing argument 'Frequency' for plugin Gmail"));
+return ApiManager::ApiError(QString("Missing argument 'Frequency' for plugin Gmail"));
 if(!hRequest.HasArg("Email"))
-return new ApiManager::ApiError(QString("Missing argument 'Email' for plugin Gmail"));
+return ApiManager::ApiError(QString("Missing argument 'Email' for plugin Gmail"));
 if(!hRequest.HasArg("Password"))
-return new ApiManager::ApiError(QString("Missing argument 'Password' for plugin Gmail"));
+return ApiManager::ApiError(QString("Missing argument 'Password' for plugin Gmail"));
 
 bunny->SetPluginSetting(GetName(), "Frequency", hRequest.GetArg("Frequency"));
 bunny->SetPluginSetting(GetName(), "Email", hRequest.GetArg("Email"));
 bunny->SetPluginSetting(GetName(), "Password", hRequest.GetArg("Password"));
 
-return new ApiManager::ApiOk(QString("Account '%1' will be verified every '%2' minute(s) for bunny '%3'").arg(hRequest.GetArg("Email"),hRequest.GetArg("Frequency"), QString(bunny->GetID())));
+return ApiManager::ApiOk(QString("Account '%1' will be verified every '%2' minute(s) for bunny '%3'").arg(hRequest.GetArg("Email"),hRequest.GetArg("Frequency"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginGmail::Api_GetConfig)
@@ -138,5 +138,5 @@ list.append(bunny->GetPluginSetting(GetName(), "Frequency", QString()).toString(
 list.append(bunny->GetPluginSetting(GetName(), "Email", QString()).toString());
 list.append(bunny->GetPluginSetting(GetName(), "Password", QString()).toString());
 
-return new ApiManager::ApiList(list);
+return ApiManager::ApiList(list);
 }

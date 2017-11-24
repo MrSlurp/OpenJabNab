@@ -81,6 +81,13 @@ private slots:
 private:
 	Bunny(QByteArray const&);
 	void LoadConfig();
+    void PostLoadConfig();
+
+    bool LoadJsonConfig(QString fileName);
+    void SaveJsonConfig(QString fileName);
+    bool LoadBinaryConfig(QString fileName);
+    void SaveBinaryConfig(QString fileName);
+
 	void AddPlugin(PluginInterface * p);
 	void RemovePlugin(PluginInterface * p);
 	void OnConnect();
@@ -120,8 +127,8 @@ private:
 	QByteArray xmppResource;
 	QString configFileName;
 	QVariantMap GlobalSettings;
-	QHash<QString, QVariantMap > PluginsSettings;
-	QList<QString> listOfPlugins;
+    QVariantMap PluginsSettings;
+    QStringList listOfPlugins;
 	QList<PluginInterface*> listOfPluginsPtr;
 	QTimer * saveTimer;
 	XmppHandler * xmppHandler;

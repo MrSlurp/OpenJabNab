@@ -133,13 +133,13 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_addCity) {
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("city"))
-		return new ApiManager::ApiError(QString("Missing argument 'city' for plugin Weather"));
+		return ApiManager::ApiError(QString("Missing argument 'city' for plugin Weather"));
 	QString city = hRequest.GetArg("city");
 	QStringList list = bunny->GetPluginSetting(GetName(), "Cities", QStringList()).toStringList();
 	list.append(city);
 	bunny->SetPluginSetting(GetName(), "Cities", list);
 
-	return new ApiManager::ApiOk(QString("Added city '%1' for bunny '%2'").arg(city, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Added city '%1' for bunny '%2'").arg(city, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_removeCity)
@@ -147,20 +147,20 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_removeCity)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("city"))
-		return new ApiManager::ApiError(QString("Missing argument 'city' for plugin Weather"));
+		return ApiManager::ApiError(QString("Missing argument 'city' for plugin Weather"));
 
 	QString city = hRequest.GetArg("city");
 	QStringList list = bunny->GetPluginSetting(GetName(), "Cities", QStringList()).toStringList();
 	list.removeAll(city);
 	bunny->SetPluginSetting(GetName(), "Cities", list);
 
-	return new ApiManager::ApiOk(QString("Removed city '%1' for bunny '%2'").arg(city, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Removed city '%1' for bunny '%2'").arg(city, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_getCitiesList) {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Cities", QStringList()).toStringList());
+	return ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Cities", QStringList()).toStringList());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_setDefaultCity)
@@ -168,10 +168,10 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_setDefaultCity)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("city"))
-		return new ApiManager::ApiError(QString("Missing argument 'city' for plugin Weather"));
+		return ApiManager::ApiError(QString("Missing argument 'city' for plugin Weather"));
 
 	bunny->SetPluginSetting(GetName(), "Default/City", hRequest.GetArg("city"));
-	return new ApiManager::ApiOk(QString("New default city defined '%1' for bunny '%2'").arg(hRequest.GetArg("city"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("New default city defined '%1' for bunny '%2'").arg(hRequest.GetArg("city"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_getDefaultCity)
@@ -179,7 +179,7 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_getDefaultCity)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Default/City",QString()).toString());
+	return ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Default/City",QString()).toString());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_AddWebcast)
@@ -194,9 +194,9 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_AddWebcast)
 		Cron::RegisterDaily(this, QTime::fromString(hTime, "hh:mm"), bunny, QVariant::fromValue(city));
 		list.insert(hTime,city);
 		bunny->SetPluginSetting(GetName(), "Webcasts", list);
-		return new ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
+		return ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
 	}
-	return new ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_RemoveWebcast)
@@ -204,7 +204,7 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_RemoveWebcast)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("time"))
-		return new ApiManager::ApiError(QString("Missing argument 'time' for plugin Weather"));
+		return ApiManager::ApiError(QString("Missing argument 'time' for plugin Weather"));
 
 	QMap<QString, QVariant> list = bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap();
 	QString time = hRequest.GetArg("time");
@@ -216,16 +216,16 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_RemoveWebcast)
 		// Recreate crons
         OnBunnyDisconnect(bunny);
         OnBunnyConnect(bunny);
-        return new ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+        return ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
     }
-    return new ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+    return ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_ListWebcast)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
+	return ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_AddRFID)
@@ -234,7 +234,7 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_AddRFID)
 
 	bunny->SetPluginSetting(GetName(), QString("RFIDWeather/%1").arg(hRequest.GetArg("tag")), hRequest.GetArg("city"));
 
-	return new ApiManager::ApiOk(QString("Add weather for '%1' for RFID '%2', bunny '%3'").arg(hRequest.GetArg("city"), hRequest.GetArg("tag"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Add weather for '%1' for RFID '%2', bunny '%3'").arg(hRequest.GetArg("city"), hRequest.GetArg("tag"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_RemoveRFID)
@@ -243,7 +243,7 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_RemoveRFID)
 
 	bunny->RemovePluginSetting(GetName(), QString("RFIDWeather/%1").arg(hRequest.GetArg("tag")));
 
-	return new ApiManager::ApiOk(QString("Remove RFID '%2' for bunny '%3'").arg(hRequest.GetArg("tag"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Remove RFID '%2' for bunny '%3'").arg(hRequest.GetArg("tag"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_getLang)
@@ -251,7 +251,7 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_getLang)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Lang","fr").toString());
+	return ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Lang","fr").toString());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginWeather::Api_setLang)
@@ -259,7 +259,7 @@ PLUGIN_BUNNY_API_CALL(PluginWeather::Api_setLang)
 	Q_UNUSED(account);
 	bunny->SetPluginSetting(GetName(), "Lang",hRequest.GetArg("lg"));
 
-	return new ApiManager::ApiOk("Lang Updated!");
+	return ApiManager::ApiOk("Lang Updated!");
 }
 
 

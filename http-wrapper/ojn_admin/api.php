@@ -5,10 +5,20 @@ if(!isset($_SESSION['token']) || !$Infos['isAdmin'])
 ?>
 <h1>DEVELOPMENT Feature. On this page, you can make a direct API call, your token will be added automatically</h1>
 <br />
+<h2>BunnyID=<?php echo !empty($_SESSION['bunny']) ? $_SESSION['bunny']: '' ?></h2>
+<h2>ApiToken=<?php echo $ojnAPI->getToken()?></h2>
+
+<br />
 <form method="post">
 <input type="text" style="width:80%" name="r" value="<?php echo !empty($_POST['r']) ? $_POST['r'] : '' ?>"/>
 <input type="submit" value="Go !" />
+<input type="submit" value="Post !" />
 </form>
+<form method="get">
+<input type="text" style="width:80%" name="r" value="<?php echo !empty($_GET['r']) ? $_GET['r'] : '' ?>"/>
+<input type="submit" value="Get !" />
+</form>
+
 <pre style="border: 1px solid grey ; width:80% background-color:grey">
 <?php
 

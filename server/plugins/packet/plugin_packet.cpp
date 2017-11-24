@@ -18,7 +18,7 @@ PLUGIN_BUNNY_API_CALL(PluginPacket::Api_SendPacket)
 
 	QByteArray data = QByteArray::fromHex(hRequest.GetArg("data").toAscii());
 	bunny->SendData(data);
-	return new ApiManager::ApiOk(QString("'%1' sent to bunny").arg(QString(data.toHex())));
+	return ApiManager::ApiOk(QString("'%1' sent to bunny").arg(QString(data.toHex())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginPacket::Api_SendMessage)
@@ -27,5 +27,5 @@ PLUGIN_BUNNY_API_CALL(PluginPacket::Api_SendMessage)
 
 	QByteArray msg = hRequest.GetArg("msg").toAscii();
 	bunny->SendPacket(MessagePacket(msg));
-	return new ApiManager::ApiOk(QString("'%1' sent to bunny").arg(QString(msg)));
+	return ApiManager::ApiOk(QString("'%1' sent to bunny").arg(QString(msg)));
 }

@@ -133,12 +133,12 @@ void PluginAnnuaire::InitApiCalls()
 PLUGIN_API_CALL(PluginAnnuaire::Api_setURL)
 {
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
 	QString url = hRequest.GetArg("url");
 	SetSettings("global/URL", url);
 
-	return new ApiManager::ApiOk(QString("URL set to '%1'.").arg(url));
+	return ApiManager::ApiOk(QString("URL set to '%1'.").arg(url));
 }
 
 PLUGIN_API_CALL(PluginAnnuaire::Api_getURL)
@@ -146,9 +146,9 @@ PLUGIN_API_CALL(PluginAnnuaire::Api_getURL)
 	Q_UNUSED(hRequest);
 
 	if(!account.IsAdmin())
-		return new ApiManager::ApiError("Access denied");
+		return ApiManager::ApiError("Access denied");
 
-	return new ApiManager::ApiString(QString("%1").arg(GetSettings("global/URL", "").toString()));
+	return ApiManager::ApiString(QString("%1").arg(GetSettings("global/URL", "").toString()));
 }
 
 PLUGIN_API_CALL(PluginAnnuaire::Api_SearchBunnyByMac)
@@ -165,7 +165,7 @@ PLUGIN_API_CALL(PluginAnnuaire::Api_SearchBunnyByMac)
 		xml += "<server>" + b.server + "</server>";
 		xml += "</bunny>\n";
 	}
-	return new ApiManager::ApiXml(xml);
+	return ApiManager::ApiXml(xml);
 }
 
 PLUGIN_API_CALL(PluginAnnuaire::Api_SearchBunnyByName)
@@ -182,7 +182,7 @@ PLUGIN_API_CALL(PluginAnnuaire::Api_SearchBunnyByName)
 		xml += "<server>" + b.server + "</server>";
 		xml += "</bunny>\n";
 	}
-	return new ApiManager::ApiXml(xml);
+	return ApiManager::ApiXml(xml);
 }
 
 PLUGIN_API_CALL(PluginAnnuaire::Api_VerifyMacToken)
@@ -196,6 +196,6 @@ PLUGIN_API_CALL(PluginAnnuaire::Api_VerifyMacToken)
 	else 
 		xml += "<verify>false</verify>\n";
 	
-	return new ApiManager::ApiXml(xml);
+	return ApiManager::ApiXml(xml);
 
 }

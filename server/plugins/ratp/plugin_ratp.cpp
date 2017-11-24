@@ -164,7 +164,7 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_addArret) {
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("item"))
-		return new ApiManager::ApiError(QString("Missing something for plugin Ratp"));
+		return ApiManager::ApiError(QString("Missing something for plugin Ratp"));
 
 	QString tmp = hRequest.GetArg("item");
 	
@@ -172,13 +172,13 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_addArret) {
 	list.append(tmp);
 	bunny->SetPluginSetting(GetName(), "Arrets", list);
 
-	return new ApiManager::ApiOk(QString("Added arrets '%1' for bunny '%2'").arg(tmp, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Added arrets '%1' for bunny '%2'").arg(tmp, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_getListArret) {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Arrets", QStringList()).toStringList());
+	return ApiManager::ApiList(bunny->GetPluginSetting(GetName(), "Arrets", QStringList()).toStringList());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_setDefaultArret)
@@ -186,12 +186,12 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_setDefaultArret)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("item"))
-		return new ApiManager::ApiError(QString("Missing something for plugin Ratp"));
+		return ApiManager::ApiError(QString("Missing something for plugin Ratp"));
 
 	QString tmp = hRequest.GetArg("item");
 
 	bunny->SetPluginSetting(GetName(), "Default/Arret", tmp);
-	return new ApiManager::ApiOk(QString("Added default arrets '%1' for bunny '%2'").arg(tmp, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Added default arrets '%1' for bunny '%2'").arg(tmp, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_getArretDefaut)
@@ -199,7 +199,7 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_getArretDefaut)
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
 
-	return new ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Default/Arret",QString()).toString());
+	return ApiManager::ApiString(bunny->GetPluginSetting(GetName(), "Default/Arret",QString()).toString());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_removeArret)
@@ -207,14 +207,14 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_removeArret)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("item"))
-		return new ApiManager::ApiError(QString("Missing argument 'item' for plugin Ratp"));
+		return ApiManager::ApiError(QString("Missing argument 'item' for plugin Ratp"));
 
 	QString item = hRequest.GetArg("item");
 	QStringList list = bunny->GetPluginSetting(GetName(), "Arrets", QStringList()).toStringList();
 	list.removeAll(item);
 	bunny->SetPluginSetting(GetName(), "Arrets", list);
 
-	return new ApiManager::ApiOk(QString("Removed arret '%1' for bunny '%2'").arg(item, QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Removed arret '%1' for bunny '%2'").arg(item, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_AddWebcast)
@@ -229,9 +229,9 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_AddWebcast)
 		Cron::RegisterDaily(this, QTime::fromString(hTime, "hh:mm"), bunny, QVariant::fromValue(item));
 		list.insert(hTime,item);
 		bunny->SetPluginSetting(GetName(), "Webcasts", list);
-		return new ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
+		return ApiManager::ApiOk(QString("Add webcast at '%1' to bunny '%2'").arg(hTime, QString(bunny->GetID())));
 	}
-	return new ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
+	return ApiManager::ApiError(QString("Webcast already exists at '%1' for bunny '%2'").arg(hTime, QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_RemoveWebcast)
@@ -239,7 +239,7 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_RemoveWebcast)
 	Q_UNUSED(account);
 
 	if(!hRequest.HasArg("time"))
-		return new ApiManager::ApiError(QString("Missing argument 'time' for plugin Ratp"));
+		return ApiManager::ApiError(QString("Missing argument 'time' for plugin Ratp"));
 
 	QMap<QString, QVariant> list = bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap();
 	QString time = hRequest.GetArg("time");
@@ -251,16 +251,16 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_RemoveWebcast)
 		// Recreate crons
         OnBunnyDisconnect(bunny);
         OnBunnyConnect(bunny);
-        return new ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+        return ApiManager::ApiOk(QString("Remove webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
     }
-    return new ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
+    return ApiManager::ApiError(QString("No webcast at '%1' for bunny '%2'").arg(hRequest.GetArg("time"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_ListWebcast)
 {
 	Q_UNUSED(account);
 	Q_UNUSED(hRequest);
-	return new ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
+	return ApiManager::ApiMappedList(bunny->GetPluginSetting(GetName(), "Webcasts", QMap<QString, QVariant>()).toMap());
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_AddRFID)
@@ -269,7 +269,7 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_AddRFID)
 
 	bunny->SetPluginSetting(GetName(), QString("RFIDRatp/%1").arg(hRequest.GetArg("tag")), hRequest.GetArg("item"));
 
-	return new ApiManager::ApiOk(QString("Add Ratp for '%1' for RFID '%2', bunny '%3'").arg(hRequest.GetArg("item"), hRequest.GetArg("tag"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Add Ratp for '%1' for RFID '%2', bunny '%3'").arg(hRequest.GetArg("item"), hRequest.GetArg("tag"), QString(bunny->GetID())));
 }
 
 PLUGIN_BUNNY_API_CALL(PluginRatp::Api_RemoveRFID)
@@ -278,7 +278,7 @@ PLUGIN_BUNNY_API_CALL(PluginRatp::Api_RemoveRFID)
 
 	bunny->RemovePluginSetting(GetName(), QString("RFIDRatp/%1").arg(hRequest.GetArg("tag")));
 
-	return new ApiManager::ApiOk(QString("Remove RFID '%2' for bunny '%3'").arg(hRequest.GetArg("tag"), QString(bunny->GetID())));
+	return ApiManager::ApiOk(QString("Remove RFID '%2' for bunny '%3'").arg(hRequest.GetArg("tag"), QString(bunny->GetID())));
 }
 
 /* WORKER THREAD */

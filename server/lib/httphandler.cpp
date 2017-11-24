@@ -23,6 +23,7 @@ HttpHandler::~HttpHandler() {}
 
 void HttpHandler::ReceiveData()
 {
+    // les 4 premier octets sont la longueur totale du message attendu
 	receivedData += incomingHttpSocket->readAll();
 	if(bytesToReceive == 0 && (receivedData.size() >= 4))
 		bytesToReceive = *(int *)receivedData.left(4).constData();
