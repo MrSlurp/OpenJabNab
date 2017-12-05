@@ -6,9 +6,14 @@
       </div>
       <div class="row">
         <div class="col-xs-2" style="position:relative" ng-repeat=" bunny in userBunnies">
+          <div ng-if="bunny.IsConnected">
+            <img src="assets/img/nabaztag-awake.png" />
+          </div>
+          <div ng-if="!bunny.IsConnected">
+            <img src="assets/img/nabaztag-sleep.png" />
+          </div>
           <h2>{{bunny.Name}}</h2>
           <p>{{bunny.MAC}}</p>
-          <p>Is connected? {{bunny.IsConnected}}</p>
         </div>
       </div>
     </div>
