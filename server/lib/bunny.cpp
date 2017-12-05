@@ -941,7 +941,7 @@ API_CALL(Bunny::Api_SetBunnyName)
 {
 	Q_UNUSED(account);
 
-	SetBunnyName( hRequest.GetArg("name") );
+    SetBunnyName( hRequest.GetArg("name") );
 
     return ApiManager::ApiOk(QString("Bunny '%1' is now named '%2'").arg(GetID(), hRequest.GetArg("name")));
 }

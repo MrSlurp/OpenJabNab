@@ -183,6 +183,12 @@ API_CALL(BunnyManager::Api_GetUserBunniesStatus)
             bunnyData.insert("IsConnected", b->IsConnected());
             bunnyData.insert("Name", b->GetBunnyName());
             bunnyData.insert("MAC", b->GetID());
+            bunnyData.insert("IsSleeping", b->IsSleeping());
+            bunnyData.insert("IsIdle", b->IsIdle());
+            if (account.IsAdmin())
+            {
+                bunnyData.insert("BunnyPassword",b->GetBunnyPassword());
+            }
             list.append(bunnyData);
         }
     }

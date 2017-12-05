@@ -14,6 +14,15 @@ angular.module('ojnApiModule')
     
     var _authToken = undefined;
     
+    
+    // TODO add expiration period (should be returned by API)
+    var _setToken= function(value)
+    {
+      _authToken = value;
+      $cookieStore.put("SavedToken", _authToken);
+      ojnngEvents.notifyEvent("TokenChanged");
+    }
+    
     try
     {
       var value = $cookieStore.get("SavedToken");
@@ -25,14 +34,7 @@ angular.module('ojnApiModule')
     catch(ex)
     {
     }
-    
-    // TODO add expiration period (should be returned by API)
-    var _setToken= function(value)
-    {
-      _authToken = value;
-      $cookieStore.put("SavedToken", _authToken);
-      ojnngEvents.notifyEvent("TokenChanged");
-    }
+
     
     var _isErrorApiStatusMessage = function(value)
     {
