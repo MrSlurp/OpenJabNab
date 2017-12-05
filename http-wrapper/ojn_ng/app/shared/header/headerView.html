@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
             </button>
             <!-- You'll want to use a responsive image option so this logo looks good on devices - I recommend using something like retina.js (do a quick Google search for it and you'll find it) -->
-            <a class="navbar-brand" href="#/">OpenNabJab</a>
+            <a class="navbar-brand" href="#!/">OpenNabJab</a>
             <p class="navbar-text">{{ServerPing.ConnectedBunnies + " Bunnies of " + ServerPing.MaxNumberOfBunnies}}</p>
         </div>
 
@@ -27,12 +27,19 @@
                 <li ng-if="!IsUserRegistered">
                   <a ng-href="#!/register">Register</a>
                 </li>
+                <li ng-if="IsUserRegistered">
+                  <div class="navbar-form" >
+                     <button ng-click="DoLogout()" class="btn btn-default">Logout</button>
+                  </div>                
+                </li>
                 <li>
                   <a ng-href="#!/home">Home</a>
                 </li>
-                <li ng-if="IsUserRegistered" > <a ng-href="#!/bunnies">Bunnies</a>
+                <li ng-if="IsUserRegistered" > 
+                  <a ng-href="#!/bunnies">Bunnies</a>
                 </li>
-                <li><a ng-href="#!/about">About</a>
+                <li>
+                  <a ng-href="#!/about">About</a>
                 </li>
             </ul>
         </div>

@@ -42,7 +42,8 @@ QList<QByteArray> BunnyManager::GetConnectedBunniesList(void)
 
 void BunnyManager::InitApiCalls()
 {
-	DECLARE_API_CALL("getListOfConnectedBunnies()", &BunnyManager::Api_GetListOfConnectedBunnies);
+    DECLARE_API_CALL("getUserBunniesStatus()", &BunnyManager::Api_GetUserBunniesStatus);
+    DECLARE_API_CALL("getListOfConnectedBunnies()", &BunnyManager::Api_GetListOfConnectedBunnies);
 	DECLARE_API_CALL("getListOfBunnies()", &BunnyManager::Api_GetListOfBunnies);
 	DECLARE_API_CALL("removeBunny(serial)", &BunnyManager::Api_RemoveBunny);
 	DECLARE_API_CALL("addBunny(serial)", &BunnyManager::Api_AddBunny);
@@ -80,7 +81,12 @@ int BunnyManager::GetBunnyCount()
 
 Bunny * BunnyManager::GetBunny(QByteArray const& bunnyHexID)
 {
-	QByteArray bunnyID = QByteArray::fromHex(bunnyHexID);
+    if(bunnyHexID.length()==0)
+    {
+        LogWarning("bunny required with empty ID !\n");
+    }
+
+    QByteArray bunnyID = QByteArray::fromHex(bunnyHexID);
 
 	if(listOfBunnies.contains(bunnyID))
 		return listOfBunnies.value(bunnyID);
@@ -92,6 +98,11 @@ Bunny * BunnyManager::GetBunny(QByteArray const& bunnyHexID)
 
 Bunny * BunnyManager::GetBunny(PluginInterface * p, QByteArray const& bunnyHexID)
 {
+    if(bunnyHexID.length()==0)
+    {
+        LogWarning("bunny required with empty ID !\n");
+    }
+
 	Bunny * b = GetBunny(bunnyHexID);
 
 	if(p->GetType() != PluginInterface::BunnyPlugin)
@@ -152,6 +163,34 @@ void BunnyManager::PluginUnloaded(PluginInterface * p)
 			b->PluginUnloaded(p);
 }
 
+API_CALL(BunnyManager::Api_GetUserBunniesStatus)
+{
+    Q_UNUSED(hRequest);
+
+    if (!ApiManager::IsJsonApiCall())
+        return ApiManager::ApiError("command supported only with json api");
+
+    if(!account.HasAccess(Account::AcBunnies,Account::Read))
+        return ApiManager::ApiError("Access denied");
+
+
+    QVariantList list;
+    foreach(Bunny * b, listOfBunnies)
+    {
+        if (account.GetBunniesList().contains(b->GetID()))
+        {
+            QVariantMap bunnyData;
+            bunnyData.insert("IsConnected", b->IsConnected());
+            bunnyData.insert("Name", b->GetBunnyName());
+            bunnyData.insert("MAC", b->GetID());
+            list.append(bunnyData);
+        }
+    }
+    QVariantMap data;
+    data.insert("bunnies", list);
+
+    return ApiManager::ApiVariantMap(data);
+}
 
 API_CALL(BunnyManager::Api_GetListOfConnectedBunnies)
 {

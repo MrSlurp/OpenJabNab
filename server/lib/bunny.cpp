@@ -43,12 +43,17 @@ Bunny::Bunny(QByteArray const& bunnyID)
 	}
 	id = bunnyID;
 	state = State_Disconnected;
-	configFileName = bunniesDir.absoluteFilePath(bunnyID.toHex()+".dat");
+
+
 	xmppHandler = 0;
 
-	// Check if config file exists and load it
-	if (QFile::exists(configFileName))
-		LoadConfig();
+    if (bunnyID.length()!=0)
+    {
+        configFileName = bunniesDir.absoluteFilePath(bunnyID.toHex()+".dat");
+        // Check if config file exists and load it
+        if (QFile::exists(configFileName))
+            LoadConfig();
+    }
 
 	saveTimer = new QTimer(this);
 	connect(saveTimer, SIGNAL(timeout()), this, SLOT(SaveConfig()));
@@ -261,8 +266,11 @@ void Bunny::LoadConfig()
 
 void Bunny::SaveConfig()
 {
-    SaveJsonConfig(configFileName+".json");
-    SaveBinaryConfig(configFileName);
+    if (!configFileName.isEmpty())
+    {
+        SaveJsonConfig(configFileName+".json");
+        SaveBinaryConfig(configFileName);
+    }
 }
 
 
@@ -380,10 +388,13 @@ void Bunny::PostLoadConfig()
 
 bool Bunny::LoadJsonConfig(QString fileName)
 {
+    if (!QFile::exists(fileName))
+        return false;
+
     QFile jsonfile(fileName);
     if (!jsonfile.open(QIODevice::ReadOnly))
     {
-        LogError(QString("Cannot open json config file for writing : %1").arg(fileName));
+        LogError(QString("Cannot open json config file for reading : %1").arg(fileName));
         return false;
     }
     QDataStream injson(&jsonfile);

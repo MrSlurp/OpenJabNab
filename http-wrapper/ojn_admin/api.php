@@ -11,7 +11,6 @@ if(!isset($_SESSION['token']) || !$Infos['isAdmin'])
 <br />
 <form method="post">
 <input type="text" style="width:80%" name="r" value="<?php echo !empty($_POST['r']) ? $_POST['r'] : '' ?>"/>
-<input type="submit" value="Go !" />
 <input type="submit" value="Post !" />
 </form>
 <form method="get">

@@ -43,12 +43,14 @@ private:
 
 	// API
 	API_CALL(Api_Auth);
-	API_CALL(Api_ChangePasswd);
+    API_CALL(Api_CheckAuth);
+    API_CALL(Api_Logout);
+    API_CALL(Api_ChangePasswd);
 	API_CALL(Api_RegisterNewAccount);
 	API_CALL(Api_RemoveAccount);
 	API_CALL(Api_AddBunny);
 	API_CALL(Api_RemoveBunny);
-    	API_CALL(Api_RemoveZtamp);
+    API_CALL(Api_RemoveZtamp);
 	API_CALL(Api_SetToken);
 	API_CALL(Api_SetAdmin);
 	API_CALL(Api_SetLanguage);

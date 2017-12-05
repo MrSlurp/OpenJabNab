@@ -15,13 +15,13 @@ define([
       $routeProvider.when('/bunnies', { 
           templateUrl: 'app/components/bunnies/bunniesView.html',
           resolve:{
-            "check":function($location){   
+            "check":function(ojnApiAccount, $location){   
               //check user is logged in
-              if(false){ 
-                //
+              if(ojnApiAccount.hasToken()){ 
+                // pass
               }else{
                 $location.path('/home');    //redirect user to home.
-                alert("You don't have access here");
+                //alert("You don't have access here");
               }
             }
           }

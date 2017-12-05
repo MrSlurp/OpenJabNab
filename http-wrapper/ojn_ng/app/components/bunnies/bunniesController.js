@@ -2,9 +2,10 @@
 
 define([
     'app/components/bunnies/module',
-    'app/components/dataServices/ojnApiService',
+    'app/components/dataServices/ojnApiGlobal',
+    'app/components/dataServices/ojnApiBunnies',
 ], function (module) {
-    module.controller('bunniesCtrl', function ($scope, ojnApiService, $interval, $cookies) {
+    module.controller('bunniesCtrl', function ($scope, ojnApiGlobal, ojnApiBunnies, $interval, $cookies) {
         console.log("bunniesCtrl Controller reporting for duty.");
         /*
         // contains the data of city and bunnies retrieved from cityInfoService

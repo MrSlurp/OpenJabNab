@@ -204,7 +204,9 @@ QByteArray AccountManager::GetToken(QString const& login, QByteArray const& hash
 void AccountManager::InitApiCalls()
 {
 	DECLARE_API_CALL("auth(login,pass)", &AccountManager::Api_Auth);
-	DECLARE_API_CALL("changePassword(login,pass)", &AccountManager::Api_ChangePasswd);
+    DECLARE_API_CALL("checkAuth()", &AccountManager::Api_CheckAuth);
+    DECLARE_API_CALL("logout()", &AccountManager::Api_Logout);
+    DECLARE_API_CALL("changePassword(login,pass)", &AccountManager::Api_ChangePasswd);
 	DECLARE_API_CALL("registerNewAccount(login,username,pass)", &AccountManager::Api_RegisterNewAccount);
 	DECLARE_API_CALL("removeAccount(login)", &AccountManager::Api_RemoveAccount);
 	DECLARE_API_CALL("addBunny(login,bunnyid)", &AccountManager::Api_AddBunny);
@@ -230,6 +232,31 @@ API_CALL(AccountManager::Api_Auth)
 
 	LogInfo(QString("User login : %1").arg(hRequest.GetArg("login")));
     return ApiManager::ApiString(retour);
+}
+
+API_CALL(AccountManager::Api_CheckAuth)
+{
+    Q_UNUSED(hRequest);
+    //QString
+    QHash<QByteArray, TokenData>::iterator it = listOfTokens.find(account.GetToken());
+    if(it != listOfTokens.end())
+    {
+        return ApiManager::ApiOk("Succeed");
+    }
+    return ApiManager::ApiError("unknown token or session expired");
+}
+
+API_CALL(AccountManager::Api_Logout)
+{
+    Q_UNUSED(hRequest);
+    //QString
+    QHash<QByteArray, TokenData>::iterator it = listOfTokens.find(account.GetToken());
+    if(it != listOfTokens.end())
+    {
+        listOfTokens.erase(it);
+    }
+    LogInfo(QString("User logout : %1").arg(account.GetLogin()));
+    return ApiManager::ApiOk("Succeed");
 }
 
 API_CALL(AccountManager::Api_ChangePasswd)

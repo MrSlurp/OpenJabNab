@@ -40,6 +40,7 @@ protected:
 	static void PluginUnloaded(PluginInterface *);
 
 	// API
+    API_CALL(Api_GetUserBunniesStatus);
 	API_CALL(Api_GetListOfConnectedBunnies);
 	API_CALL(Api_GetListOfBunnies);
 	API_CALL(Api_AddBunny);

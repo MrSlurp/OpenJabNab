@@ -92,7 +92,6 @@ ApiManager::ApiAnswer * ApiManager::ProcessGlobalApiCall(Account const& account,
         {
             QVariantMap map;
             map.insert("ServerName", "OpenJabNab");
-            map.insert("ServerName", "OpenJabNab");
             map.insert("Version", "v0.02");
             map.insert("Build", "Build " __DATE__ " / " __TIME__ );
             return ApiManager::ApiVariantMap(map);

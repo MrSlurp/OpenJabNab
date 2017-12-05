@@ -31,7 +31,7 @@ public:
 
 	static ApiManager & Instance();
     ApiAnswer * ProcessApiCall(QString , HTTPRequest &);
-    bool IsJsonApiCall() {return isJsonApiCall;}
+    static bool IsJsonApiCall() {return isJsonApiCall;}
     static ApiAnswer* ApiError(QString);
     static ApiAnswer* ApiOk(QString);
     static ApiAnswer* ApiXml(QString);
