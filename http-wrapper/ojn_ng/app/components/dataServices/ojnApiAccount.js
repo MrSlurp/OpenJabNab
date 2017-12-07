@@ -2,18 +2,21 @@
 
 define([
   'angular',
+  'app/components/dataServices/ojnApiModule',
   'app/components/dataServices/ojnngError',
   'app/components/dataServices/ojnngEvents',
+  'app/components/dataServices/ojnApiHelpers',
   'app/components/dataServices/ojnApiGlobal',
 ], function () {
 angular.module('ojnApiModule')
-  .factory('ojnApiAccount', function ($http, $interval, $q, $cookieStore, ojnApiGlobal, ojnngEvents) {
+  .factory('ojnApiAccount', function ($http, $q, $cookieStore, ojnApiGlobal, ojnngEvents, ojnngError, ojnApiHelpers) {
     console.log("ojnApiAccount ready");
     var _baseApiPath = "/ojn_api/json";
     var _accountsApiPath = _baseApiPath + "/accounts";
     
     var _authToken = undefined;
     
+    var _isInit = false;
     
     // TODO add expiration period (should be returned by API)
     var _setToken= function(value)
@@ -23,16 +26,23 @@ angular.module('ojnApiModule')
       ojnngEvents.notifyEvent("TokenChanged");
     }
     
-    try
+    var _init = function()
     {
-      var value = $cookieStore.get("SavedToken");
-      if (!(typeof value === "string" || value instanceof String) || value == "[object Object]")
-        _authToken = undefined;
-      else
-        _setToken(value)
-    }
-    catch(ex)
-    {
+      if (_isInit == false)
+      {
+        _isInit = true;
+        try
+        {
+          var value = $cookieStore.get("SavedToken");
+          if (!(typeof value === "string" || value instanceof String) || value == "[object Object]")
+            _authToken = undefined;
+          else
+            _setToken(value)
+        }
+        catch(ex)
+        {
+        }
+      }
     }
 
     
@@ -46,12 +56,12 @@ angular.module('ojnApiModule')
         
       if (value["status"] == "error")
       {
-        ojnngError.notifyError("OjnAccount : " + value["message"]);
+        //ojnngError.notifyError("OjnAccount : " + value["message"]);
         return true;
       }
       else if (value["status"] != "ok")
       {
-        ojnngError.notifyError("OjnAccount unknown");
+        //ojnngError.notifyError("OjnAccount unknown");
         return true;
       }        
       return false;
@@ -125,18 +135,26 @@ angular.module('ojnApiModule')
     }
 
     return {
+      IsInitialized: function() {
+        return _isInit;
+      },
       doUserLogin: function (l, p) {
+        _init();
         var defer = $q.defer();
         _doLoginRequest(l, p, function () { defer.resolve();});
         return defer.promise;
       },
       hasToken: function () {
+        if (_isInit == false)
+          return false;
         return _authToken!=null;
       },
       getTokenUrl: function () {
+        _init();
         return "token="+_authToken;
       },
       verifyToken: function () {
+        _init();
         var defer = $q.defer();
         _checkTokenIsValid(function () { defer.resolve();});
         return defer.promise;

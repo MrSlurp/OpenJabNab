@@ -2,11 +2,10 @@
 
 define([
   'angular',
-  'app/components/dataServices/ojnngError',
   'app/components/dataServices/ojnApiAccount',
 ], function () {
 angular.module('ojnApiModule')
-  .factory('ojnApiBunny', function ($http, $interval, $q, $cookieStore, ojnApiAccount) {
+  .factory('ojnApiBunny', function ($http, $q, ojnApiAccount) {
     console.log("ojnApiBunny ready for duty");
     var _baseApiPath = "/ojn_api/json";
     var _bunnyApiPath = _baseApiPath + "/bunny";

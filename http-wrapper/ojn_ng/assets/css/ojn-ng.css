@@ -1,7 +1,7 @@
 ﻿
 body {
-    padding-top: 15px;
-    padding-bottom: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 /* mon height for colum => fix the fluid layout issue in FF*/
@@ -22,11 +22,17 @@ body {
 }
 
 .center-block {
-   margin-left:auto;
-   margin-right:auto;
-   display:block;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
 }
 
 .text-center {
-   text-align:center
+  text-align:center;
+}
+
+.alertContainer {
+  padding-top: 20px;
+  margin-left:auto;
+  margin-right:auto;
 }

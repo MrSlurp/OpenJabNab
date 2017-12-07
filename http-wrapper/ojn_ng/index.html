@@ -1,19 +1,19 @@
 ﻿<!doctype html>
 <html lang="en">
-    <head>
-        <title>OpenJabNab - Rabbits with super powers!!!</title>
-        <meta charset="utf-8">
-        <meta name="description" content="OpenJabNab angularJS front end">
-        <meta name="viewport" content="width=device-width, initial-scale=1">       
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/css/ojn-ng.css">
-    </head>
-    <body ng-cloak ng-controller="ojnNgControler">
-        <div ng-include="'app/shared/header/headerView.html'"></div>
-        <div class="view-container">
-            <div ng-view class="view-frame"></div>
-        </div>
-
-        <script src="assets/libs/require.js" data-main="main"></script>
-    </body>
+  <head>
+    <title>OpenJabNab - Rabbits with super powers!!!</title>
+    <meta charset="utf-8">
+    <meta name="description" content="OpenJabNab angularJS front end">
+    <meta name="viewport" content="width=device-width, initial-scale=1">       
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/ojn-ng.css">
+  </head>
+  <body ng-cloak ng-controller="ojnNgControler">
+    <div ng-include="'app/shared/header/headerView.html'" ></div>
+    <div class="view-container">
+      <div ng-view class="view-frame">
+      </div>
+    </div>
+    <script src="assets/libs/require.js" data-main="main"></script>
+  </body>
 </html>

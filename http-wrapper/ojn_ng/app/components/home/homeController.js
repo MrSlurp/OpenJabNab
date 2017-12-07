@@ -13,9 +13,13 @@ define([
         
         var update = function () {
           ojnApiBunnies.getUserBunnies().then(function(data){
-            if (data != undefined)
+            if (data != undefined && data.bunnies != undefined)
             {
               $scope.userBunnies = data.bunnies;
+            }
+            else
+            {
+              $scope.userBunnies = {};
             }
           });
         }

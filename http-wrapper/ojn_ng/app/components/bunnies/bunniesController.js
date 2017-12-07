@@ -2,6 +2,7 @@
 
 define([
     'app/components/bunnies/module',
+    'app/components/dataServices/ojnApiModule',
     'app/components/dataServices/ojnApiGlobal',
     'app/components/dataServices/ojnApiBunnies',
 ], function (module) {

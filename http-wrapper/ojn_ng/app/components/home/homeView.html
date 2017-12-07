@@ -1,5 +1,12 @@
 ﻿<div class="container" ng-controller="HomeControler as vm">
-    <h1 class="page-header">Home</h1>
+    <div class="row page-header" >
+      <div class="col-xs-3" >
+        <h1>Home</h1>
+      </div>
+      <div class="col-xs-8" >
+        <div ng-include="'app/shared/alertContainer/alertContainerView.html'" /> 
+      </div>
+    </div>
     <div class="jumbotron" ng-if="!IsUserRegistered" >
       <h1>OpenJabNab Unleashed</h1>
       <p>
@@ -11,25 +18,23 @@
         Créez un compte et connectez vous pour découvrir les nouveautées
       </p>
     </div>
-    <tabset ng-if="IsUserRegistered">
-        <tab heading="Vos Lapins">
-            <ng-include
-                src="'./app/components/home/homeUserBunnies.html'">
-            </ng-include>
-        </tab>
-        <tab heading="Vos Zstamps">
+    <uib-tabset ng-if="IsUserRegistered">
+        <uib-tab heading="Vos Lapins">
+            <ng-include src="'./app/components/home/homeUserBunnies.html'" /> 
+        </uib-tab>
+        <uib-tab heading="Vos Zstamps">
             <!--
             <ng-include
                 src="'./app/components/city/cityFullView.html'">
             </ng-include>
             -->
-        </tab>
-        <tab heading="Votre Compte">
+        </uib-tab>
+        <uib-tab heading="Votre Compte">
             <!--
             <ng-include
                 src="'./app/components/city/cityTrafficView.html'">
             </ng-include>
             -->
-        </tab>
-    </tabset>
+        </uib-tab>
+    </uib-tabset>
 </div>

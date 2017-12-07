@@ -22,12 +22,12 @@ angular.module('ojnngModule')
           _events[eventName] = [callback];
         }
       },
-      notifyEvent: function(eventName){
+      notifyEvent: function(eventName, param){
         console.log("fire event " + eventName);
         if (_events[eventName] != undefined)
         {
           _events[eventName].forEach(function(item) {
-            item();
+            item(param);
           });
         }
       }

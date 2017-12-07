@@ -4,19 +4,23 @@ define([
   'angular',
   'angularRoute',
   'angularCookies',
-  'app/components/home/index',
-  'app/components/bunnies/index',
+  'bootstrapUI',
+  'app/components/dataServices/ojnApiModule',
   'app/components/dataServices/ojnApiGlobal',
   'app/components/dataServices/ojnApiAccount',
+  'app/components/home/index',
+  'app/components/bunnies/index',
+  'app/shared/alertContainer/index',
 ],
 function (angular, angularRoute) {
 
   var app = angular.module('ojnapp', [
     'ngRoute',
+    'ojnngModule',
+    'ojnApiModule',
     'homeModule',
     'bunniesModule',
-    'ojnApiModule',
-    'ojnngModule'
+    'ui.bootstrap',
   ]);
   app.config([
     '$routeProvider',
@@ -25,16 +29,25 @@ function (angular, angularRoute) {
         $routeProvider.otherwise({ templateUrl: 'app/components/home/homeView.html' });
     }
   ]);
-  app.controller('ojnNgControler', function ($scope, $interval, $cookies, ojnApiGlobal, ojnApiAccount) {
+  app.controller('ojnNgControler', function ($scope, $interval, $cookies, ojnApiGlobal, ojnApiAccount, ojnngEvents) {
     $scope.IsUserRegistered = false;
     $scope.ServerPing = { ConnectedBunnies : "??", MaxBurstNumberOfBunnies : "??", MaxNumberOfBunnies : "??" };
     $scope.IsUserRegistered = ojnApiAccount.hasToken();
+    
+    ojnngEvents.subscribe("TokenChanged", function() {
+      $scope.IsUserRegistered = ojnApiAccount.hasToken();
+    });
+    
     
     //
     $scope.TryLogin = function(l,p)
     {
       ojnApiAccount.doUserLogin(l,p).then(function(){
         $scope.IsUserRegistered = ojnApiAccount.hasToken();
+        if ($scope.IsUserRegistered)
+        {
+          ojnngEvents.notifyEvent("UserNotifySucess", "Login succeed")
+        }
       });
     }
     
@@ -43,6 +56,10 @@ function (angular, angularRoute) {
     {
       ojnApiAccount.doLogout().then(function(){
         $scope.IsUserRegistered = ojnApiAccount.hasToken();
+        if (!$scope.IsUserRegistered)
+        {
+          ojnngEvents.notifyEvent("UserNotifySucess", "Logout succeed")
+        }
       });
     }
 
@@ -55,7 +72,7 @@ function (angular, angularRoute) {
     }
     
     //
-    var promise = $interval(function () {
+    $interval(function () {
       updatePing();
     }.bind(this), 10000);
     updatePing();

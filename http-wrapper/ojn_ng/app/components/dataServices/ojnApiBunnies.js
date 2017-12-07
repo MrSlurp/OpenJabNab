@@ -2,11 +2,13 @@
 
 define([
   'angular',
+  'app/components/dataServices/ojnApiModule',
+  'app/components/dataServices/ojnApiHelpers',
   'app/components/dataServices/ojnngError',
   'app/components/dataServices/ojnApiAccount',
 ], function () {
 angular.module('ojnApiModule')
-  .factory('ojnApiBunnies', function ($http, $interval, $q, $cookieStore, ojnApiAccount) {
+  .factory('ojnApiBunnies', function ($http, $q, ojnApiAccount, ojnApiHelpers) {
     console.log("ojnApiBunnies ready for duty");
     var _baseApiPath = "/ojn_api/json";
     //var _userBunnies = {};
@@ -28,21 +30,6 @@ angular.module('ojnApiModule')
       );
     };
 
-    /*
-    var promise = $interval(function () {
-        //console.log("active district Id = " + JSON.stringify(_activeDistrictId));
-        //if (_LocalTest)
-        //    _internalGetCityData();
-        //else {
-            //_internalGetDistrictIds();
-        //}
-        //_getGlobalPing();
-        
-    }.bind(this), 2000);*/
-    /*
-    _getGlobalAbout();
-    _getGlobalPing();
-    */
     return {
       getUserBunnies: function () {
         var defer = $q.defer();

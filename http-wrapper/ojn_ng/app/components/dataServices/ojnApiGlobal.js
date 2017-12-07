@@ -2,10 +2,11 @@
 
 define([
   'angular',
+  'app/components/dataServices/ojnApiModule',  
   'app/components/dataServices/ojnngError',  
 ], function () {
-angular.module('ojnApiModule', ['ojnngModule'])
-  .factory('ojnApiGlobal', function ($http, $interval, $q, $cookieStore, ojnngError) {
+angular.module('ojnApiModule')
+  .factory('ojnApiGlobal', function ($http, $q, ojnngError) {
     console.log("ojnApiGlobal ready for duty");
     
     var _baseApiPath = "/ojn_api/json";
@@ -61,24 +62,19 @@ angular.module('ojnApiModule', ['ojnngModule'])
         );
     }
 
-    /*
-    var promise = $interval(function () {
-        //console.log("active district Id = " + JSON.stringify(_activeDistrictId));
-        //if (_LocalTest)
-        //    _internalGetCityData();
-        //else {
-            //_internalGetDistrictIds();
-        //}
-        //_getGlobalPing();
-        
-    }.bind(this), 2000);*/
-    
     _getGlobalAbout();
     _getGlobalPing();
 
     return {
+      getApiGlobalAbout: function () {
+        var defer = $q.defer();
+        _globalAboutData(function (response) { defer.resolve(response);});
+        return defer.promise;
+      },
       getApiGlobalStats: function () {
-        
+        var defer = $q.defer();
+        _getGlobalStats(function (response) { defer.resolve(response);});
+        return defer.promise;
       },
       getApiGlobalPing: function(){
         var defer = $q.defer();
