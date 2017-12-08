@@ -33,7 +33,7 @@ function (angular, angularRoute) {
     $scope.IsUserRegistered = false;
     $scope.ServerPing = { ConnectedBunnies : "??", MaxBurstNumberOfBunnies : "??", MaxNumberOfBunnies : "??" };
     $scope.IsUserRegistered = ojnApiAccount.hasToken();
-    
+    $scope.IsServerOk = true;
     ojnngEvents.subscribe("TokenChanged", function() {
       $scope.IsUserRegistered = ojnApiAccount.hasToken();
     });
@@ -71,10 +71,26 @@ function (angular, angularRoute) {
       });
     }
     
+    var checkLogin = function()
+    {
+      ojnApiAccount.verifyToken();
+    }
+    
+    ojnngEvents.subscribe("TokenChanged" ,function(){
+      $scope.IsUserRegistered = ojnApiAccount.hasToken();
+    });
+    
+    ojnngEvents.subscribe("OjnServerStateChanged",function(){
+      $scope.IsServerOk = ojnApiGlobal.isServerOk();
+    });
+    
+    
     //
     $interval(function () {
       updatePing();
+      checkLogin();
     }.bind(this), 10000);
     updatePing();
+    checkLogin();
   });
 });

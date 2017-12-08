@@ -2,11 +2,13 @@
 
 define([
   'angular',
-  'app/components/dataServices/ojnApiModule',  
-  'app/components/dataServices/ojnngError',  
+  'app/components/dataServices/ojnApiModule', 
+  'app/components/dataServices/ojnApiHelpers', 
+  'app/components/dataServices/ojnngError',
+  'app/components/dataServices/ojnngEvents',
 ], function () {
 angular.module('ojnApiModule')
-  .factory('ojnApiGlobal', function ($http, $q, ojnngError) {
+  .factory('ojnApiGlobal', function ($http, $q, ojnngError, ojnngEvents, ojnApiHelpers) {
     console.log("ojnApiGlobal ready for duty");
     
     var _baseApiPath = "/ojn_api/json";
@@ -16,54 +18,75 @@ angular.module('ojnApiModule')
     var _globalPingData = {};
     var _globalStatsData = {};
     
+    var _ojnStatusOk = true;
+    var _setOjnServerStatus = function(status)
+    {
+      if (_ojnStatusOk != status)
+      {
+        _ojnStatusOk = status;
+        ojnngEvents.notifyEvent("OjnServerStateChanged");
+      }
+    };
+    
     // return about data from server
     var _getGlobalAbout = function (cb) {
+      if (ojnApiHelpers.handleSimuRequest(cb))
+        return;
       var url = _globalApiPath + "/about";
-      $http.get(url).then(
-        function (response) {
+      $http.get(url).then( function (response) {
+          _setOjnServerStatus(true);
           _globalAboutData = response.data;
-          if (cb)
-            cb();
+          if (cb) cb();
         },
         function (error){ 
-          if (cb)
-            cb();
+          _setOjnServerStatus(false);
+          if (cb) cb();
         }
       );
     };
     
     // return ping data from server
-    var _getGlobalPing = function (callback) {
-        var url = _globalApiPath + "/ping";
-        $http.get(url).then(
-          function (response) {
-            _globalPingData = response.data;
-            if (callback)
-              callback(response.data);
-          },
-          function (error){ 
-            _setToken(null);
-          }
-        );
+    var _getGlobalPing = function (cb) {
+      if (ojnApiHelpers.handleSimuRequest(cb, 
+          { ConnectedBunnies : "NA", MaxBurstNumberOfBunnies : "NA", MaxNumberOfBunnies : "NA" })
+         )
+        return;
+        
+      var url = _globalApiPath + "/ping";
+      $http.get(url).then( function (response) {
+          _globalPingData = response.data;
+          if (cb) cb(response.data);
+          _setOjnServerStatus(true);
+        },
+        function (error){ 
+          if (cb)
+            cb({ ConnectedBunnies : "??", MaxBurstNumberOfBunnies : "??", MaxNumberOfBunnies : "??" });
+            
+          _setOjnServerStatus(false);
+        }
+      );
     }
     
-    // return ping data from server
-    var _getGlobalStats = function (callback) {
-        var url = _globalApiPath + "/stats";
-        $http.get(url).then(
-          function (response) {
-            _globalStatsData = response.data;
-            if (callback)
-              callback(response.data);
-          },
-          function (error){ 
-            _setToken(null);
-          }
-        );
+    // return stats data from server
+    var _getGlobalStats = function (cb) {
+      if (ojnApiHelpers.handleSimuRequest(cb, {} ))
+        return;
+    
+      var url = _globalApiPath + "/stats";
+      $http.get(url).then(
+        function (response) {
+          _globalStatsData = response.data;
+          if (cb) cb(response.data);
+          _setOjnServerStatus(true);
+        },
+        function (error){ 
+          if (cb) cb();
+          _setOjnServerStatus(false);
+        }
+      );
     }
 
     _getGlobalAbout();
-    _getGlobalPing();
 
     return {
       getApiGlobalAbout: function () {
@@ -81,9 +104,14 @@ angular.module('ojnApiModule')
         _getGlobalPing(function (response) { defer.resolve(response);});
         return defer.promise;
       },
+      isServerOk:function()
+      {
+        return _ojnStatusOk;
+      },
+      /*
       getApiGlobalFullApi: function () {
       
-      }
+      }*/
     }
   });
 });

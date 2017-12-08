@@ -23,7 +23,7 @@ angular.module('ojnApiModule')
             cb(response.data);
         },
         function (error){ 
-          _setToken(null);
+          
           if (cb)
             cb(undefined);
         }
