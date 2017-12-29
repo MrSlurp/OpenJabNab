@@ -17,7 +17,7 @@ public:
 	enum SpecialAccount { Guest, DefaultAdmin };
 	enum Right { None = 0x0, Read = 0x1, Write = 0x2, ReadWrite = 0x3};
 	enum Access { AcGlobal = 0x0, AcAccount = 0x1, AcBunnies = 0x2, AcZtamps = 0x3, AcPluginsBunny = 0x4, AcPluginsZtamp = 0x5, AcPlugins= 0x6, AcServer = 0x7};
-	Q_DECLARE_FLAGS(Rights, Right);
+    Q_DECLARE_FLAGS(Rights, Right)
 
 	static void Init() { InitApiCalls(); }
 
@@ -40,6 +40,9 @@ public:
 	static int Version();
 	QByteArray AddZtamp(QByteArray const& z);
 
+    bool LoadAccount(QString fileName);
+    void SaveAccount(QString fileName);
+
 private:
 	Account();
 	Account(SpecialAccount t);
@@ -52,6 +55,11 @@ private:
 	bool RemoveBunny(QByteArray const& b);
 	bool RemoveZtamp(QByteArray const& z);
 
+    bool LoadJsonConfig(QString fileName);
+    void SaveJsonConfig(QString fileName);
+    bool LoadBinaryConfig(QString fileName);
+    void SaveBinaryConfig(QString fileName);
+
 	static void InitApiCalls();
 
 	QString login;
@@ -61,10 +69,12 @@ private:
 	QString language;
 
 	bool isAdmin;
-	QList<Rights> UserAccess;
+    QList<Rights> UserAccess;
 
 	QList<QByteArray> listOfBunnies;
 	QList<QByteArray> listOfZtamps;
+
+    bool isDirty;
 
 	friend QDataStream & operator<< (QDataStream & out, const Account & a);
 };

@@ -10,6 +10,7 @@ define([
   'app/components/dataServices/ojnApiAccount',
   'app/components/home/index',
   'app/components/bunnies/index',
+  'app/components/admin/index',
   'app/shared/alertContainer/index',
 ],
 function (angular, angularRoute) {
@@ -20,6 +21,7 @@ function (angular, angularRoute) {
     'ojnApiModule',
     'homeModule',
     'bunniesModule',
+    'adminModule',
     'ui.bootstrap',
   ]);
   app.config([
@@ -30,14 +32,12 @@ function (angular, angularRoute) {
     }
   ]);
   app.controller('ojnNgControler', function ($scope, $interval, $cookies, ojnApiGlobal, ojnApiAccount, ojnngEvents) {
+    console.log("ojnNgControler ready for duty");
     $scope.IsUserRegistered = false;
     $scope.ServerPing = { ConnectedBunnies : "??", MaxBurstNumberOfBunnies : "??", MaxNumberOfBunnies : "??" };
     $scope.IsUserRegistered = ojnApiAccount.hasToken();
+    $scope.IsUserAdmin = false;
     $scope.IsServerOk = true;
-    ojnngEvents.subscribe("TokenChanged", function() {
-      $scope.IsUserRegistered = ojnApiAccount.hasToken();
-    });
-    
     
     //
     $scope.TryLogin = function(l,p)
@@ -76,8 +76,9 @@ function (angular, angularRoute) {
       ojnApiAccount.verifyToken();
     }
     
-    ojnngEvents.subscribe("TokenChanged" ,function(){
+    ojnngEvents.subscribe("TokenChanged", function() {
       $scope.IsUserRegistered = ojnApiAccount.hasToken();
+      $scope.IsUserAdmin = ojnApiAccount.isUserAdmin();
     });
     
     ojnngEvents.subscribe("OjnServerStateChanged",function(){

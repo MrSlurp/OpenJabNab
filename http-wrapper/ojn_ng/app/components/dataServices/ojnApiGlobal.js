@@ -6,9 +6,10 @@ define([
   'app/components/dataServices/ojnApiHelpers', 
   'app/components/dataServices/ojnngError',
   'app/components/dataServices/ojnngEvents',
+  'app/components/dataServices/ojnApiAccount', 
 ], function () {
 angular.module('ojnApiModule')
-  .factory('ojnApiGlobal', function ($http, $q, ojnngError, ojnngEvents, ojnApiHelpers) {
+  .factory('ojnApiGlobal', function ($http, $q, ojnngError, ojnngEvents, ojnApiHelpers, ojnApiAccount) {
     console.log("ojnApiGlobal ready for duty");
     
     var _baseApiPath = "/ojn_api/json";
@@ -17,16 +18,6 @@ angular.module('ojnApiModule')
     var _globalAboutData = {};
     var _globalPingData = {};
     var _globalStatsData = {};
-    
-    var _ojnStatusOk = true;
-    var _setOjnServerStatus = function(status)
-    {
-      if (_ojnStatusOk != status)
-      {
-        _ojnStatusOk = status;
-        ojnngEvents.notifyEvent("OjnServerStateChanged");
-      }
-    };
     
     // return about data from server
     var _getGlobalAbout = function (cb) {
@@ -86,6 +77,36 @@ angular.module('ojnApiModule')
       );
     }
 
+    // return full list of OJN server available API calls
+    var _getListOfApiCalls = function(cb) {
+      if (ojnApiHelpers.handleSimuRequest(cb, {} ))
+        return;
+    
+      var url = _globalApiPath + "/getListOfApiCalls?"+ojnApiAccount.getTokenUrl();
+      $http.get(url).then(
+        function (response) {
+          if (cb) cb(response.data);
+          _setOjnServerStatus(true);
+        },
+        function (error){ 
+          if (cb) cb();
+          _setOjnServerStatus(false);
+        }
+      );
+    };
+
+
+    var _ojnStatusOk = true;
+    var _setOjnServerStatus = function(status) {
+      if (_ojnStatusOk != status)
+      {
+        _ojnStatusOk = status;
+        if (_ojnStatusOk)
+          _getGlobalAbout();
+        ojnngEvents.notifyEvent("OjnServerStateChanged");
+      }
+    };
+    
     _getGlobalAbout();
 
     return {
@@ -108,10 +129,11 @@ angular.module('ojnApiModule')
       {
         return _ojnStatusOk;
       },
-      /*
-      getApiGlobalFullApi: function () {
-      
-      }*/
+      getListOfApiCalls: function () {
+        var defer = $q.defer();
+        _getListOfApiCalls(function (response) { defer.resolve(response);});
+        return defer.promise;
+      }
     }
   });
 });

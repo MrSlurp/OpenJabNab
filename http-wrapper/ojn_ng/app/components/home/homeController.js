@@ -41,12 +41,17 @@ define([
     $scope.BunnyRename = function(mac, newBunnyName){
       ojnApiBunny.doBunnyRename(mac, newBunnyName).then(function(){});
     };
+    
     //
     $scope.BunnyAdd = function(rabbitMac, rabbitName){
       ojnApiAccount.addBunnyToAccount(rabbitMac).then(function(){
-        ojnApiBunny.doBunnyRename(rabbitMac, rabbitName).then(function(){_update()});;
+        if (rabbitName != undefined)
+          ojnApiBunny.doBunnyRename(rabbitMac, rabbitName).then(function(){_update()});
+        else
+          _update();
       });
     };
+    
     //
     $scope.BunnyRemove = function(rabbitMac){
       ojnApiAccount.removeBunnyFromAccount(rabbitMac).then(function(){

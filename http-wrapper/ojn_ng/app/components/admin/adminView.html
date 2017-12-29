@@ -1,0 +1,62 @@
+﻿<div class="container" ng-controller="adminCtrl as vm">
+    <div class="row page-header" >
+      <div class="col-xs-3" >
+        <h1>Administration</h1>
+      </div>
+      <div class="col-xs-8" >
+        <div ng-include="'app/shared/alertContainer/alertContainerView.html'" /> 
+      </div>
+    </div>
+    <uib-tabset >
+      <uib-tab heading="Plugins du Serveur">
+          
+      </uib-tab>
+      <uib-tab heading="Utilisateurs">
+          
+      </uib-tab>
+      <uib-tab heading="Lapins">
+          
+      </uib-tab>
+      <uib-tab heading="API Serveur">
+        <div ng-repeat="(rootPath, apiList) in ApiFull">
+          <h3>{{"Catégorie :" + rootPath}}</h3>
+          <div class="row" ng-repeat="apiFamilly in apiList" >
+            <!--<div ng-repeat="(funcCat, funcList) in funcList">-->
+            <h4 ng-if="apiFamilly.Name" >{{"Plugin :" + apiFamilly.Name}}</h4>
+            <span>{{JSON.stringify(apiCategory)}}</span>
+            <div ng-repeat="(cat, funcList) in apiFamilly.FunctionCategories" >
+              <div ng-if="funcList.length != 0" >
+                <div class="col-md-12">
+                  <div class="panel panel-info">
+                    <div class="panel-heading">
+                      <div class="panel-title"><span >{{"Category : "+ cat}}</span></div>
+                    </div>
+                    <div class="panel-body">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Function</th>
+                            <th scope="col">Arguments</th>
+                            <th scope="col">Chemin complet</th>
+                          </tr>
+                        </thead>            
+                        <tbody>
+                          <tr ng-repeat="func in funcList">
+                            <td>{{func.functionName}}</td> 
+                            <td>{{MakeApiFunctionArgumentsString(func.parameters)}}</td>
+                            <td ng-if="!apiFamilly.Name" >{{"/"+rootPath+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
+                            <td ng-if="apiFamilly.Name" >{{"/"+rootPath+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+</div>
+<!-- /.container -->

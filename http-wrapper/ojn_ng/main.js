@@ -23,6 +23,7 @@ var dependencies = [
     'bootstrapUI',
     'app/components/home/index',
     'app/components/bunnies/index',
+    'app/components/admin/index',
     'ojnapp'
 ];
 var bootDependencies = dependencies;

@@ -15,6 +15,7 @@ angular.module('ojnApiModule')
     
     var _authToken = undefined;
     var _authLogin = undefined;
+    var _currentUserIsAdmin = false;
     
     var _isInit = false;
     
@@ -23,8 +24,11 @@ angular.module('ojnApiModule')
     {
       _authToken = value;
       _authLogin = login;
+      if (value == undefined)
+        _currentUserIsAdmin = false;
       $cookieStore.put("SavedToken", _authToken);
       $cookieStore.put("SavedLogin", _authLogin);
+      $cookieStore.put("SavedIsAdmin", _currentUserIsAdmin);
       ojnngEvents.notifyEvent("TokenChanged");
     };
     
@@ -38,10 +42,15 @@ angular.module('ojnApiModule')
         {
           var value = $cookieStore.get("SavedToken");
           var login = $cookieStore.get("SavedLogin");
+          var isAdmin = $cookieStore.get("SavedIsAdmin");
+          
           if (!(typeof value === "string" || value instanceof String) || value == "[object Object]")
             _setToken();
           else
+          {
+            _currentUserIsAdmin = isAdmin;
             _setToken(value, login);
+          }
         }
         catch(ex)
         {
@@ -79,6 +88,10 @@ angular.module('ojnApiModule')
       if (ojnApiHelpers.handleSimuRequest(cb))
       {
         _setToken("FakeToken", l);
+        _getUserInfo(function(data) {
+          if (data.isAdmin == true)
+            _currentUserIsAdmin = true;
+        });
         return;
       }
     
@@ -86,7 +99,12 @@ angular.module('ojnApiModule')
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
-            _setToken(response.data.value, l);
+          {
+            if (response.data.isAdmin == true)
+              _currentUserIsAdmin = true;
+            _setToken(response.data.token, l);
+            
+          }
           else
             _setToken(null);
             
@@ -101,7 +119,7 @@ angular.module('ojnApiModule')
         }
       );
     };
-    
+
     // ask the server to end token validity (instead of waiting for session timeout)
     var _doLogout = function (cb) {
       if (ojnApiHelpers.handleSimuRequest(cb))
@@ -157,7 +175,7 @@ angular.module('ojnApiModule')
         }
       );
     };
-    
+
     var _removeBunnyFromAccount = function(mac, cb){
       var url = _accountsApiPath + "/removeBunny?login="+_authLogin+"&"+"token="+_authToken+"&"+"bunnyid="+mac;
       $http.get(url).then(
@@ -175,9 +193,9 @@ angular.module('ojnApiModule')
         }
       );    
     };
-    
+
     var _getUserInfo = function (cb) {
-      if (ojnApiHelpers.handleSimuRequest(cb, {login:"Demo", username:"Demo", token:"FakeToken", isValid:false, language:"klingon"}))
+      if (ojnApiHelpers.handleSimuRequest(cb, {login:"Demo", username:"Demo", token:"FakeToken", isValid:false, language:"klingon", isAdmin:true}))
       {
         return;
       }
@@ -196,7 +214,7 @@ angular.module('ojnApiModule')
         }
       );         
     };
-    
+
     
     return {
       isInitialized: function() {
@@ -232,6 +250,9 @@ angular.module('ojnApiModule')
         var defer = $q.defer();
         _getUserInfo(function (info) { defer.resolve(info);});
         return defer.promise;
+      },
+      isUserAdmin:function(){
+        return _currentUserIsAdmin;
       },
       addBunnyToAccount: function(mac) {
         var defer = $q.defer();

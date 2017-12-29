@@ -95,6 +95,42 @@ void PluginSurprise::OnCron(Bunny * b, QVariant)
  * API *
  *******/
 
+bool PluginSurprise::OnClick(Bunny * b, PluginInterface::ClickType type)
+{
+    if (type == PluginInterface::SingleClick)
+    {
+    if(b->IsIdle())
+    {
+      QByteArray file;
+      // Fetch available files
+      QDir * dir = GetLocalHTTPFolder();
+      if(dir)
+      {
+        QString surprise = b->GetPluginSetting(GetName(), "folder", QString()).toString();
+
+        if(!surprise.isNull() && dir->cd(surprise))
+        {
+          QStringList list = dir->entryList(QDir::Files|QDir::NoDotAndDotDot);
+          if(list.count())
+          {
+            file = GetBroadcastHTTPPath(QString("%1/%3").arg(surprise, list.at(qrand()%list.count())));
+            QByteArray message = "MU "+file+"\nPL 3\nMW\n";
+            b->SendPacket(MessagePacket(message));
+          }
+        }
+        else
+          LogError("Invalid surprise config");
+
+        delete dir;
+      }
+      else
+        LogError("Invalid GetLocalHTTPFolder()");
+    }
+
+    }
+    return true;
+}
+
 void PluginSurprise::InitApiCalls()
 {
 	DECLARE_PLUGIN_BUNNY_API_CALL("setFolder(name)", PluginSurprise, Api_SetFolder);

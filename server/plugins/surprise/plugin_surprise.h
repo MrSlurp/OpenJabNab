@@ -17,6 +17,7 @@ public:
 	virtual void OnCron(Bunny *, QVariant);
 	
 	void InitApiCalls();
+    bool OnClick(Bunny *, PluginInterface::ClickType);
 	
 protected:
 	void createCron(Bunny *);

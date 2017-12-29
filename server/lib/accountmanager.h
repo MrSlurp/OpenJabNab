@@ -34,7 +34,9 @@ protected:
 private:
 	AccountManager();
 	void LoadAccounts();
+
 	void SaveAccounts();
+
 	static void InitApiCalls();
 	QDir accountsDir;
 	QList<Account *> listOfAccounts;

@@ -150,37 +150,43 @@ public:
 
     virtual void InitApiCalls() {}
 
-    QVariantMap GetApis()
+    QVariantList GetApis()
     {
-        QVariantMap func;
+        QVariantList apis;
         foreach(QString s, apiCalls.keys())
         {
+            QVariantMap func;
             func.insert("functionName", s);
             func.insert("parameters", apiCalls.value(s).second);
+            apis.append(func);
         }
-        return func;
+        return apis;
     }
 
-    QVariantMap GetBunniesApis()
+    QVariantList GetBunniesApis()
     {
-        QVariantMap func;
+        QVariantList apis;
         foreach(QString s, bunnyApiCalls.keys())
         {
+            QVariantMap func;
             func.insert("functionName", s);
             func.insert("parameters", bunnyApiCalls.value(s).second);
+            apis.append(func);
         }
-        return func;
+        return apis;
     }
 
-    QVariantMap GetZtampsApis()
+    QVariantList GetZtampsApis()
     {
-        QVariantMap func;
+        QVariantList apis;
         foreach(QString s, ztampApiCalls.keys())
         {
+            QVariantMap func;
             func.insert("functionName", s);
             func.insert("parameters", ztampApiCalls.value(s).second);
+            apis.append(func);
         }
-        return func;
+        return apis;
     }
 protected:
 	template<class T>

@@ -47,66 +47,47 @@ void AccountManager::LoadAccounts()
 {
 	LogInfo(QString("Finding accounts in : %1").arg(accountsDir.path()));
 	/* Apply filters on accounts files */
+    QStringList filtersJson;
+    filtersJson << "*.json";
+    accountsDir.setNameFilters(filtersJson);
+    foreach (QFileInfo ffile, accountsDir.entryInfoList(QDir::Files))
+    {
+        /* Open File */
+        QByteArray configFileName = accountsDir.absoluteFilePath(ffile.fileName().toAscii()).toAscii();
+        Account * a = new Account();
+        if (!a->LoadAccount(configFileName))
+        {
+            LogWarning(QString("Problem when loading config file for account: %1").arg(QString(configFileName)));
+            delete a;
+            continue;
+        }
+        listOfAccounts.append(a);
+        listOfAccountsByName.insert(a->GetLogin(), a);
+    }
+
 	QStringList filters;
-	filters << "*.dat";
-	accountsDir.setNameFilters(filters);
+    filters << "*.dat";
+    accountsDir.setNameFilters(filters);
 	foreach (QFileInfo ffile, accountsDir.entryInfoList(QDir::Files))
 	{
 		/* Open File */
-		QByteArray configFileName = accountsDir.absoluteFilePath(ffile.fileName().toAscii()).toAscii();
-		QFile file(configFileName);
-		if (!file.open(QIODevice::ReadOnly))
-		{
-			LogError(QString("Cannot open config file for reading : %1").arg(QString(configFileName)));
-			continue;
-		}
-		QDataStream in(&file);
-		in.setVersion(QDataStream::Qt_4_3);
-		int version;
-		in >> version;
-		Account * a = new Account(in, version);
-		if (in.status() != QDataStream::Ok)
-		{
-			LogWarning(QString("Problem when loading config file for account: %1").arg(QString(configFileName)));
-			delete a;
-			continue;
-		}
-		listOfAccounts.append(a);
-		listOfAccountsByName.insert(a->GetLogin(), a);
-	}
+        if (listOfAccountsByName.contains(ffile.baseName()))
+            continue;
 
-	/* Bound to disappear on next releases */
-	QDir appDir(QCoreApplication::applicationDirPath());
-	if(listOfAccounts.count() == 0 && appDir.exists("accounts.dat"))
-	{
-		LogWarning("Using Old Config File for accounts");
-		QFile accountsFile(appDir.absoluteFilePath("accounts.dat"));
-		if(accountsFile.open(QIODevice::ReadOnly))
-		{
-			QDataStream in(&accountsFile);
-			in.setVersion(QDataStream::Qt_4_3);
-			int version;
-			in >> version;
-			while(!in.atEnd())
-			{
-				Account * a = new Account(in, version);
-				if(in.status() == QDataStream::Ok)
-				{
-					listOfAccounts.append(a);
-					listOfAccountsByName.insert(a->GetLogin(), a);
-				}
-				else
-				{
-					LogError("Bad account file, stop parsing");
-					delete a;
-					break;
-				}
-			}
-		}
-		else
-			LogError("Can't open accounts.dat");
+		QByteArray configFileName = accountsDir.absoluteFilePath(ffile.fileName().toAscii()).toAscii();
+        Account * a = new Account();
+        if (!a->LoadAccount(configFileName))
+        {
+            LogWarning(QString("Problem when loading config file for account: %1").arg(QString(configFileName)));
+            delete a;
+            continue;
+        }
+        if (!listOfAccountsByName.contains(a->GetLogin()))
+        {
+            listOfAccounts.append(a);
+            listOfAccountsByName.insert(a->GetLogin(), a);
+        }
 	}
-	/* Old Config File End */
 
 	if(listOfAccounts.count() == 0)
 	{
@@ -125,18 +106,10 @@ void AccountManager::SaveAccounts()
         /* Skip default admin */
         if(a->GetLogin() != "admin") {
             /* Select file */
-            QFile accountFile(accountsDir.absoluteFilePath(QString("%1.dat").arg(a->GetLogin())));
-            /* Open it, write access */
-            if(accountFile.open(QIODevice::WriteOnly))
-            {
-                /* Save Version */
-                QDataStream out(&accountFile);
-                out.setVersion(QDataStream::Qt_4_3);
-                out << Account::Version();
-                /* Save Data */
-                out << *a;
-            }	else
-                LogError(QString("Can't open %1.dat, account will not be saved").arg(a->GetLogin()));
+            //QString fileName = accountsDir.absoluteFilePath(QString("%1.dat").arg(a->GetLogin()));
+            QString jsonFileName = accountsDir.absoluteFilePath(QString("%1.json").arg(a->GetLogin()));
+            //a->SaveAccount(fileName);
+            a->SaveAccount(jsonFileName);
 		}
 	}
 }
@@ -231,7 +204,21 @@ API_CALL(AccountManager::Api_Auth)
         return ApiManager::ApiError("Access denied");
 
 	LogInfo(QString("User login : %1").arg(hRequest.GetArg("login")));
-    return ApiManager::ApiString(retour);
+
+    if (ApiManager::IsJsonApiCall())
+    {
+        Account authAccount = GetAccount(retour);
+        QMap<QString, QVariant> list;
+        list.insert("login",authAccount.GetLogin());
+        list.insert("username",authAccount.GetUsername());
+        list.insert("language",authAccount.GetLanguage());
+        list.insert("isValid",listOfTokens.contains(authAccount.GetToken()));
+        list.insert("token",QString(authAccount.GetToken()));
+        list.insert("isAdmin",authAccount.IsAdmin());
+        return ApiManager::ApiMappedList(list);
+    }
+    else
+        return ApiManager::ApiString(retour);
 }
 
 API_CALL(AccountManager::Api_CheckAuth)

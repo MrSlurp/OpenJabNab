@@ -146,16 +146,41 @@ ApiManager::ApiAnswer * ApiManager::ProcessGlobalApiCall(Account const& account,
         }
 	}
 
-    if(!account.HasAccess(Account::AcGlobal,Account::Read))
-            return ApiManager::ApiError("Access denied");
+    if(!account.IsAdmin() || !account.HasAccess(Account::AcGlobal,Account::Read))
+        return ApiManager::ApiError("Access denied");
 
     if (request == "getListOfApiCalls")
 	{
         if (isJsonApiCall)
         {
             QVariantMap fullMap;
-            QStringList globalList;
-            globalList << "getListOfApiCalls" << "about" << "ping" << "stats";
+            QVariantList globalList;
+            QVariantMap globalApiMap;
+
+            QVariantList emptyList;
+            QVariantList tokenParamList;
+            tokenParamList.append("token");
+
+            QVariantMap apilistFunc, apiAboutFunc, apiPingFunc, apiStatFunc;
+            apilistFunc.insert("functionName", "getListOfApiCalls");
+            apilistFunc.insert("parameters", tokenParamList);
+            apiAboutFunc.insert("functionName", "about");
+            apiAboutFunc.insert("parameters", emptyList);
+            apiPingFunc.insert("functionName", "ping");
+            apiPingFunc.insert("parameters", emptyList);
+            apiStatFunc.insert("functionName", "stats");
+            apiStatFunc.insert("parameters", emptyList);
+            globalList.append(apilistFunc);
+            globalList.append(apiAboutFunc);
+            globalList.append(apiPingFunc);
+            globalList.append(apiStatFunc);
+
+            globalApiMap.insert("Apis", globalList);
+            QVariantMap funcCat;
+            funcCat.insert("FunctionCategories", globalApiMap);
+            QVariantList catList;
+            catList.append(funcCat);
+
             QVariantList pluginMap = PluginManager::Instance().GetPluginsApis();
             //QVariantMap bunniesMap;
             //QVariantMap ztampsMap;
@@ -172,7 +197,7 @@ ApiManager::ApiAnswer * ApiManager::ProcessGlobalApiCall(Account const& account,
             }*/
 
             // Todo send a list with available api calls
-            fullMap.insert("global/", globalList);
+            fullMap.insert("global/", catList);
             //fullMap.insert("bunnies/", bunniesMap);
             fullMap.insert("plugins/", pluginMap);
             //fullMap.append("plugin/", pluginMap);

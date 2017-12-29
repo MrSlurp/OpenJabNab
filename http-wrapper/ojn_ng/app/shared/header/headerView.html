@@ -39,6 +39,9 @@
         <li ng-if="IsUserRegistered" > 
           <a ng-href="#!/bunnies">Bunnies</a>
         </li>
+        <li ng-if="IsUserRegistered && IsUserAdmin" > 
+          <a ng-href="#!/admin">Admin</a>
+        </li>
         <li>
           <a ng-href="#!/about">About</a>
         </li>

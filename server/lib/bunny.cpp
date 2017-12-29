@@ -51,8 +51,7 @@ Bunny::Bunny(QByteArray const& bunnyID)
     {
         configFileName = bunniesDir.absoluteFilePath(bunnyID.toHex()+".dat");
         // Check if config file exists and load it
-        if (QFile::exists(configFileName))
-            LoadConfig();
+        LoadConfig();
     }
 
 	saveTimer = new QTimer(this);
@@ -257,8 +256,14 @@ QString Bunny::CheckPlugin(PluginInterface * plugin, bool isAssociated)
 
 void Bunny::LoadConfig()
 {
-    if (!LoadJsonConfig(configFileName+".json"))
+    if (QFile::exists(configFileName+".json"))
+    {
+        LoadJsonConfig(configFileName+".json");
+    }
+    else if (QFile::exists(configFileName))
+    {
         LoadBinaryConfig(configFileName);
+    }
 
     PostLoadConfig();
 }
@@ -269,19 +274,21 @@ void Bunny::SaveConfig()
     if (!configFileName.isEmpty())
     {
         SaveJsonConfig(configFileName+".json");
-        SaveBinaryConfig(configFileName);
+        //SaveBinaryConfig(configFileName);
     }
 }
 
 
 void Bunny::SaveBinaryConfig(QString fileName)
 {
+    Q_UNUSED(fileName)
+    /*
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
     {
         LogError(QString("Cannot open config file for writing : %1").arg(fileName));
         return;
-    }
+    }*/
 }
 
 bool Bunny::LoadBinaryConfig(QString fileName)
@@ -388,22 +395,15 @@ void Bunny::PostLoadConfig()
 
 bool Bunny::LoadJsonConfig(QString fileName)
 {
-    if (!QFile::exists(fileName))
-        return false;
-
     QFile jsonfile(fileName);
     if (!jsonfile.open(QIODevice::ReadOnly))
     {
         LogError(QString("Cannot open json config file for reading : %1").arg(fileName));
         return false;
     }
-    QDataStream injson(&jsonfile);
     QJson::Parser parser;
-    QByteArray  injsonArray;
-    injson>>injsonArray;
-
     bool ok;
-    QVariantMap result = parser.parse(injsonArray, &ok).toMap();
+    QVariantMap result = parser.parse(&jsonfile, &ok).toMap();
     if (!ok)
     {
         LogError(QString("Problem when parsing json config file for bunny : %1").arg(QString(id.toHex())));
@@ -421,6 +421,21 @@ bool Bunny::LoadJsonConfig(QString fileName)
     GlobalSettings = result["GlobalSettings"].toMap();
     PluginsSettings = result["PluginsSettings"].toMap();
     listOfPlugins = result["ListOfPlugins"].toStringList();
+    LogInfo(QString("Bunny file %1, Loaded").arg(fileName));
+
+    listOfPluginsPtr.clear();
+    foreach(QString s, listOfPlugins)
+    {
+        PluginInterface * p = PluginManager::Instance().GetPluginByName(s);
+        if(p)
+        {
+            listOfPluginsPtr.append(p);
+            if(!p->GetEnable())
+                LogWarning(QString("Bunny %1 : '%2' is globally disabled !").arg(QString(GetID()), s));
+        }
+        else
+            LogError(QString("Bunny %1 has invalid plugin (%2)!").arg(QString(GetID()), s));
+    }
 
     return true;
 }
