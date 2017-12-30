@@ -1,0 +1,157 @@
+﻿<div class="row" >
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><span >Server Mandatory Plugins</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default" ng-click="ReloadPlugins()" >
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            <span>Refresh</span>
+          </button>
+        </div>
+      
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Plugin full name</th>
+              <th scope="col">Plugin short name</th>
+              <th scope="col">Library file</th>
+              <th scope="col">Is Enabled</th>
+              <th scope="col">Configure</th>
+              <th scope="col">Reload</th>
+            </tr>
+          </thead>            
+          <tbody>
+            <tr ng-repeat="pluginInfo in PluginsData.Required">
+              <td>{{pluginInfo.VisualName}}</td>
+              <td>{{pluginInfo.Name}}</td>
+              <td>{{pluginInfo.FileName}}</td>
+              <td>{{pluginInfo.IsEnabled}}</td>
+              <td>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button"  class="btn btn-default" 
+                          ng-click="" >
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true" ></span>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button"  class="btn btn-default" 
+                          ng-click="PluginReload(pluginInfo.Name)" >
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true" style="color:green" ></span>
+                  </button>
+                </div>
+              <td>
+            </tr>
+          </tbody>
+        </table>                
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" >
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><span >System Plugins</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default" ng-click="ReloadPlugins()" >
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            <span>Refresh</span>
+          </button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Plugin full name</th>
+              <th scope="col">Plugin short name</th>
+              <th scope="col">Library file</th>
+              <th scope="col">Is Enabled</th>
+              <th scope="col">Configure</th>
+              <th scope="col">Activate/Deactivate</th>
+              <th scope="col">Reload</th>
+            </tr>
+          </thead>            
+          <tbody>
+            <tr ng-repeat="pluginInfo in PluginsData.System" ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" >
+            </tr>
+          </tbody>
+        </table>                
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" >
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><span >Bunny Plugins</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default" ng-click="ReloadPlugins()" >
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            <span>Refresh</span>
+          </button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Plugin full name</th>
+              <th scope="col">Plugin short name</th>
+              <th scope="col">Library file</th>
+              <th scope="col">Is Enabled</th>
+              <th scope="col">Configure</th>
+              <th scope="col">Activate/Deactivate</th>
+              <th scope="col">Reload</th>
+            </tr>
+          </thead>            
+          <tbody>
+            <tr ng-repeat="pluginInfo in PluginsData.Bunny" ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" >
+            </tr>
+          </tbody>
+        </table>                
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" >
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><span >BunnyZtamp Plugins</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default" ng-click="ReloadPlugins()" >
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            <span>Refresh</span>
+          </button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Plugin full name</th>
+              <th scope="col">Plugin short name</th>
+              <th scope="col">Library file</th>
+              <th scope="col">Is Enabled</th>
+              <th scope="col">Configure</th>
+              <th scope="col">Activate/Deactivate</th>
+              <th scope="col">Reload</th>
+            </tr>
+          </thead>            
+          <tbody>
+            <tr ng-repeat="pluginInfo in PluginsData.BunnyZtamp" ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" >
+            </tr>
+          </tbody>
+        </table>                
+      </div>
+    </div>
+  </div>
+</div>

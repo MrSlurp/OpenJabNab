@@ -277,13 +277,17 @@ angular.module('ojnApiModule')
       );    
     };
 
-    var _setAdmin = function(login, cb) {
+    var _setAdmin = function(login, state, cb) {
       if (ojnApiHelpers.handleSimuRequest(cb, {} ))
         return;
     
       if (_authToken == undefined)
         return;
       var url = _accountsApiPath + "/setadmin?user=" + login+"&token="+_authToken;
+      console.log(url);
+      if (state != undefined)
+        url = url + "&state="+ (state? "true" : "false");
+      console.log(url);  
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
@@ -363,9 +367,9 @@ angular.module('ojnApiModule')
         _removeAccount(login, function () { defer.resolve();});
         return defer.promise;
       },
-      setAdmin: function(login) {
+      setAdmin: function(login, state) {
         var defer = $q.defer();
-        _setAdmin(login, function () { defer.resolve();});
+        _setAdmin(login, state, function () { defer.resolve();});
         return defer.promise;
       }
     }

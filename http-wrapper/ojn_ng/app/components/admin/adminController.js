@@ -5,16 +5,25 @@ define([
     'app/components/dataServices/ojnApiModule',
     'app/components/dataServices/ojnApiGlobal',
     'app/components/dataServices/ojnApiBunnies',
+    'app/components/dataServices/ojnApiPlugins',
 ], function (module) {
-    module.controller('adminCtrl', function ($scope, ojnApiGlobal, ojnApiAccount, ojnApiBunnies, $interval, $cookies) {
+    module.controller('adminCtrl', function ($scope, ojnApiGlobal, ojnApiAccount, ojnApiBunnies, ojnApiPlugins) {
         console.log("adminCtrl Controller reporting for duty.");
         
         $scope.ApiFull = {};
         $scope.AllUsers = [];
+        $scope.PluginsData = [];
         
         ojnApiGlobal.getListOfApiCalls().then(function(data) {
           $scope.ApiFull = data;
         });
+        
+        var _updatePlugins = function() {
+          ojnApiPlugins.getAllPluginsData().then(function(data) {
+            $scope.PluginsData = data;
+          });
+        }
+        _updatePlugins();
 
         var _updateUsers = function() {
           ojnApiAccount.getAllUsersInfos().then(function(data) {
@@ -73,11 +82,17 @@ define([
           _updateUsers();
         };
         
-        $scope.UserPromote = function(userLogin) {
+        $scope.ReloadPlugins = function() {
+          _updatePlugins();
+        };
+        
+        $scope.UserPromote = function(userLogin, state) {
           if (userLogin != undefined)
           {
-            ojnApiAccount.setAdmin(userLogin).then(function() { _updateUsers();});
+            ojnApiAccount.setAdmin(userLogin, state).then(function() { _updateUsers();});
           }
         };
+        
+        
     });
 });

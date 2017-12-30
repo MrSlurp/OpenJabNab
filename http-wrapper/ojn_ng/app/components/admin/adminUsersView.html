@@ -1,0 +1,104 @@
+﻿<div class="row" >
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><span >Register User</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-6" >
+            <div class="input-group">
+              <span class="input-group-addon" id="userNameAdd" >Nom de l'utilisateur</span>
+              <input type="text" class="form-control" ng-model="newUserName" aria-describedby="userNameAdd" />
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon" id="userLoginAdd">Login</span>
+              <input type="text" class="form-control" ng-model="newUserLogin" aria-describedby="userLoginAdd" >
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon" id="userPassAdd">Password</span>
+              <input type="password" class="form-control" ng-model="newUserPass" aria-describedby="userPassAdd" >
+            </div>
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-default" ng-click="UserAdd(newUserName, newUserLogin, newUserPass)" >
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <span>Ajouter</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" >
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><span >All Users</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default" ng-click="ReloadUsers()" >
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            <span>Raffraichir</span>
+          </button>
+        </div>
+      
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">User name</th>
+              <th scope="col">Login</th>
+              <th scope="col">Is Admin</th>
+              <th scope="col">Connected?</th>
+              <th scope="col">Language</th>
+              <th scope="col">Delete</th>
+              <th scope="col">Promote</th>
+            </tr>
+          </thead>            
+          <tbody>
+            <tr ng-repeat="userInfo in AllUsers">
+              <td>{{userInfo.username}}</td>
+              <td>{{userInfo.login}}</td>
+              <td>{{userInfo.isAdmin}}</td>
+              <td>{{userInfo.isValid}}</td>
+              <td>{{userInfo.language}}</td>
+              <td>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button"  class="btn btn-default" 
+                          ng-if="!userInfo.IsDeleting" 
+                          ng-click="userInfo.IsDeleting = true" >
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:red" ></span>
+                  </button>
+                  <button type="button" class="btn btn-default" 
+                          ng-if="userInfo.IsDeleting" 
+                          ng-click="UserDelete(userInfo.login)" >
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="btn btn-default" 
+                          ng-if="userInfo.IsDeleting"
+                          ng-click="userInfo.IsDeleting = false" >
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button"  class="btn btn-default" 
+                          ng-click="UserPromote(userInfo.login, true)" >
+                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:green" ></span>
+                  </button>
+                  <button type="button"  class="btn btn-default" 
+                          ng-click="UserPromote(userInfo.login, false)" >
+                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:orange" ></span>
+                  </button>
+                </div>
+              <td>
+            </tr>
+          </tbody>
+        </table>                
+      </div>
+    </div>
+  </div>
+</div>

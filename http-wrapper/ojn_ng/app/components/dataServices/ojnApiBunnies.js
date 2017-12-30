@@ -11,14 +11,13 @@ angular.module('ojnApiModule')
   .factory('ojnApiBunnies', function ($http, $q, ojnApiAccount, ojnApiHelpers) {
     console.log("ojnApiBunnies ready for duty");
     var _baseApiPath = "/ojn_api/json";
-    //var _userBunnies = {};
+    var _bunniesApiPath = _baseApiPath + "/bunnies";
     
     // return about data from server
     var _getUserBunnies = function (cb) {
-      var url = _baseApiPath + "/bunnies/getUserBunniesStatus?"+ojnApiAccount.getTokenUrl();
+      var url = _bunniesApiPath + "/getUserBunniesStatus?"+ojnApiAccount.getTokenUrl();
       $http.get(url).then(
         function (response) {
-          //_userBunnies = response.data;
           if (cb)
             cb(response.data);
         },
