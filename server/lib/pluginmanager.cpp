@@ -156,9 +156,9 @@ QVariantList PluginManager::GetPluginsApis() const
         QVariantMap map;
         QVariantMap funcMap;
         map.insert("Name", plg->GetName());
-        funcMap.insert("Apis", plg->GetApis());
-        funcMap.insert("Bunnies", plg->GetBunniesApis());
-        funcMap.insert("Ztamps", plg->GetZtampsApis());
+        funcMap.insert("Api", plg->GetApis());
+        funcMap.insert("Bunny", plg->GetBunniesApis());
+        funcMap.insert("Ztamp", plg->GetZtampsApis());
         map.insert("FunctionCategories", funcMap);
         fullList.append(map);
     }

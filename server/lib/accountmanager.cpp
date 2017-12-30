@@ -186,13 +186,14 @@ void AccountManager::InitApiCalls()
 	DECLARE_API_CALL("removeBunny(login,bunnyid)", &AccountManager::Api_RemoveBunny);
 	DECLARE_API_CALL("removeZtamp(login,zid)", &AccountManager::Api_RemoveZtamp);
 	DECLARE_API_CALL("settoken(tk)", &AccountManager::Api_SetToken);
-	DECLARE_API_CALL("setadmin(user)", &AccountManager::Api_SetAdmin);
+    DECLARE_API_CALL("setadmin(user, state)", &AccountManager::Api_SetAdmin);
 	DECLARE_API_CALL("setlanguage(login,lng)", &AccountManager::Api_SetLanguage);
 	DECLARE_API_CALL("getlanguage(login)", &AccountManager::Api_GetLanguage);
 	DECLARE_API_CALL("infos(user)", &AccountManager::Api_GetUserInfos);
 	DECLARE_API_CALL("GetUserlist()", &AccountManager::Api_GetUserlist);
 	DECLARE_API_CALL("GetConnectedUsers()", &AccountManager::Api_GetConnectedUsers);
 	DECLARE_API_CALL("GetListOfAdmins()", &AccountManager::Api_GetListOfAdmins);
+    DECLARE_API_CALL("GetAllUsersInfos()", &AccountManager::Api_GetAllUsersInfos);
 }
 
 API_CALL(AccountManager::Api_Auth)
@@ -448,6 +449,7 @@ API_CALL(AccountManager::Api_GetListOfAdmins)
 API_CALL(AccountManager::Api_SetAdmin)
 {
 	QString login = hRequest.GetArg("user");
+    QString state = hRequest.GetArg("state");
 
 	if(login == "" || !account.IsAdmin())
         return ApiManager::ApiError("Access denied");
@@ -456,7 +458,7 @@ API_CALL(AccountManager::Api_SetAdmin)
 	Account *ac = listOfAccountsByName.value(login.toAscii());
 	if(ac == NULL)
         return ApiManager::ApiError("Login not found.");
-	ac->setAdmin();
+    ac->setAdmin(state == "false"? false:true);
     return ApiManager::ApiOk(QString("user '%1' is now admin").arg(login));
 }
 
@@ -492,4 +494,31 @@ API_CALL(AccountManager::Api_GetLanguage)
 	if(ac == NULL)
         return ApiManager::ApiError("Account not found.");
     return ApiManager::ApiString(ac->GetLanguage());
+}
+
+API_CALL(AccountManager::Api_GetAllUsersInfos)
+{
+    Q_UNUSED(hRequest);
+    if (!ApiManager::Instance().IsJsonApiCall())
+        return ApiManager::ApiError("JSON only");
+
+    if(!account.IsAdmin())
+        return ApiManager::ApiError("Access denied");
+
+    QVariantMap userList;
+    QVariantList userInfoList;
+    foreach(QString accountName, listOfAccountsByName.keys())
+    {
+        Account *ac = listOfAccountsByName.value(accountName);
+        QMap<QString, QVariant> list;
+        list.insert("login",ac->GetLogin());
+        list.insert("username",ac->GetUsername());
+        list.insert("language",ac->GetLanguage());
+        list.insert("isValid",listOfTokens.contains(ac->GetToken()));
+        list.insert("token",QString(ac->GetToken()));
+        list.insert("isAdmin",ac->IsAdmin());
+        userInfoList.append(list);
+    }
+    userList.insert("users", userInfoList);
+    return ApiManager::ApiVariantMap(userList);
 }

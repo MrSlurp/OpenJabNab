@@ -48,6 +48,27 @@ public:
 	}
 	virtual ~ApiHandler() {}
 
+    QVariantList GetApisAsJson() const
+    {
+        QVariantList fullList;
+        QVariantMap map;
+        QVariantMap funcMap;
+
+        QVariantList apis;
+        foreach(QString s, apiCalls.keys())
+        {
+            QVariantMap func;
+            func.insert("functionName", s);
+            func.insert("parameters", apiCalls.value(s).second);
+            apis.append(func);
+        }
+        funcMap.insert("Api", apis);
+        map.insert("FunctionCategories", funcMap);
+        fullList.append(map);
+        return fullList;
+    }
+
+
 protected:
 	static void createApiCall(QString const& funcSig, typename ApiCallFunc<T>::Type f)
 	{

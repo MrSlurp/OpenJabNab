@@ -30,7 +30,7 @@ public:
 	void SetLanguage(QString const& lng);
 	void SetToken(QByteArray);
 	bool IsAdmin() const;
-	void setAdmin();
+    void setAdmin(bool bState = true);
 	bool HasAccess(Access id, Right r) const;
 	void SetAccess(Access id,Right r);
 	bool HasBunnyAccess(QByteArray const& b) const;
@@ -138,8 +138,8 @@ inline bool Account::IsAdmin() const
 	return isAdmin;
 }
 
-inline void Account::setAdmin() {
-	isAdmin = true;
+inline void Account::setAdmin(bool bState) {
+    isAdmin = bState;
 }
 
 inline bool Account::HasAccess(Access id,Right r) const

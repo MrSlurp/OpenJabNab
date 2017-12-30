@@ -61,6 +61,7 @@ private:
 	API_CALL(Api_GetUserlist);
 	API_CALL(Api_GetConnectedUsers);
 	API_CALL(Api_GetListOfAdmins);
+    API_CALL(Api_GetAllUsersInfos);
 };
 
 inline void AccountManager::Init()

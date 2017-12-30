@@ -154,53 +154,12 @@ ApiManager::ApiAnswer * ApiManager::ProcessGlobalApiCall(Account const& account,
         if (isJsonApiCall)
         {
             QVariantMap fullMap;
-            QVariantList globalList;
-            QVariantMap globalApiMap;
-
-            QVariantList emptyList;
-            QVariantList tokenParamList;
-            tokenParamList.append("token");
-
-            QVariantMap apilistFunc, apiAboutFunc, apiPingFunc, apiStatFunc;
-            apilistFunc.insert("functionName", "getListOfApiCalls");
-            apilistFunc.insert("parameters", tokenParamList);
-            apiAboutFunc.insert("functionName", "about");
-            apiAboutFunc.insert("parameters", emptyList);
-            apiPingFunc.insert("functionName", "ping");
-            apiPingFunc.insert("parameters", emptyList);
-            apiStatFunc.insert("functionName", "stats");
-            apiStatFunc.insert("parameters", emptyList);
-            globalList.append(apilistFunc);
-            globalList.append(apiAboutFunc);
-            globalList.append(apiPingFunc);
-            globalList.append(apiStatFunc);
-
-            globalApiMap.insert("Apis", globalList);
-            QVariantMap funcCat;
-            funcCat.insert("FunctionCategories", globalApiMap);
-            QVariantList catList;
-            catList.append(funcCat);
-
-            QVariantList pluginMap = PluginManager::Instance().GetPluginsApis();
-            //QVariantMap bunniesMap;
-            //QVariantMap ztampsMap;
-            /*
-            QList<PluginInterface *> const& bunnyPluginList = BunnyManager::Instance().GetListOfPlugins();
-            foreach(PluginInterface * plg , bunnyPluginList)
-            {
-                bunniesMap.insert(plg->GetName(), plg->GetApis());
-            }
-            QList<PluginInterface *> const& bunnyPluginList = BunnyManager::Instance().GetListOfPlugins();
-            foreach(PluginInterface * plg , bunnyPluginList)
-            {
-                bunniesMap.insert(plg->GetName(), plg->GetApis());
-            }*/
-
             // Todo send a list with available api calls
-            fullMap.insert("global/", catList);
-            //fullMap.insert("bunnies/", bunniesMap);
-            fullMap.insert("plugins/", pluginMap);
-            //fullMap.append("plugin/", pluginMap);
+            fullMap.insert("global/", GetApisAsJson());
+            fullMap.insert("accounts/", AccountManager::Instance().GetApisAsJson());
+            fullMap.insert("bunnies/", BunnyManager::Instance().GetApisAsJson());
+            fullMap.insert("ztamps/", ZtampManager::Instance().GetApisAsJson());
+            fullMap.insert("plugin/", PluginManager::Instance().GetPluginsApis());
             return ApiManager::ApiMappedList(fullMap);
         }
 	}
@@ -321,6 +280,37 @@ ApiManager::ApiAnswer * ApiManager::ProcessZtampApiCall(Account const& account, 
         return ApiManager::ApiError(QString("Malformed Plugin Api Call : %1").arg(hRequest.toString()));
 }
 
+QVariantList ApiManager::GetApisAsJson() const
+{
+    QVariantList globalList;
+    QVariantMap globalApiMap;
+
+    QVariantList emptyList;
+    QVariantList tokenParamList;
+    tokenParamList.append("token");
+
+    QVariantMap apilistFunc, apiAboutFunc, apiPingFunc, apiStatFunc;
+    apilistFunc.insert("functionName", "getListOfApiCalls");
+    apilistFunc.insert("parameters", tokenParamList);
+    apiAboutFunc.insert("functionName", "about");
+    apiAboutFunc.insert("parameters", emptyList);
+    apiPingFunc.insert("functionName", "ping");
+    apiPingFunc.insert("parameters", emptyList);
+    apiStatFunc.insert("functionName", "stats");
+    apiStatFunc.insert("parameters", emptyList);
+    globalList.append(apilistFunc);
+    globalList.append(apiAboutFunc);
+    globalList.append(apiPingFunc);
+    globalList.append(apiStatFunc);
+
+    globalApiMap.insert("Api", globalList);
+    QVariantMap funcCat;
+    funcCat.insert("FunctionCategories", globalApiMap);
+    QVariantList globalFamilyList;
+    globalFamilyList.append(funcCat);
+    return globalFamilyList;
+}
+
 QString ApiManager::ApiAnswer::SanitizeXML(QString const& msg)
 {
 	if(msg.contains('<') || msg.contains('>') || msg.contains('&'))
@@ -380,7 +370,6 @@ ApiManager::ApiAnswer* ApiManager::ApiVariantMap(QVariantMap m)
 
     return NULL;
 }
-
 
 QString ApiManager::ApiErrorObj::GetInternalData()
 {

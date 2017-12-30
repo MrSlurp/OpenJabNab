@@ -31,6 +31,7 @@ public:
 
 	static ApiManager & Instance();
     ApiAnswer * ProcessApiCall(QString , HTTPRequest &);
+    QVariantList GetApisAsJson() const;
     static bool IsJsonApiCall() {return isJsonApiCall;}
     static ApiAnswer* ApiError(QString);
     static ApiAnswer* ApiOk(QString);
