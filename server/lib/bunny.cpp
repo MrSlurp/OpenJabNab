@@ -53,184 +53,178 @@ Bunny::Bunny(QByteArray const& bunnyID)
         // Check if config file exists and load it
         LoadConfig();
     }
-
-    /*
-	saveTimer = new QTimer(this);
-	connect(saveTimer, SIGNAL(timeout()), this, SLOT(SaveConfig()));
-	saveTimer->start(5*60*1000); // 5min
-    */
 }
 
 ApiManager::ApiAnswer * Bunny::ProcessVioletApiCall(HTTPRequest const& hRequest)
 {
     ApiManager::ApiViolet* answer = new ApiManager::ApiViolet();
 
-	if(hRequest.HasArg("sn") && hRequest.HasArg("token")) {
-  		QString serial = hRequest.GetArg("sn").toLower();
-	  	QString token = hRequest.GetArg("token");
+    if(hRequest.HasArg("sn") && hRequest.HasArg("token")) {
+        QString serial = hRequest.GetArg("sn").toLower();
+        QString token = hRequest.GetArg("token");
 
-		if(GetGlobalSetting("VApiEnable",false).toBool()) {
-			if((GetGlobalSetting("VApiToken","").toString() == token && serial.toAscii()==GetID()) || GetGlobalSetting("VApiPublic",false).toBool())
-       			{
+        if(GetGlobalSetting("VApiEnable",false).toBool()) {
+            if((GetGlobalSetting("VApiToken","").toString() == token && serial.toAscii()==GetID()) || GetGlobalSetting("VApiPublic",false).toBool())
+            {
 
-	        	        if(hRequest.GetURI().startsWith("/ojn/FR/api_stream.jsp"))
-		                {
-        		                if(hRequest.HasArg("urlList"))
-	                	        {
-						QByteArray message = ("ST " + hRequest.GetArg("urlList").split("|", QString::SkipEmptyParts).join("\nMW\nST ") + "\nMW\n").toAscii();
-						SendPacket(MessagePacket(message));
-	                	                answer->AddMessage("WEBRADIOSENT", "Your webradio has been sent");
-        		                }
-	        	                else
-                        		{
-                	        	        answer->AddMessage("NOCORRECTPARAMETERS", "Please check urlList parameter !");
-	        	                }
-		                }
-        		        else
-	                	{
-	                		AmbientPacket p;
-        	        	        if(hRequest.HasArg("action")) // TODO: send good values
-        		                {
-	                	                switch(hRequest.GetArg("action").toInt())
-	                        	        {
-        	        	                        case 2:
-        		                                        answer->AddXml("<listfriend nb=\"0\"/>");
-	                	                                break;
-                                	        	case 3:
-                                		                answer->AddXml("<listreceivedmsg nb=\"0\"/>");
-                        	                	        break;
-	                	                        case 4:
-        		                                        answer->AddXml("<timezone>(GMT + 01:00) Bruxelles, Copenhague, Madrid, Paris</timezone>");
-	        	                                        break;
-                        		                case 6:
-                	        	                        answer->AddXml("<blacklist nb=\"0\"/>");
-        	                        	                break;
-	                                        	case 7:
-	                        	                        if(IsSleeping())
-        	        	                                        answer->AddXml("<rabbitSleep>YES</rabbitSleep>");
-        		                                        else
-	                	                                        answer->AddXml("<rabbitSleep>NO</rabbitSleep>");
-                        		                        break;
-                	                	        case 8:
-        	                                	        answer->AddXml("<rabbitVersion>V2</rabbitVersion>");
-		                                               	break;
-        	                                	case 9:
-                	                	                answer->AddXml("<voiceListTTS nb=\"2\"/><voice lang=\"fr\" command=\"FR-Anastasie\"/><voice lang=\"de\" command=\"DE-Otto\"/>");
-                        		                        break;
-                	        	                case 10:
-        	                        	                answer->AddXml("<rabbitName>" + GetBunnyName() + "</rabbitName>");
-	                                        	        break;
-	                                        	case 11:	
-        	                        	                answer->AddXml("<langListUser nb=\"4\"/><myLang lang=\"fr\"/><myLang lang=\"us\"/><myLang lang=\"uk\"/><myLang lang=\"de\"/>");
-                	        	                        break;
-	                	                        case 12:
-        		                                        answer->AddXml("<message>LINKPREVIEW</message><comment>XXXX</comment>");
-	        	                                        break;
-                        	        	        case 13:
-                        		                        answer->AddXml("<message>COMMANDSENT</message><comment>You rabbit will change status</comment>");
-								SendPacket(SleepPacket(SleepPacket::Wake_Up));
-        	                                	        break;
-		                                        case 14:
-        	                        	                answer->AddXml("<message>COMMANDSENT</message><comment>You rabbit will change status</comment>");
-								SendPacket(SleepPacket(SleepPacket::Sleep));
-                		                                break;
-        	                	                default:
-		                                                break;
-        	                        	}
-               			        }
-	        	                else
-               			        {
-		                                if(hRequest.HasArg("idmessage"))
-       	                        		{
-               			                        answer->AddMessage("MESSAGESENT", "Your message has been sent");
-	        	                        }
-                               			if(hRequest.HasArg("posleft") || hRequest.HasArg("posright"))
-               		        	        {
-	 	                                	int left = 0;
-                 	        			int right = 0;
-							if(hRequest.HasArg("posleft")) left = hRequest.GetArg("posleft").toInt();
-	                        	                if(hRequest.HasArg("posright")) right = hRequest.GetArg("posright").toInt();
-               		                	        if(left >= 0 && left <= 16 && right >= 0 && right <= 16)
-	                                        	{
-	                                			answer->AddMessage("EARPOSITIONSENT", "Your ears command has been sent");
-	        	        		                p.SetEarsPosition(left, right);
-		                                        }
-                       	        		        else
-               			                        {
-	                        	                        answer->AddMessage("EARPOSITIONNOTSENT", "Your ears command could not be sent");
-                               			        }
-                		                }
-						QString voice = "Claire";
-						if(hRequest.HasArg("voice"))
-						{
-							voice = hRequest.GetArg("voice");
-						}
-		                                if(hRequest.HasArg("tts"))
-		                                {
-							SendPacket(MessagePacket("MU "+TTSManager::CreateNewSound(hRequest.GetArg("tts"), voice)+"\nPL 3\nMW\n"));
-                		                        answer->AddMessage("TTSSENT", "Your text has been sent");
-		                                }
-                		                if(hRequest.HasArg("ears"))
-		                                {
-                		                        answer->AddEarPosition(0, 0); // TODO: send real positions
-		                                }
-                                		if(hRequest.HasArg("chor"))
-                		                {
-							Choregraphy c;
-                                		        if(c.Parse(hRequest.GetArg("chor"))) //TODO: Check for good chor
-                		                        {
-								QDir chorFolder = QDir(GlobalSettings::GetString("Config/RealHttpRoot"));
-								if (!chorFolder.cd("chor"))
-								{
-									if (!chorFolder.mkdir("chor"))
-									{
-										LogError(QString("Unable to create 'chor' directory !\n"));
-                		                                		answer->AddMessage("CHORNOTSENT", "Your chor could not be sent (can't create folder)");
-									}
-									chorFolder.cd("chor");
-								}
-								QString fileName = QCryptographicHash::hash(c.GetData(), QCryptographicHash::Md5).toHex().append(".chor");
-								QString filePath = chorFolder.absoluteFilePath(fileName);
+                if(hRequest.GetURI().startsWith("/ojn/FR/api_stream.jsp"))
+                {
+                    if(hRequest.HasArg("urlList"))
+                    {
+                        QByteArray message = ("ST " + hRequest.GetArg("urlList").split("|", QString::SkipEmptyParts).join("\nMW\nST ") + "\nMW\n").toAscii();
+                        SendPacket(MessagePacket(message));
+                        answer->AddMessage("WEBRADIOSENT", "Your webradio has been sent");
+                    }
+                    else
+                    {
+                        answer->AddMessage("NOCORRECTPARAMETERS", "Please check urlList parameter !");
+                    }
+                }
+                else
+                {
+                    AmbientPacket p;
+                    if(hRequest.HasArg("action")) // TODO: send good values
+                    {
+                        switch(hRequest.GetArg("action").toInt())
+                        {
+                        case 2:
+                            answer->AddXml("<listfriend nb=\"0\"/>");
+                            break;
+                        case 3:
+                            answer->AddXml("<listreceivedmsg nb=\"0\"/>");
+                            break;
+                        case 4:
+                            answer->AddXml("<timezone>(GMT + 01:00) Bruxelles, Copenhague, Madrid, Paris</timezone>");
+                            break;
+                        case 6:
+                            answer->AddXml("<blacklist nb=\"0\"/>");
+                            break;
+                        case 7:
+                            if(IsSleeping())
+                                answer->AddXml("<rabbitSleep>YES</rabbitSleep>");
+                            else
+                                answer->AddXml("<rabbitSleep>NO</rabbitSleep>");
+                            break;
+                        case 8:
+                            answer->AddXml("<rabbitVersion>V2</rabbitVersion>");
+                            break;
+                        case 9:
+                            answer->AddXml("<voiceListTTS nb=\"2\"/><voice lang=\"fr\" command=\"FR-Anastasie\"/><voice lang=\"de\" command=\"DE-Otto\"/>");
+                            break;
+                        case 10:
+                            answer->AddXml("<rabbitName>" + GetBunnyName() + "</rabbitName>");
+                            break;
+                        case 11:
+                            answer->AddXml("<langListUser nb=\"4\"/><myLang lang=\"fr\"/><myLang lang=\"us\"/><myLang lang=\"uk\"/><myLang lang=\"de\"/>");
+                            break;
+                        case 12:
+                            answer->AddXml("<message>LINKPREVIEW</message><comment>XXXX</comment>");
+                            break;
+                        case 13:
+                            answer->AddXml("<message>COMMANDSENT</message><comment>You rabbit will change status</comment>");
+                            SendPacket(SleepPacket(SleepPacket::Wake_Up));
+                            break;
+                        case 14:
+                            answer->AddXml("<message>COMMANDSENT</message><comment>You rabbit will change status</comment>");
+                            SendPacket(SleepPacket(SleepPacket::Sleep));
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if(hRequest.HasArg("idmessage"))
+                        {
+                            answer->AddMessage("MESSAGESENT", "Your message has been sent");
+                        }
+                        if(hRequest.HasArg("posleft") || hRequest.HasArg("posright"))
+                        {
+                            int left = 0;
+                            int right = 0;
+                            if(hRequest.HasArg("posleft")) left = hRequest.GetArg("posleft").toInt();
+                            if(hRequest.HasArg("posright")) right = hRequest.GetArg("posright").toInt();
+                            if(left >= 0 && left <= 16 && right >= 0 && right <= 16)
+                            {
+                                answer->AddMessage("EARPOSITIONSENT", "Your ears command has been sent");
+                                p.SetEarsPosition(left, right);
+                            }
+                            else
+                            {
+                                answer->AddMessage("EARPOSITIONNOTSENT", "Your ears command could not be sent");
+                            }
+                        }
+                        QString voice = "Claire";
+                        if(hRequest.HasArg("voice"))
+                        {
+                            voice = hRequest.GetArg("voice");
+                        }
+                        if(hRequest.HasArg("tts"))
+                        {
+                            SendPacket(MessagePacket("MU "+TTSManager::CreateNewSound(hRequest.GetArg("tts"), voice)+"\nPL 3\nMW\n"));
+                            answer->AddMessage("TTSSENT", "Your text has been sent");
+                        }
+                        if(hRequest.HasArg("ears"))
+                        {
+                            answer->AddEarPosition(0, 0); // TODO: send real positions
+                        }
+                        if(hRequest.HasArg("chor"))
+                        {
+                            Choregraphy c;
+                            if(c.Parse(hRequest.GetArg("chor"))) //TODO: Check for good chor
+                            {
+                                QDir chorFolder = QDir(GlobalSettings::GetString("Config/RealHttpRoot"));
+                                if (!chorFolder.cd("chor"))
+                                {
+                                    if (!chorFolder.mkdir("chor"))
+                                    {
+                                        LogError(QString("Unable to create 'chor' directory !\n"));
+                                        answer->AddMessage("CHORNOTSENT", "Your chor could not be sent (can't create folder)");
+                                    }
+                                    chorFolder.cd("chor");
+                                }
+                                QString fileName = QCryptographicHash::hash(c.GetData(), QCryptographicHash::Md5).toHex().append(".chor");
+                                QString filePath = chorFolder.absoluteFilePath(fileName);
 
-								QFile file(filePath);
-								if (!file.open(QIODevice::WriteOnly))
-								{
-									LogError("Cannot open chor file for writing");
-									answer->AddMessage("CHORNOTSENT", "Your chor could not be sent (error in file)");
-								}
-								else
-								{
-									file.write(c.GetData());
-									file.close();
-									SendPacket(MessagePacket(("CH broadcast/ojn_local/chor/" + fileName + "\n").toAscii()));
-									answer->AddMessage("CHORSENT", "Your chor has been sent");
-								}
-		                                        }
-                                		        else
-                		                        {
-		                                                answer->AddMessage("CHORNOTSENT", "Your chor could not be sent (bad chor)");
-                                        		}
-                                		}
-                        		}
-					if(p.GetServices().count() > 0)
-	        	        		SendPacket(p);
-                		}
-		        }
-		        else
-		        {
-		                answer->AddMessage("NOGOODTOKENORSERIAL", "Your token or serial number are not correct !");
-        		}
-		}
-		else
-		{
-			answer->AddMessage("APIDISABLED", "API is disabled for this bunny");
-		}
-	}
-	else
-	{
-		answer->AddMessage("APIDISABLED", "Missing serial or token");
+                                QFile file(filePath);
+                                if (!file.open(QIODevice::WriteOnly))
+                                {
+                                    LogError("Cannot open chor file for writing");
+                                    answer->AddMessage("CHORNOTSENT", "Your chor could not be sent (error in file)");
+                                }
+                                else
+                                {
+                                    file.write(c.GetData());
+                                    file.close();
+                                    SendPacket(MessagePacket(("CH broadcast/ojn_local/chor/" + fileName + "\n").toAscii()));
+                                    answer->AddMessage("CHORSENT", "Your chor has been sent");
+                                }
+                            }
+                            else
+                            {
+                                answer->AddMessage("CHORNOTSENT", "Your chor could not be sent (bad chor)");
+                            }
+                        }
+                    }
+                    if(p.GetServices().count() > 0)
+                        SendPacket(p);
+                }
+            }
+            else
+            {
+                answer->AddMessage("NOGOODTOKENORSERIAL", "Your token or serial number are not correct !");
+            }
         }
-	return answer;
+        else
+        {
+            answer->AddMessage("APIDISABLED", "API is disabled for this bunny");
+        }
+    }
+    else
+    {
+        answer->AddMessage("APIDISABLED", "Missing serial or token");
+    }
+    return answer;
 }
 
 Bunny::~Bunny()
@@ -818,11 +812,11 @@ void Bunny::InitApiCalls()
 
 	DECLARE_API_CALL("disconnect()", &Bunny::Api_Disconnect);
 
-        DECLARE_API_CALL("setInsomniac(insomniac)", &Bunny::Api_setInsomniac);
-        DECLARE_API_CALL("getInsomniac()", &Bunny::Api_getInsomniac);
+    DECLARE_API_CALL("setInsomniac(insomniac)", &Bunny::Api_setInsomniac);
+    DECLARE_API_CALL("getInsomniac()", &Bunny::Api_getInsomniac);
 
-        DECLARE_API_CALL("setPublicVAPI(public)", &Bunny::Api_setPublicVApi);
-        DECLARE_API_CALL("getPublicVAPI()", &Bunny::Api_getPublicVApi);
+    DECLARE_API_CALL("setPublicVAPI(public)", &Bunny::Api_setPublicVApi);
+    DECLARE_API_CALL("getPublicVAPI()", &Bunny::Api_getPublicVApi);
 	DECLARE_API_CALL("enableVAPI()", &Bunny::Api_enableVApi);
 	DECLARE_API_CALL("disableVAPI()", &Bunny::Api_disableVApi);
 	DECLARE_API_CALL("getVAPIStatus()", &Bunny::Api_getVApiStatus);
@@ -831,6 +825,10 @@ void Bunny::InitApiCalls()
 
 	DECLARE_API_CALL("getlast(param)", &Bunny::Api_getOneLast);
 	DECLARE_API_CALL("getlasts()", &Bunny::Api_getAllLast);
+
+    DECLARE_API_CALL("FriendAccountAdd(login)", &Bunny::Api_FriendAccountAdd);
+    DECLARE_API_CALL("FriendAccountRemove(login)", &Bunny::Api_FriendAccountRemove);
+
 }
 
 API_CALL(Bunny::Api_AddPlugin)
@@ -1118,4 +1116,36 @@ API_CALL(Bunny::Api_getAllLast)
 	}
 
     return ApiManager::ApiMappedList(answer);
+}
+
+API_CALL(Bunny::Api_FriendAccountAdd)
+{
+    QString friendLogin = hRequest.GetArg("login");
+    QString bunnyOwner = GetGlobalSetting("OwnerAccount","").toString();
+    if(friendLogin == "" || bunnyOwner != account.GetLogin())
+        return ApiManager::ApiError("Access denied");
+
+    QVariantList friends = GetGlobalSetting("FriendsAccount", QVariantList()).toList();
+    if (!friends.contains(friendLogin))
+    {
+        friends.append(friendLogin);
+        SetGlobalSetting("FriendsAccount", friends);
+    }
+    return ApiManager::ApiOk(QString("Account %1, added as friend to bunny %2").arg(friendLogin).arg(GetBunnyName()));
+}
+
+API_CALL(Bunny::Api_FriendAccountRemove)
+{
+    QString friendLogin = hRequest.GetArg("login");
+    QString bunnyOwner = GetGlobalSetting("OwnerAccount","").toString();
+    if(friendLogin == "" || bunnyOwner != account.GetLogin())
+        return ApiManager::ApiError("Access denied");
+
+    QVariantList friends = GetGlobalSetting("FriendsAccount", QVariantList()).toList();
+    if (friends.contains(friendLogin))
+    {
+        friends.removeAll(friendLogin);
+        SetGlobalSetting("FriendsAccount", friends);
+    }
+    return ApiManager::ApiOk(QString("Account %1, removed from bunny %2 friends").arg(friendLogin).arg(GetBunnyName()));
 }

@@ -120,6 +120,8 @@ private:
 	API_CALL(Api_setVApiToken);
 	API_CALL(Api_getAllLast);
 	API_CALL(Api_getOneLast);
+    API_CALL(Api_FriendAccountAdd);
+    API_CALL(Api_FriendAccountRemove);
 
 	enum State state;
 

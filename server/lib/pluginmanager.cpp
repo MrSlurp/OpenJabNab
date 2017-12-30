@@ -319,6 +319,8 @@ void PluginManager::InitApiCalls()
 	DECLARE_API_CALL("loadPlugin(filename)", &PluginManager::Api_LoadPlugin);
 	DECLARE_API_CALL("unloadPlugin(name)", &PluginManager::Api_UnloadPlugin);
 	DECLARE_API_CALL("reloadPlugin(name)", &PluginManager::Api_ReloadPlugin);
+
+    DECLARE_API_CALL("getAllPluginsData()", &PluginManager::Api_GetAllPluginsData);
 }
 
 API_CALL(PluginManager::Api_GetListOfPlugins)
@@ -536,6 +538,57 @@ API_CALL(PluginManager::Api_ReloadPlugin)
 		return ApiManager::ApiOk(QString("'%1' is now reloaded").arg(name));
 	else
 		return ApiManager::ApiError(QString("Can't reload '%1'!").arg(name));
+}
+
+API_CALL(PluginManager::Api_GetAllPluginsData)
+{
+    Q_UNUSED(hRequest);
+
+    if(!account.IsAdmin() && !account.HasAccess(Account::AcServer,Account::Read))
+        return ApiManager::ApiError("Access denied");
+
+    QVariantMap pluginsData;
+    QVariantList pluginsRequired;
+    QVariantList pluginsSystem;
+    QVariantList pluginsBunny;
+    QVariantList pluginsZtamp;
+    QVariantList pluginsBunnyZtamp;
+    QList<QString> list;
+    foreach (PluginInterface * p, listOfPlugins)
+    {
+        QVariantMap currentPluginData;
+        QString pluginsFileName = listOfPluginsFileName.value(p);
+        currentPluginData.insert("Name", p->GetName());
+        currentPluginData.insert("IsEnabled", p->GetEnable());
+        currentPluginData.insert("VisualName", p->GetVisualName());
+        currentPluginData.insert("LocalHppFolder", p->GetLocalHTTPFolder()->absolutePath());
+        currentPluginData.insert("FileName", pluginsFileName);
+        switch (p->GetType()) {
+        case PluginInterface::RequiredPlugin :
+            pluginsRequired.append(currentPluginData);
+            break;
+        case PluginInterface::SystemPlugin :
+            pluginsSystem.append(currentPluginData);
+            break;
+        case PluginInterface::BunnyPlugin :
+            pluginsBunny.append(currentPluginData);
+            break;
+        case PluginInterface::ZtampPlugin :
+            pluginsZtamp.append(currentPluginData);
+            break;
+        case PluginInterface::BunnyZtampPlugin :
+            pluginsBunnyZtamp.append(currentPluginData);
+            break;
+        default:
+            break;
+        }
+    }
+    pluginsData.insert("Required", pluginsRequired);
+    pluginsData.insert("System", pluginsSystem);
+    pluginsData.insert("Bunny", pluginsBunny);
+    pluginsData.insert("Ztamp", pluginsZtamp);
+    pluginsData.insert("BunnyZtamp", pluginsBunnyZtamp);
+    return ApiManager::ApiVariantMap(pluginsData);
 }
 
 /********************

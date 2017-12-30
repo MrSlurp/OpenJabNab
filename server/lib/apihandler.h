@@ -37,6 +37,8 @@ public:
 		// Check args
 		foreach(QString arg, it->second)
 		{
+            if (arg.endsWith("?"))
+                continue;
 			if(!hRequest.HasArg(arg))
 			{
                 return ApiManager::ApiError(QString("Argument '%1' is missing").arg(arg));

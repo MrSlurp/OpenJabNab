@@ -186,7 +186,7 @@ void AccountManager::InitApiCalls()
 	DECLARE_API_CALL("removeBunny(login,bunnyid)", &AccountManager::Api_RemoveBunny);
 	DECLARE_API_CALL("removeZtamp(login,zid)", &AccountManager::Api_RemoveZtamp);
 	DECLARE_API_CALL("settoken(tk)", &AccountManager::Api_SetToken);
-    DECLARE_API_CALL("setadmin(user, state)", &AccountManager::Api_SetAdmin);
+    DECLARE_API_CALL("setadmin(user,state?)", &AccountManager::Api_SetAdmin);
 	DECLARE_API_CALL("setlanguage(login,lng)", &AccountManager::Api_SetLanguage);
 	DECLARE_API_CALL("getlanguage(login)", &AccountManager::Api_GetLanguage);
 	DECLARE_API_CALL("infos(user)", &AccountManager::Api_GetUserInfos);
@@ -459,7 +459,10 @@ API_CALL(AccountManager::Api_SetAdmin)
 	if(ac == NULL)
         return ApiManager::ApiError("Login not found.");
     ac->setAdmin(state == "false"? false:true);
-    return ApiManager::ApiOk(QString("user '%1' is now admin").arg(login));
+    if (state == "false")
+        return ApiManager::ApiOk(QString("user '%1' is not admin anymore").arg(login));
+    else
+        return ApiManager::ApiOk(QString("user '%1' is now admin").arg(login));
 }
 
 API_CALL(AccountManager::Api_SetLanguage)

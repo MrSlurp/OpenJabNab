@@ -88,6 +88,9 @@ private:
 	API_CALL(Api_LoadPlugin);
 	API_CALL(Api_UnloadPlugin);
 	API_CALL(Api_ReloadPlugin);
+
+    API_CALL(Api_GetAllPluginsData);
+
 };
 
 inline void PluginManager::Init()

@@ -147,6 +147,8 @@ bool Account::LoadJsonConfig(QString fileName)
     username = result["username"].toString();
     passwordHash = result["passwordHash"].toByteArray();
     isAdmin = result["isAdmin"].toBool();
+    if (!result["language"].isNull())
+        language = result["language"].toString();
     LogInfo(QString("Loading user %1 : is admin %2 ").arg(username, isAdmin ? "true": "false"));
     int index = 0;
     LogInfo(QString("User %1 : Reading Access").arg(username));
@@ -191,6 +193,7 @@ void Account::SaveJsonConfig(QString fileName)
     config.insert("username", username);
     config.insert("passwordHash", passwordHash);
     config.insert("isAdmin", isAdmin);
+    config.insert("language", language);
 
     QVariantList jsonUserAccess;
     int index = 0;

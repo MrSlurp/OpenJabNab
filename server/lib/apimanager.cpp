@@ -160,6 +160,7 @@ ApiManager::ApiAnswer * ApiManager::ProcessGlobalApiCall(Account const& account,
             fullMap.insert("bunnies/", BunnyManager::Instance().GetApisAsJson());
             fullMap.insert("ztamps/", ZtampManager::Instance().GetApisAsJson());
             fullMap.insert("plugin/", PluginManager::Instance().GetPluginsApis());
+            fullMap.insert("plugins/", PluginManager::Instance().GetApisAsJson());
             return ApiManager::ApiMappedList(fullMap);
         }
 	}
