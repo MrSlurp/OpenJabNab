@@ -54,9 +54,11 @@ Bunny::Bunny(QByteArray const& bunnyID)
         LoadConfig();
     }
 
+    /*
 	saveTimer = new QTimer(this);
 	connect(saveTimer, SIGNAL(timeout()), this, SLOT(SaveConfig()));
 	saveTimer->start(5*60*1000); // 5min
+    */
 }
 
 ApiManager::ApiAnswer * Bunny::ProcessVioletApiCall(HTTPRequest const& hRequest)
@@ -233,7 +235,7 @@ ApiManager::ApiAnswer * Bunny::ProcessVioletApiCall(HTTPRequest const& hRequest)
 
 Bunny::~Bunny()
 {
-	SaveConfig();
+    //SaveConfig();
 }
 
 QString Bunny::CheckPlugin(PluginInterface * plugin, bool isAssociated)
@@ -555,7 +557,7 @@ QVariant Bunny::GetGlobalSetting(QString const& key, QVariant const& defaultValu
 
 void Bunny::SetGlobalSetting(QString const& key, QVariant const& value)
 {
-	GlobalSettings.insert(key, value);
+    GlobalSettings.insert(key, value);
 }
 
 void Bunny::RemoveGlobalSetting(QString const& key)
@@ -575,11 +577,13 @@ QVariant Bunny::GetPluginSetting(QString const& pluginName, QString const& key, 
 void Bunny::SetPluginSetting(QString const& pluginName, QString const& key, QVariant const& value)
 {
     PluginsSettings[pluginName].toMap().insert(key, value);
+    SaveConfig();
 }
 
 void Bunny::RemovePluginSetting(QString const& pluginName, QString const& key)
 {
     PluginsSettings[pluginName].toMap().remove(key);
+    SaveConfig();
 }
 
 // API Add plugin to this bunny
@@ -650,8 +654,8 @@ void Bunny::RemovePlugin(PluginInterface * p)
 		listOfPluginsPtr.removeAll(p);
 		if(IsConnected())
 			p->OnBunnyDisconnect(this);
-		SaveConfig();
-	}
+        SaveConfig();
+    }
 }
 
 // Global plugin enable/disable
@@ -673,8 +677,8 @@ void Bunny::PluginLoaded(PluginInterface * p)
 	{
 		listOfPluginsPtr.append(p);
 		if(p->GetEnable())
-			p->OnBunnyConnect(this);
-	}
+            p->OnBunnyConnect(this);
+    }
 }
 
 // Plugin unloaded
@@ -685,7 +689,7 @@ void Bunny::PluginUnloaded(PluginInterface * p)
 		listOfPluginsPtr.removeAll(p);
 		if(p->GetEnable())
 			p->OnBunnyDisconnect(this);
-	}
+    }
 }
 
 // Bunny is connected
