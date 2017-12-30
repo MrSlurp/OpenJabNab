@@ -20,8 +20,7 @@ angular.module('ojnApiModule')
     var _isInit = false;
     
     // TODO add expiration period (should be returned by API)
-    var _setToken= function(value, login)
-    {
+    var _setToken= function(value, login) {
       _authToken = value;
       _authLogin = login;
       if (value == undefined)
@@ -33,8 +32,7 @@ angular.module('ojnApiModule')
     };
     
     // load existing token and login if exist in cookie
-    var _init = function()
-    {
+    var _init = function() {
       if (_isInit == false)
       {
         _isInit = true;
@@ -58,9 +56,8 @@ angular.module('ojnApiModule')
       }
     };
     
-    // TODO add support for token check on server
-    var _checkTokenIsValid = function(cb)
-    {
+    // 
+    var _checkTokenIsValid = function(cb) {
       if (ojnApiHelpers.handleSimuRequest(cb, {} ))
         return;
     
@@ -102,8 +99,8 @@ angular.module('ojnApiModule')
           {
             if (response.data.isAdmin == true)
               _currentUserIsAdmin = true;
+              
             _setToken(response.data.token, l);
-            
           }
           else
             _setToken(null);
@@ -214,7 +211,94 @@ angular.module('ojnApiModule')
         }
       );         
     };
+    
+    var _registerNewAccount = function(login, name, passwd, cb) {
+      var url = _accountsApiPath + "/registerNewAccount?login="+login+"&username="+name+"&pass="+passwd;
+      $http.get(url).then(
+        function (response) {
+          if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
+            ojnngEvents.notifyEvent("UserNotifySucess", "Compte ajouté avec succès ("+response.data.message+")");
+          else
+            ojnngEvents.notifyEvent("UserNotifyError", response.data.message);
+          if (cb) cb();
+        },
+        function (error){ 
+          ojnngEvents.notifyEvent("UserNotifyError", "Erreur de communication avec le serveur");
+          _setToken(null);
+          if (cb) cb();
+        }
+      );         
+    };
+    
+    var _GetAllUsersInfos = function(cb) {
+      var dummyObj=[
+        {login:"Demo1", username:"Demo1", token:"FakeToken", isValid:false, language:"klingon", isAdmin:true},
+        {login:"Demo2", username:"Demo2", token:"FakeToken", isValid:false, language:"klingon", isAdmin:false},
+      ];
+      if (ojnApiHelpers.handleSimuRequest(cb, dummyObj))
+      {
+        return;
+      }
+    
+      var url = _accountsApiPath + "/GetAllUsersInfos?"+"token="+_authToken;
+      $http.get(url).then(
+        function (response) {
+          if (ojnApiHelpers.isErrorApiStatusMessage(response.data))
+            ojnngEvents.notifyEvent("UserNotifyError", response.data.message);
+          if (cb) cb(response.data);
+        },
+        function (error){ 
+          ojnngEvents.notifyEvent("UserNotifyError", "Erreur de communication avec le serveur");
+          _setToken(null);
+          if (cb) cb();
+        }
+      );
+    };
+    
+    var _removeAccount = function(login, cb) {
+    
+      if (ojnApiHelpers.handleSimuRequest(cb, {} ))
+        return;
+    
+      if (_authToken == undefined)
+        return;
+      var url = _accountsApiPath + "/removeAccount?login=" + login+"&token="+_authToken;
+      $http.get(url).then(
+        function (response) {
+          if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
+            ojnngEvents.notifyEvent("UserNotifySucess", "Compte supprimé avec succès ("+response.data.message+")");
+          if (cb) cb();
+        },
+        function (error){ 
+          ojnngEvents.notifyEvent("UserNotifyError", "Erreur de communication avec le serveur");
+          _setToken(null);
+          if (cb) cb();
+        }
+      );    
+    };
 
+    var _setAdmin = function(login, cb) {
+      if (ojnApiHelpers.handleSimuRequest(cb, {} ))
+        return;
+    
+      if (_authToken == undefined)
+        return;
+      var url = _accountsApiPath + "/setadmin?user=" + login+"&token="+_authToken;
+      $http.get(url).then(
+        function (response) {
+          if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
+            ojnngEvents.notifyEvent("UserNotifySucess", "("+response.data.message+")");
+          else
+            ojnngEvents.notifyEvent("UserNotifyError", "("+response.data.message+")");
+          if (cb) cb();
+        },
+        function (error){ 
+          ojnngEvents.notifyEvent("UserNotifyError", "Erreur de communication avec le serveur");
+          _setToken(null);
+          if (cb) cb();
+        }
+      );    
+    };
     
     return {
       isInitialized: function() {
@@ -262,6 +346,26 @@ angular.module('ojnApiModule')
       removeBunnyFromAccount: function(mac) {
         var defer = $q.defer();
         _removeBunnyFromAccount(mac, function () { defer.resolve();});
+        return defer.promise;
+      },
+      registerNewAccount: function(name, login, passwd) {
+        var defer = $q.defer();
+        _registerNewAccount(login, name, passwd, function () { defer.resolve();});
+        return defer.promise;
+      },
+      getAllUsersInfos: function() {
+        var defer = $q.defer();
+        _GetAllUsersInfos(function (data) { defer.resolve(data);});
+        return defer.promise;
+      },
+      removeAccount: function(login) {
+        var defer = $q.defer();
+        _removeAccount(login, function () { defer.resolve();});
+        return defer.promise;
+      },
+      setAdmin: function(login) {
+        var defer = $q.defer();
+        _setAdmin(login, function () { defer.resolve();});
         return defer.promise;
       }
     }
