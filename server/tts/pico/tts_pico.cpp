@@ -36,22 +36,22 @@ QByteArray TTSPico::CreateNewSound(QString text, QString voice, bool forceOverwr
 	
 	// Compute fileName
 	QString fileName = QCryptographicHash::hash(text.toAscii(), QCryptographicHash::Md5).toHex();//.append(".mp3");
-	QString filePath = outputFolder.absoluteFilePath(fileName);
+    QString waveFileName = fileName.append("*.wav");
+    QString mp3FileName = fileName.append("*.mp3");
+    QString wavefilePath = outputFolder.absoluteFilePath(waveFileName);
+    QString mp3filePath = outputFolder.absoluteFilePath(waveFileName);
 
 	if(!forceOverwrite && QFile::exists(filePath))
 		return ttsHTTPUrl.arg(voice, fileName).toAscii();
 
-	QString cmd = "pico2wave -w ";
-	QString waveFileName = fileName.append("*.wav");
-	cmd += waveFileName;
-	cmd += " \""+text+"\"";
+    // call local pico2wave
+    QString cmd = "pico2wave -l " + voice + " -w ";
+    cmd += wavefilePath;
+    cmd += " \""+text.replace('\"', "\\\"")+"\"";
 	system(cmd.toStdString().c_str());
-	
-	cmd = "aplay ";
-	cmd+= waveFileName;
-	// now command is pico2wave -w res.wav whatever the user entered
+    // make file mp3
+    cmd = "lame "+wavefilePath+ " " + mp3filePath;
 	system(cmd.toStdString().c_str());	
-
-	return ttsHTTPUrl.arg(voice, waveFileName).toAscii();
+    return ttsHTTPUrl.arg(voice, mp3FileName).toAscii();
 }
 
