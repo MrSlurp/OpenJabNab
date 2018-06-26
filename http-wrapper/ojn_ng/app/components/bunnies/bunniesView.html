@@ -1,47 +1,49 @@
 ﻿<div class="container" ng-controller="bunniesCtrl as vm">
-    <h1 class="page-header">Bunnies</h1>
-    <tabset justified="true">
-        <!--
-        <tab ng-repeat="selectionTab in DistrictSelectionsTabs" heading="{{selectionTab.TabTitle}}" active="selectionTab.active">
-            <div style="margin:10px;"></div>
-            <div class="row">
-                <div class="col-xs-4">
-                    <div ng-dropdown-multiselect="" 
-                        options="DistricMap" 
-                        selected-model="selectionTab.selectedDistricts" 
-                        extra-settings="selectBoxSettings" 
-                        style="width:100%;"
-                        events="selectionTab.events">
-
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Residential')">Select residential</button>
-                </div>
-                <div class="col-xs-4">
-                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Industrial')">Select industrial</button>
-                </div>
-                <div class="col-xs-4">
-                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Commercial')">Select commercial</button>
-                </div>
-                <div class="col-xs-4">
-                    <button class="btn btn-default" ng-click="selectMostlyOfCategory(selectionTab, 'Office')">Select office</button>
-                </div>
+    <div class="row page-header" >
+      <div class="col-xs-3" >
+        <h1>Vos lapins</h1>
+      </div>
+      <div class="col-xs-8" >
+        <div ng-include="'app/shared/alertContainer/alertContainerView.html'" /> 
+      </div>
+    </div>
+    <div class="row" ng-if="IsUserRegistered" >
+      <uib-tabset >
+        <uib-tab index="$index" ng-repeat="bunny in userBunnies" heading="{{bunny.Name}}">
+          <div class="col-md-12">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <div class="panel-title"><span >Configuration de l'API</span></div>
+              </div>
+              <div class="panel-body">
+                <table class="table">
+                  <tbody>
+                    <tr><th>Api Violet activée</th> <td>{{bunny.Config.GlobalSettings.VApiEnable}}</td></tr>
+                    <tr><th>Token API Violet</th> <td>{{bunny.Config.GlobalSettings.VApiToken}}</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div style="margin:10px;"></div>
-            <tabset type="pills" >
-                <tab ng-repeat="dist in selectionTab.selectedDistricts" heading="{{dist.DistrictName}}" active="dist.districtVisible" ng-click="selectActiveDistrict(dist.DistrictID)">
-                    <ng-include
-                        src="'./app/components/district/districtFullView.html'">
-                    </ng-include>
-                    <ng-include
-                        src="'./app/components/district/districtTrafficView.html'">
-                    </ng-include>
-                    <div class="clearfix"></div>
-                </tab>
-            </tabset>
-        </tab>
-        -->
-    </tabset>
+          </div>
+          <div class="col-md-12">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <div class="panel-title"><span >Information de connexion</span></div>
+              </div>
+              <div class="panel-body">
+                <table class="table">
+                  <tbody>
+                    <tr><th>Last Jabber Connection</th> <td>{{bunny.Config.GlobalSettings.LastJabberConnection}}</td></tr>
+                    <tr><th>Last IP Address</th> <td>{{bunny.Config.GlobalSettings.LastIP}}</td></tr>
+                    <tr><th>Last Locate</th> <td>{{bunny.Config.GlobalSettings.LastLocate}}</td></tr>
+                    <tr><th>Last Locate String</th> <td>{{bunny.Config.GlobalSettings.LastLocateString}}</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </uib-tab>
+      </uib-tabset>
+    </div>
 </div>
 <!-- /.container -->

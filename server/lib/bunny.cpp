@@ -24,6 +24,16 @@
 #define SINGLE_CLICK_PLUGIN_SETTINGNAME "singleClickPlugin"
 #define DOUBLE_CLICK_PLUGIN_SETTINGNAME "doubleClickPlugin"
 
+Bunny::Bunny()
+{
+    // Init click plugins
+    singleClickPlugin = NULL;
+    doubleClickPlugin = NULL;
+
+    state = State_Disconnected;
+    xmppHandler = 0;
+}
+
 Bunny::Bunny(QByteArray const& bunnyID)
 {
 	// Init click plugins
@@ -489,7 +499,7 @@ void Bunny::Authenticating()
 void Bunny::Authenticated()
 {
 	state = State_Authenticated;
-	SetGlobalSetting("Last JabberConnection", QDateTime::currentDateTime());
+    SetGlobalSetting("LastJabberConnection", QDateTime::currentDateTime());
 }
 
 // Called when the bunny is ready (auth/boot finished)
@@ -551,6 +561,7 @@ QVariant Bunny::GetGlobalSetting(QString const& key, QVariant const& defaultValu
 
 void Bunny::SetGlobalSetting(QString const& key, QVariant const& value)
 {
+    //LogInfo(QString("Bunny %1 SetGlobalSetting : key = %2, value = %3").arg(QString(GetID())).arg(key).arg(value.toString()));
     GlobalSettings.insert(key, value);
 }
 
@@ -570,7 +581,19 @@ QVariant Bunny::GetPluginSetting(QString const& pluginName, QString const& key, 
 
 void Bunny::SetPluginSetting(QString const& pluginName, QString const& key, QVariant const& value)
 {
-    PluginsSettings[pluginName].toMap().insert(key, value);
+    if (!PluginsSettings.contains(pluginName))
+        PluginsSettings.insert(pluginName, QVariantMap());
+
+    QVariantMap existingMap = qvariant_cast<QVariantMap>(PluginsSettings[pluginName]);
+    existingMap[key] = value;
+    PluginsSettings[pluginName] = existingMap;
+
+    LogInfo(QString("Bunny %1 SetPluginSetting : plugin = %2, key = %3, value = %4").arg(QString(GetID())).arg(pluginName).arg(key).arg(value.toString()));
+
+    QJson::Serializer serializer;
+    bool ok;
+    QByteArray json = serializer.serialize(PluginsSettings, &ok);
+    LogInfo(QString("Bunny %1 Setting as json : %2").arg(QString(GetID())).arg(QString(json)));
     SaveConfig();
 }
 
@@ -826,6 +849,8 @@ void Bunny::InitApiCalls()
 	DECLARE_API_CALL("getlast(param)", &Bunny::Api_getOneLast);
 	DECLARE_API_CALL("getlasts()", &Bunny::Api_getAllLast);
 
+    DECLARE_API_CALL("getBunnyFullConfig()", &Bunny::Api_getBunnyFullConfig);
+
     DECLARE_API_CALL("FriendAccountAdd(login)", &Bunny::Api_FriendAccountAdd);
     DECLARE_API_CALL("FriendAccountRemove(login)", &Bunny::Api_FriendAccountRemove);
 
@@ -856,6 +881,31 @@ API_CALL(Bunny::Api_RemovePlugin)
 
 	RemovePlugin(plugin);
     return ApiManager::ApiOk(QString("Removed '%1' as active plugin").arg(plugin->GetVisualName()));
+}
+
+API_CALL(Bunny::Api_getBunnyFullConfig)
+{
+    Q_UNUSED(account);
+    Q_UNUSED(hRequest);
+
+    QVariantMap bunnyData;
+    QVariantList pluginsData;
+    foreach (PluginInterface * p, listOfPluginsPtr)
+    {
+        QVariantMap pluginConfig;
+        pluginConfig.insert("Name", p->GetName());
+        pluginConfig.insert("Enabled", p->GetEnable());
+        if (PluginsSettings.contains(p->GetName()))
+            pluginConfig.insert("BunnyPluginConfig" ,PluginsSettings[p->GetName()].toMap());
+        else
+            pluginConfig.insert("BunnyPluginConfig", QVariantMap());
+
+        pluginsData.append(pluginConfig);
+    }
+    bunnyData.insert("Plugins", pluginsData);
+    bunnyData.insert("GlobalSettings", GlobalSettings);
+
+    return ApiManager::ApiVariantMap(bunnyData);
 }
 
 API_CALL(Bunny::Api_GetListOfAssociatedPlugins)
@@ -1094,7 +1144,7 @@ API_CALL(Bunny::Api_getOneLast)
         return ApiManager::ApiError("Access denied");
 
 	QString hParam = hRequest.GetArg("param");
-	if(hParam == "Last JabberConnection" || hParam == "LastIP" || hParam == "LastRecord" || hParam == "LastLocate" || hParam == "LastLocateString" || hParam == "LastCron")
+    if(hParam == "LastJabberConnection" || hParam == "LastIP" || hParam == "LastRecord" || hParam == "LastLocate" || hParam == "LastLocateString" || hParam == "LastCron")
 	{
         return ApiManager::ApiString(GetGlobalSetting(hParam, QString("")).toString());
 	}
@@ -1108,7 +1158,7 @@ API_CALL(Bunny::Api_getAllLast)
         return ApiManager::ApiError("Access denied");
 
 	QStringList params;
-	params << "Last JabberConnection" << "LastIP" << "LastRecord" << "LastLocate" << "LastLocateString" << "LastCron";
+    params << "LastJabberConnection" << "LastIP" << "LastRecord" << "LastLocate" << "LastLocateString" << "LastCron";
 	QMap<QString, QVariant> answer = QMap<QString, QVariant>();
 	foreach(QString param, params)
 	{

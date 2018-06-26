@@ -7,3 +7,4 @@ Makefile.Release
 bin/
 tmp/
 ojn_local/
+*.bak

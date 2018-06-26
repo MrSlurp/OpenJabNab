@@ -114,6 +114,10 @@ class ojnApi {
 		return $this->loadXmlString(file_get_contents(ROOT_WWW_API.$url));
 	}
 
+    public function getApiJson($url) {
+		return file_get_contents(ROOT_WWW_API.'json/'.$url);
+	}
+
 	public function getApiString($url) {
 		return (array)$this->getApi($url);
 	}

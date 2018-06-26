@@ -112,7 +112,7 @@ QByteArray HTTPRequest::ForwardTo(QString const& server)
 	return answer;
 }
 
-QString HTTPRequest::toString() const
+QString HTTPRequest::toXmlString() const
 {
 	QString s;
 	s.append(QString("<ul><li>URL : %1</li>").arg(QString(uri)));
@@ -129,4 +129,29 @@ QString HTTPRequest::toString() const
 	}
 	s.append("</ul>");
 	return s;
+}
+
+QString HTTPRequest::toString() const
+{
+    QString fullMessage;
+    fullMessage += "uri: " + uri + "\n";
+
+    QString args;
+    foreach (QString str, getData.keys())
+        args.append(QString("%1 => %2\n").arg(str,getData.value(str)));
+
+    fullMessage += "Args :\n" + args + "\n";
+
+    if(type == POST)
+    {
+        foreach(QString v, formPostData)
+        {
+            QString postData;
+            foreach (QString str, formPostData.keys())
+                postData.append(QString("%1 => %2\n").arg(str,formPostData.value(str)));
+
+            fullMessage += "formPostData :\n " + postData + "\n";
+        }
+    }
+    return fullMessage;
 }

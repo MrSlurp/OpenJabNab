@@ -80,7 +80,7 @@ ApiManager::ApiAnswer * ApiManager::ProcessApiCall(QString request, HTTPRequest 
 		if(request.startsWith("accounts/"))
 			return AccountManager::Instance().ProcessApiCall(account, request.mid(9), hRequest);
 
-        return ApiManager::ApiError(QString("Unknown Api Call : %1").arg(hRequest.toString()));
+        return ApiManager::ApiError(QString("Unknown Api Call : %1").arg(hRequest.toXmlString()));
 	}
 }
 
@@ -154,10 +154,12 @@ ApiManager::ApiAnswer * ApiManager::ProcessGlobalApiCall(Account const& account,
         if (isJsonApiCall)
         {
             QVariantMap fullMap;
+            Bunny dummyBunny;
             // Todo send a list with available api calls
             fullMap.insert("global/", GetApisAsJson());
             fullMap.insert("accounts/", AccountManager::Instance().GetApisAsJson());
             fullMap.insert("bunnies/", BunnyManager::Instance().GetApisAsJson());
+            fullMap.insert("bunny/", dummyBunny.GetApisAsJson());
             fullMap.insert("ztamps/", ZtampManager::Instance().GetApisAsJson());
             fullMap.insert("plugin/", PluginManager::Instance().GetPluginsApis());
             fullMap.insert("plugins/", PluginManager::Instance().GetApisAsJson());

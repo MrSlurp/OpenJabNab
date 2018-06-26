@@ -1,0 +1,51 @@
+server {
+
+        server_name  ojn.raspberry.pi;
+        root  /home/ojn/OpenJabNab/http-wrapper;
+
+        location / {
+          index index.php;
+          autoindex off;
+        }
+
+        if ($uri ~* "/vl/bc.jsp$") {
+          rewrite ^ /ojn_local/bootcode/bootcode.default last;
+        }
+
+        #if (!-e $request_filename) {
+        #        rewrite ^ /openjabnab.php last;
+        #}
+
+        location /ojn_admin {
+          index index.php;
+          autoindex off;
+        }
+
+        # Disable .htaccess
+        location ~ \.htaccess {
+          deny all;
+        }
+
+        # Stuffs
+        location = /favicon.ico {
+                access_log       off;
+                return   204;
+        }
+
+        location ~* ^.+\.(jpg|jpeg|gif|css|png|js|xml)$ {
+                expires         0d;
+                access_log      off;
+        }
+
+        #all unknown stuff is redirected to bunny
+        if (!-e $request_filename) {
+          rewrite  ^/(.*)$  /openjabnab.php  last;
+        }
+
+        location ~ \.php$ {
+          try_files $uri =404;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          include fastcgi_params;
+          fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        }
+}

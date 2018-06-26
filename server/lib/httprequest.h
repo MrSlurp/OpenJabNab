@@ -27,7 +27,8 @@ public:
 	QHash<QString, QString> const& GetPost() const;
 	QByteArray const& GetRawPost() const;
 	RequestType const& GetType() const;
-	QString toString() const;
+    QString toXmlString() const;
+    QString toString() const;
 	
 	QByteArray reply;
 

@@ -8,6 +8,7 @@ define([
   'app/components/dataServices/ojnApiAccount',
   'app/components/dataServices/ojnApiBunny',
   'app/components/dataServices/ojnngEvents',
+  
 ], function (module) {
   module.controller('HomeControler', function ($scope, ojnApiGlobal, ojnApiBunnies, ojnApiAccount, ojnngEvents, ojnApiBunny) {
     console.log("HomeControler reporting for duty.");

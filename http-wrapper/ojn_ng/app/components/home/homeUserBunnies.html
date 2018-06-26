@@ -7,11 +7,16 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-md-3" ng-repeat=" bunny in userBunnies">
-            <div ng-if="bunny.IsConnected" >
-              <img src="assets/img/nabaztag-awake.png" class="center-block" />
+            <div ng-if="bunny.IsRegistered" >
+              <div ng-if="bunny.IsConnected" >
+                <img src="assets/img/nabaztag-awake.png" class="center-block" />
+              </div>
+              <div ng-if="!bunny.IsConnected" >
+                <img src="assets/img/nabaztag-sleep.png" class="center-block" />
+              </div>
             </div>
-            <div ng-if="!bunny.IsConnected" >
-              <img src="assets/img/nabaztag-sleep.png" class="center-block" />
+            <div ng-if="!bunny.IsRegistered" >
+              <img src="assets/img/nabaztag-dead.png" class="center-block" />
             </div>
             <div class="center-block text-center" >{{'MAC:' + bunny.MAC}}</div>
             <div class="input-group">

@@ -173,13 +173,15 @@ API_CALL(BunnyManager::Api_GetUserBunniesStatus)
     if(!account.HasAccess(Account::AcBunnies,Account::Read))
         return ApiManager::ApiError("Access denied");
 
-
     QVariantList list;
-    foreach(Bunny * b, listOfBunnies)
+    foreach (QByteArray bunnyHexId, account.GetBunniesList())
     {
-        if (account.GetBunniesList().contains(b->GetID()))
+        QByteArray bunnyID = QByteArray::fromHex(bunnyHexId);
+        if (listOfBunnies.contains(bunnyID))
         {
+            Bunny * b = listOfBunnies.value(bunnyID);
             QVariantMap bunnyData;
+            bunnyData.insert("IsRegistered", true);
             bunnyData.insert("IsConnected", b->IsConnected());
             bunnyData.insert("Name", b->GetBunnyName());
             bunnyData.insert("MAC", b->GetID());
@@ -191,6 +193,18 @@ API_CALL(BunnyManager::Api_GetUserBunniesStatus)
             }
             list.append(bunnyData);
         }
+        else
+        {
+            QVariantMap bunnyData;
+            bunnyData.insert("IsRegistered", false);
+            bunnyData.insert("IsConnected", false);
+            bunnyData.insert("Name", "Unknown");
+            bunnyData.insert("MAC", bunnyHexId);
+            bunnyData.insert("IsSleeping", false);
+            bunnyData.insert("IsIdle", true);
+            list.append(bunnyData);
+        }
+
     }
     QVariantMap data;
     data.insert("bunnies", list);
@@ -271,8 +285,8 @@ API_CALL(BunnyManager::Api_AddBunny) {
 	if(!account.HasAccess(Account::AcBunnies,Account::Write))
 		return ApiManager::ApiError("Access denied");
 
-	QByteArray bunnyID = hRequest.GetArg("serial").toAscii();
-	if(listOfBunnies.contains(bunnyID))
+    QByteArray bunnyID = hRequest.GetArg("serial").toAscii();
+    if(listOfBunnies.contains(bunnyID))
 		return ApiManager::ApiError("Bunny already exists");
 
 	GetBunny(bunnyID);

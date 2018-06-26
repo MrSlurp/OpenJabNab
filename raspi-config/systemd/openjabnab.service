@@ -1,0 +1,17 @@
+[Unit]
+Description=openjabnab server
+After=network-online.target
+
+[Service]
+Type=simple
+User=ojn
+Group=www-data
+Restart=on-failure
+WorkingDirectory=/home/ojn/OpenJabNab/server/bin/
+PIDFile=/run/openjabnab.pid
+ExecStart=/home/ojn/OpenJabNab/server/bin/openjabnab
+ExecStop=/bin/kill -2 $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+Alias=openjabnab

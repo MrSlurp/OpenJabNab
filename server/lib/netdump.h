@@ -14,8 +14,8 @@ public:
 	static void Log(QString const& what, QString const& txt);
 	
 private:
-	NetworkDump() {};
-	virtual ~NetworkDump() {};
+    NetworkDump() {}
+    virtual ~NetworkDump() {}
 
 	QTextStream dumpStream;
 };

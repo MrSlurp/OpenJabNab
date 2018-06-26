@@ -41,8 +41,8 @@ QByteArray TTSPico::CreateNewSound(QString text, QString voice, bool forceOverwr
     QString wavefilePath = outputFolder.absoluteFilePath(waveFileName);
     QString mp3filePath = outputFolder.absoluteFilePath(waveFileName);
 
-	if(!forceOverwrite && QFile::exists(filePath))
-		return ttsHTTPUrl.arg(voice, fileName).toAscii();
+    if(!forceOverwrite && QFile::exists(waveFileName))
+        return ttsHTTPUrl.arg(voice, waveFileName).toAscii();
 
     // call local pico2wave
     QString cmd = "pico2wave -l " + voice + " -w ";

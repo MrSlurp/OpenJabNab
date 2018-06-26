@@ -22,7 +22,8 @@
                 <tr ng-repeat="func in funcList">
                   <td>{{func.functionName}}</td> 
                   <td>{{MakeApiFunctionArgumentsString(func.parameters)}}</td>
-                  <td ng-if="cat=='Api' && !apiFamilly.Name" >{{"/"+rootPath+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
+                  <td ng-if="cat=='Api' && !apiFamilly.Name && rootPath != 'bunny/'" >{{"/"+rootPath+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
+                  <td ng-if="cat=='Api' && !apiFamilly.Name && rootPath == 'bunny/'" >{{"/bunny/&lt;Bunny Mac&gt;/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
                   <td ng-if="cat=='Api' && apiFamilly.Name" >{{"/plugin/"+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
                   <td ng-if="cat=='Bunny' && apiFamilly.Name" >{{"/bunny/&lt;Bunny Mac&gt;/"+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
                   <td ng-if="cat=='Ztamp' && apiFamilly.Name" >{{"/ztamp/&lt;ztamp serial&gt;/"+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>

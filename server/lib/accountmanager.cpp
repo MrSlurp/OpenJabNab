@@ -342,8 +342,8 @@ API_CALL(AccountManager::Api_RemoveBunny)
 	else if(!account.IsAdmin() && (GlobalSettings::Get("Config/AllowUserManageBunny", false) != true || account.GetLogin() != login))
             return ApiManager::ApiError(QString("Access denied to user '%1'").arg(login));
 
-	QString bunnyID = hRequest.GetArg("bunnyid");
-	if(listOfAccountsByName.value(login)->RemoveBunny(bunnyID.toAscii())) {
+    QString bunnyID = hRequest.GetArg("bunnyid");
+    if(listOfAccountsByName.value(login)->RemoveBunny(bunnyID.toAscii())) {
 		Bunny *b = BunnyManager::GetBunny(bunnyID.toAscii());
 		b->RemoveGlobalSetting("OwnerAccount");
 		SaveAccounts();

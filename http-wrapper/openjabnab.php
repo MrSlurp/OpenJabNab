@@ -1,7 +1,7 @@
 <?php
 	$socket = fsockopen("127.0.0.1", 8080);
 	if(!$socket)
-		echo "Problem with OpenJabNab !";
+        http_response_code(503);
 	else
 	{
 		// Types :
@@ -10,7 +10,7 @@
 		// 3 = Raw POST
     
     // php7 replaced HTTP_RAW_POST_DATA with file_get_contents("php://input")
-    $postdata = file_get_contents("php://input")
+    $postdata = file_get_contents("php://input");
 		//if(isset($GLOBALS['HTTP_RAW_POST_DATA']))
     if(isset($postdata))
 			$type = 3;
@@ -48,7 +48,7 @@
 			case 3: // Raw Post
 				if(isset($_SERVER["CONTENT_LENGTH"]))
 					$headers .= "Content-Length: " . $_SERVER["CONTENT_LENGTH"] . "\r\n";
-				$requestdata = $headers . "\x00" . $_SERVER['REQUEST_URI'] . "\x00" . $GLOBALS['HTTP_RAW_POST_DATA'];
+				$requestdata = $headers . "\x00" . $_SERVER['REQUEST_URI'] . "\x00" . $postdata;
 				break;
 		}
     // +5 for lenght(4) and type (1)

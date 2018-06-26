@@ -23,7 +23,25 @@ angular.module('ojnApiModule')
           else
             ojnngEvents.notifyEvent("UserNotifyError", "Erreur lors du renommage, le serveur à répondu : " + response.data.message);
         
+          if (cb) cb(response.data);
+        },
+        function (error){ 
+          ojnngEvents.notifyEvent("UserNotifyError", "Erreur de communication avec le serveur");
           if (cb) cb();
+        }
+      );
+    }
+    
+    var _getFullConfig = function(mac, cb)
+    {
+      var url = _bunnyApiPath + "/"+ mac + "/getBunnyFullConfig?" + ojnApiAccount.getTokenUrl();
+      $http.get(url).then(
+        function (response) {
+          if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
+          {
+            //ojnngEvents.notifyEvent("UserNotifySucess", "Lapin renommé avec succès ("+response.data.message+")");
+          }
+          if (cb) cb(response.data);
         },
         function (error){ 
           ojnngEvents.notifyEvent("UserNotifyError", "Erreur de communication avec le serveur");
@@ -37,6 +55,12 @@ angular.module('ojnApiModule')
         var defer = $q.defer();
         _doBunnyRename(mac, newName, function () { defer.resolve();});
         return defer.promise;
+      },
+      getFullConfig: function (mac) {
+        var defer = $q.defer();
+        _getFullConfig(mac, function (response) { defer.resolve(response);});
+        return defer.promise;
+
       }
     }
   });

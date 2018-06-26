@@ -16,6 +16,7 @@ class XmppHandler;
 class OJN_EXPORT Bunny : QObject, public ApiHandler<Bunny>
 {
 	friend class BunnyManager;
+    friend class ApiManager;
 	Q_OBJECT
 public:
 	enum State { State_Disconnected, State_Authenticating, State_Authenticated, State_Ready};
@@ -79,6 +80,7 @@ private slots:
 	void SaveConfig();
 
 private:
+    Bunny();
 	Bunny(QByteArray const&);
 	void LoadConfig();
     void PostLoadConfig();
@@ -120,6 +122,7 @@ private:
 	API_CALL(Api_setVApiToken);
 	API_CALL(Api_getAllLast);
 	API_CALL(Api_getOneLast);
+    API_CALL(Api_getBunnyFullConfig);
     API_CALL(Api_FriendAccountAdd);
     API_CALL(Api_FriendAccountRemove);
 

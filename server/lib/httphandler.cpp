@@ -35,6 +35,7 @@ void HttpHandler::ReceiveData()
 void HttpHandler::HandleBunnyHTTPRequest()
 {
 	HTTPRequest request(receivedData);
+    NetworkDump::Log("Dumping HTTP Request : \n", request.toString());
 	QString uri = request.GetURI();
 	if (uri.startsWith("/ojn_api/"))
 	{
