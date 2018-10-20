@@ -29,16 +29,16 @@ public:
 
 	void XmppBunnyMessage(Bunny *, QByteArray const&);
 
-	bool OnClick(Bunny *, PluginInterface::ClickType);
-	bool OnEarsMove(Bunny *, int, int);
-	bool OnRFID(Bunny *, QByteArray const&);
-	bool OnRFID(Ztamp *, Bunny *);
+    bool OnClick(Bunny *, PluginInterface::ClickType);
+    bool OnEarsMove(Bunny *, int, int);
+    bool OnRFID(Bunny *, QByteArray const&);
+    bool OnRFID(Ztamp *, Bunny *);
 
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
+    void OnBunnyConnect(Bunny *);
+    void OnBunnyDisconnect(Bunny *);
 
-	void OnZtampConnect(Ztamp *);
-	void OnZtampDisconnect(Ztamp *);
+    void OnZtampConnect(Ztamp *);
+    void OnZtampDisconnect(Ztamp *);
 
 	QList<PluginInterface *> const& GetListOfPlugins() const;
 	PluginInterface * GetPluginByName(QString const& name) const;
@@ -90,6 +90,8 @@ private:
 	API_CALL(Api_ReloadPlugin);
 
     API_CALL(Api_GetAllPluginsData);
+
+    QVariantMap GetPluginsData(bool bForAdmin);
 
 };
 

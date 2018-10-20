@@ -22,15 +22,16 @@ public:
 	PluginRatp();
 	virtual ~PluginRatp();
 	
-	bool OnClick(Bunny *, PluginInterface::ClickType);
-	void OnCron(Bunny *, QVariant);
-	bool OnRFID(Bunny * b, QByteArray const& tag);
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
-	void OnInitPacket(const Bunny *, AmbientPacket &, SleepPacket &);
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny *, PluginInterface::ClickType);
+    virtual void OnCron(Bunny *, QVariant);
+    virtual bool OnRFID(Bunny * b, QByteArray const& tag);
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
+    virtual void OnInitPacket(const Bunny *, AmbientPacket &, SleepPacket &);
 
 	// API
-	void InitApiCalls();
+    virtual void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_setDefaultArret);
 	PLUGIN_BUNNY_API_CALL(Api_addArret);
 	PLUGIN_BUNNY_API_CALL(Api_removeArret);

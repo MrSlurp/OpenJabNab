@@ -22,7 +22,7 @@ function (angular, angularRoute) {
     'homeModule',
     'bunniesModule',
     'adminModule',
-    'ui.bootstrap',
+    //'ui.bootstrap',
   ]);
   app.config([
     '$routeProvider',
@@ -46,7 +46,7 @@ function (angular, angularRoute) {
         $scope.IsUserRegistered = ojnApiAccount.hasToken();
         if ($scope.IsUserRegistered)
         {
-          ojnngEvents.notifyEvent("UserNotifySucess", "Login succeed")
+          ojnngEvents.notifyEvent("UserNotifySuccess", "Login succeed")
         }
       });
     }
@@ -58,7 +58,7 @@ function (angular, angularRoute) {
         $scope.IsUserRegistered = ojnApiAccount.hasToken();
         if (!$scope.IsUserRegistered)
         {
-          ojnngEvents.notifyEvent("UserNotifySucess", "Logout succeed")
+          ojnngEvents.notifyEvent("UserNotifySuccess", "Logout succeed")
         }
       });
     }
@@ -94,4 +94,7 @@ function (angular, angularRoute) {
     updatePing();
     checkLogin();
   });
+  app.filter('decodeURIComponent', function() {
+      return window.decodeURIComponent;
+  });  
 });

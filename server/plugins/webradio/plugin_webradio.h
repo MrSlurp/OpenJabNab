@@ -13,14 +13,15 @@ public:
 	PluginWebradio();
 	virtual ~PluginWebradio();
 	virtual bool Init();
-	void OnCron(Bunny *, QVariant);
+    virtual void OnCron(Bunny *, QVariant);
 	virtual bool OnRFID(Bunny *, QByteArray const&);
 	virtual bool OnRFID(Ztamp *, Bunny *);
-	
-	bool OnClick(Bunny *, PluginInterface::ClickType);
 
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny *, PluginInterface::ClickType);
+
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
 
 	// API
 	void InitApiCalls();

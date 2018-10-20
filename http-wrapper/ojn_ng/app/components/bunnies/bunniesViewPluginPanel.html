@@ -1,0 +1,44 @@
+﻿<div class="panel panel-info">
+  <div class="panel-heading">
+    <div class="panel-title"><span >Plugins</span></div>
+  </div>
+  <div class="panel-body">
+    <table class="table">
+      <tbody>
+        
+        <tr>
+          <th>Nom du plugin</th>
+          <th>État</th>
+          <th>Activer/Désactiver</th>
+          <!--<th>Configurer</th>   
+          ng-if="plugin.Enabled"
+          -->
+        </tr>
+        <tr ng-repeat="plugin in selectedBunny.Config.Plugins | orderBy:'-BunnyEnabled' | filter: {Enabled : true}" >
+          <td>{{plugin.VisualName | decodeURIComponent}}</td>
+          <td>{{plugin.BunnyEnabled? 'Activé' : 'Désactivé'}}</td>
+          <td>
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button"  class="btn btn-default" ng-disabled="plugin.BunnyEnabled" ng-style="!plugin.BunnyEnabled ? {color:'blue'} : {}"
+                      ng-click="EnablePluginForBunny(plugin, selectedBunny)" >
+                <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span>
+              </button>
+              <button type="button"  class="btn btn-default" ng-disabled="!plugin.BunnyEnabled" ng-style="plugin.BunnyEnabled ? {color:'red'} : {}"
+                      ng-click="DisablePluginForBunny(plugin, selectedBunny)" >
+                <span class="glyphicon glyphicon-minus" aria-hidden="true" ></span>
+              </button>
+            </div>
+          </td>
+          <!--
+          <td>
+            <button type="button"  class="btn btn-default" ng-disabled="!plugin.BunnyEnabled" ng-style="plugin.BunnyEnabled ? {color:'green'} : {}"
+                    ng-click="OpenPluginUserConfigPane(plugin)" >
+              <span class="glyphicon glyphicon-cog" aria-hidden="true" ></span>
+            </button>
+          </td>
+        </tr>-->
+      </tbody>
+    </table>
+    
+  </div>
+</div>

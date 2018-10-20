@@ -442,7 +442,7 @@ bool Bunny::LoadJsonConfig(QString fileName)
         else
             LogError(QString("Bunny %1 has invalid plugin (%2)!").arg(QString(GetID()), s));
     }
-
+    LogInfo(QString("Bunny %1 configuration Loaded!").arg(QString(GetID())));
     return true;
 }
 
@@ -583,6 +583,8 @@ void Bunny::SetPluginSetting(QString const& pluginName, QString const& key, QVar
 {
     if (!PluginsSettings.contains(pluginName))
         PluginsSettings.insert(pluginName, QVariantMap());
+    else if (PluginsSettings[pluginName].isNull()) // we should not have a null object
+        PluginsSettings[pluginName] = QVariantMap();
 
     QVariantMap existingMap = qvariant_cast<QVariantMap>(PluginsSettings[pluginName]);
     existingMap[key] = value;
@@ -890,11 +892,30 @@ API_CALL(Bunny::Api_getBunnyFullConfig)
 
     QVariantMap bunnyData;
     QVariantList pluginsData;
-    foreach (PluginInterface * p, listOfPluginsPtr)
+
+
+    foreach (PluginInterface * p, PluginManager::Instance().GetListOfPlugins())
     {
+        bool bSkip = false;
+        switch (p->GetType())
+        {
+            case PluginInterface::RequiredPlugin :
+            case PluginInterface::SystemPlugin :
+                bSkip = true;
+                break;
+            default :
+                break;
+        }
+        if (bSkip)
+            continue;
+
         QVariantMap pluginConfig;
         pluginConfig.insert("Name", p->GetName());
+        pluginConfig.insert("VisualName", p->GetVisualName());
         pluginConfig.insert("Enabled", p->GetEnable());
+        pluginConfig.insert("BunnyEnabled", (bool)listOfPluginsPtr.contains(p));
+        pluginConfig.insert("HasClick", p->HasClickAction());
+
         if (PluginsSettings.contains(p->GetName()))
             pluginConfig.insert("BunnyPluginConfig" ,PluginsSettings[p->GetName()].toMap());
         else

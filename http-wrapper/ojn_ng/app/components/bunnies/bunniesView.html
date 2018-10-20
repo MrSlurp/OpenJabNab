@@ -7,24 +7,38 @@
         <div ng-include="'app/shared/alertContainer/alertContainerView.html'" /> 
       </div>
     </div>
+    <div class="row" ng-if="IsUserRegistered">
+      <div class="col-xs-2 col-md-1" ng-repeat="bunny in userBunnies" >
+          <a class="thumbnail" href="javascript:void(0);" ng-click="SelectBunny(bunny)" ng-class="{active : (selectedBunny == bunny)}" >
+            <img ng-if="selectedBunny == bunny" src="assets/img/nabaztag-awake.png" />
+            <img ng-if="selectedBunny != bunny" src="assets/img/nabaztag-sleep.png" />
+            <span class="center-block text-center" ng-if="selectedBunny == bunny" ><b>{{bunny.Name}}</b></span>
+            <span class="center-block text-center" ng-if="selectedBunny != bunny" > {{bunny.Name}}</span>
+          </a>
+      </div>
+    </div>    
     <div class="row" ng-if="IsUserRegistered" >
-      <uib-tabset >
-        <uib-tab index="$index" ng-repeat="bunny in userBunnies" heading="{{bunny.Name}}">
+      <uib-tabset ng-if="selectedBunny != undefined" >
+        <uib-tab heading="Configuration du Boutons">
           <div class="col-md-12">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="panel-title"><span >Configuration de l'API</span></div>
-              </div>
-              <div class="panel-body">
-                <table class="table">
-                  <tbody>
-                    <tr><th>Api Violet activée</th> <td>{{bunny.Config.GlobalSettings.VApiEnable}}</td></tr>
-                    <tr><th>Token API Violet</th> <td>{{bunny.Config.GlobalSettings.VApiToken}}</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <ng-include src="'./app/components/bunnies/bunniesViewButtonPanel.html'" /> 
           </div>
+        </uib-tab>
+        <uib-tab heading="Configuration des plugins actifs">
+          <div class="col-md-12">
+            <!--<ng-include src="'./app/components/bunnies/bunniesViewButtonPanel.html'" /> --->
+          </div>
+        </uib-tab>
+        <uib-tab heading="Activer/Désactiver les Plugins">
+          <div class="col-md-12">
+            <ng-include src="'./app/components/bunnies/bunniesViewPluginPanel.html'" /> 
+          </div>
+        </uib-tab>
+        <uib-tab heading="Statut du lapin et API">
+          <div class="col-md-12">
+            <ng-include src="'./app/components/bunnies/bunniesViewApiPanel.html'" /> 
+          </div>
+          <!--Connection status info-->
           <div class="col-md-12">
             <div class="panel panel-info">
               <div class="panel-heading">
@@ -33,10 +47,10 @@
               <div class="panel-body">
                 <table class="table">
                   <tbody>
-                    <tr><th>Last Jabber Connection</th> <td>{{bunny.Config.GlobalSettings.LastJabberConnection}}</td></tr>
-                    <tr><th>Last IP Address</th> <td>{{bunny.Config.GlobalSettings.LastIP}}</td></tr>
-                    <tr><th>Last Locate</th> <td>{{bunny.Config.GlobalSettings.LastLocate}}</td></tr>
-                    <tr><th>Last Locate String</th> <td>{{bunny.Config.GlobalSettings.LastLocateString}}</td></tr>
+                    <tr><th>Last Jabber Connection</th> <td>{{selectedBunny.Config.GlobalSettings.LastJabberConnection}}</td></tr>
+                    <tr><th>Last IP Address</th> <td>{{selectedBunny.Config.GlobalSettings.LastIP}}</td></tr>
+                    <tr><th>Last Locate</th> <td>{{selectedBunny.Config.GlobalSettings.LastLocate}}</td></tr>
+                    <tr><th>Last Locate String</th> <td>{{selectedBunny.Config.GlobalSettings.LastLocateString}}</td></tr>
                   </tbody>
                 </table>
               </div>

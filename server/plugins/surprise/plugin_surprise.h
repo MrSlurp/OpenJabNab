@@ -12,12 +12,13 @@ public:
 	PluginSurprise();
 	virtual ~PluginSurprise();
 
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
 	virtual void OnCron(Bunny *, QVariant);
 	
-	void InitApiCalls();
-    bool OnClick(Bunny *, PluginInterface::ClickType);
+    virtual void InitApiCalls();
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny *, PluginInterface::ClickType);
 	
 protected:
 	void createCron(Bunny *);
@@ -28,6 +29,7 @@ protected:
 	PLUGIN_BUNNY_API_CALL(Api_GetFolder);
 	PLUGIN_BUNNY_API_CALL(Api_SetFrequency);
 	PLUGIN_BUNNY_API_CALL(Api_GetFrequency);
+    PLUGIN_API_CALL(Api_GetConfigValues);
 
 	QStringList availableSurprises;
 };

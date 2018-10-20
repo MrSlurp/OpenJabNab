@@ -22,13 +22,14 @@ public:
 	virtual ~PluginEphemeride();
 	virtual bool Init();
 	
-	bool OnClick(Bunny *, PluginInterface::ClickType);
-	void OnCron(Bunny *, QVariant);
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny *, PluginInterface::ClickType);
+    virtual void OnCron(Bunny *, QVariant);
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
 
 	// API
-	void InitApiCalls();
+    virtual void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_AddWebcast);
 	PLUGIN_BUNNY_API_CALL(Api_RemoveWebcast);
 	PLUGIN_BUNNY_API_CALL(Api_GetWebcastsList);

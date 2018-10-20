@@ -1,35 +1,69 @@
-﻿<div ng-repeat="(rootPath, apiList) in ApiFull">
-  <h3>{{"Section :" + rootPath}}</h3>
-  <div class="row" ng-repeat="apiFamilly in apiList" >
-    <div class="col-md-12">
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <div ng-if="apiFamilly.Name" class="panel-title"><span >{{"Plugin :" + apiFamilly.Name}}</span></div>
-          <div ng-if="!apiFamilly.Name" class="panel-title"><span >{{"General"}}</span></div>
-        </div>
-        <div class="panel-body">
-          <div ng-if="funcList.length != 0" ng-repeat="(cat, funcList) in apiFamilly.FunctionCategories" >
-            <h4>{{"Type de fonctions : " + cat}}</h3>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Function</th>
-                  <th scope="col">Arguments</th>
-                  <th scope="col">Chemin complet</th>
-                </tr>
-              </thead>            
-              <tbody>
-                <tr ng-repeat="func in funcList">
-                  <td>{{func.functionName}}</td> 
-                  <td>{{MakeApiFunctionArgumentsString(func.parameters)}}</td>
-                  <td ng-if="cat=='Api' && !apiFamilly.Name && rootPath != 'bunny/'" >{{"/"+rootPath+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
-                  <td ng-if="cat=='Api' && !apiFamilly.Name && rootPath == 'bunny/'" >{{"/bunny/&lt;Bunny Mac&gt;/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
-                  <td ng-if="cat=='Api' && apiFamilly.Name" >{{"/plugin/"+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
-                  <td ng-if="cat=='Bunny' && apiFamilly.Name" >{{"/bunny/&lt;Bunny Mac&gt;/"+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
-                  <td ng-if="cat=='Ztamp' && apiFamilly.Name" >{{"/ztamp/&lt;ztamp serial&gt;/"+apiFamilly.Name+"/"+func.functionName+MakeApiUrlArgumentsString(func.parameters)}}</td>
-                </tr>
-              </tbody>
-            </table>
+﻿<div class="container-fluid" >
+
+  <div ng-repeat="(rootPath, apiList) in ApiFull">
+    <h3>{{"Section :" + rootPath}}</h3>
+    <div class="row" ng-repeat="apiFamilly in apiList" >
+      <div class="col-md-12">
+        <div class="panel panel-info">
+          <div class="panel-heading" >
+            <a href="javascript:void(0);" ng-model="apiFamilly.uicollapsed" ng-click="apiFamilly.uicollapsed=!apiFamilly.uicollapsed">
+              <div ng-if="apiFamilly.Name" class="panel-title"><span >{{"Plugin :" + apiFamilly.Name}}</span></div>
+              <div ng-if="!apiFamilly.Name" class="panel-title"><span >{{"General"}}</span></div>
+            </a>
+          </div>
+          <div ng-show="apiFamilly.uicollapsed" >
+            <div class="panel-body">
+              <div ng-if="funcList.length != 0" ng-repeat="(cat, funcList) in apiFamilly.FunctionCategories" >
+                <div class="row" >
+                  <div class="col-md-12">
+                    <div class="panel panel-info">
+                      <div class="panel-heading">
+                        <div class="panel-title"><span >Tester l'API</span></div>
+                      </div>
+                      <div class="panel-body">
+                        <div >
+                          <span >URL</span>
+                          <input type="text" class="form-control"  ng-model="currentApiTest.Url">
+                          <span >Parameters</span>
+                          <input type="text" class="form-control"  ng-model="currentApiTest.ParamString">
+                          <button class="btn btn-default" type="button" ng-click="TestApi(currentApiTest.Url, currentApiTest.ParamString);">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true">Run command</span>
+                          </button>
+                        </div>
+                        <div >
+                          {{currentApiTest.lastResponse}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>  
+              
+                <h4>{{"Type de fonctions : " + cat}}</h3>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Function</th>
+                      <th scope="col">Arguments</th>
+                      <th scope="col">Chemin complet</th>
+                      <th scope="col">Tester</th>
+                    </tr>
+                  </thead>            
+                  <tbody>
+                    <tr ng-repeat="func in funcList">
+                      <td>{{func.functionName}}</td> 
+                      <td>{{MakeApiFunctionArgumentsString(func.parameters)}}</td>
+                      <td>{{MakeApiFunctionPath(rootPath, apiFamilly, cat, func)+ MakeApiUrlArgumentsString(func.parameters, true)}}</td>
+                      <td >
+                        <button type="button" class="btn btn-default" 
+                                ng-click="setApiTestFields(rootPath, apiFamilly, cat, func)" >
+                          <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>

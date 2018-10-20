@@ -295,6 +295,62 @@ void PluginManager::OnZtampDisconnect(Ztamp * b)
 			plugin->OnZtampDisconnect(b);
 }
 
+
+QVariantMap PluginManager::GetPluginsData(bool bForAdmin)
+{
+    QVariantMap pluginsData;
+    QVariantList pluginsRequired;
+    QVariantList pluginsSystem;
+    QVariantList pluginsBunny;
+    QVariantList pluginsZtamp;
+    QVariantList pluginsBunnyZtamp;
+    foreach (PluginInterface * p, listOfPlugins)
+    {
+        // skip non enabled plugin if not an admin (user doesn't need to know)
+        if (!p->GetEnable() && !bForAdmin)
+            continue;
+
+        QVariantMap currentPluginData;
+        QString pluginsFileName = listOfPluginsFileName.value(p);
+        currentPluginData.insert("Name", p->GetName());
+        currentPluginData.insert("IsEnabled", p->GetEnable());
+        currentPluginData.insert("VisualName", p->GetVisualName());
+        if (bForAdmin)
+        {
+            currentPluginData.insert("LocalHppFolder", p->GetLocalHTTPFolder()->absolutePath());
+            currentPluginData.insert("FileName", pluginsFileName);
+        }
+        switch (p->GetType()) {
+        case PluginInterface::RequiredPlugin :
+            pluginsRequired.append(currentPluginData);
+            break;
+        case PluginInterface::SystemPlugin :
+            pluginsSystem.append(currentPluginData);
+            break;
+        case PluginInterface::BunnyPlugin :
+            pluginsBunny.append(currentPluginData);
+            break;
+        case PluginInterface::ZtampPlugin :
+            pluginsZtamp.append(currentPluginData);
+            break;
+        case PluginInterface::BunnyZtampPlugin :
+            pluginsBunnyZtamp.append(currentPluginData);
+            break;
+        default:
+            break;
+        }
+    }
+    if (bForAdmin)
+    {
+        pluginsData.insert("Required", pluginsRequired);
+        pluginsData.insert("System", pluginsSystem);
+    }
+    pluginsData.insert("Bunny", pluginsBunny);
+    pluginsData.insert("Ztamp", pluginsZtamp);
+    pluginsData.insert("BunnyZtamp", pluginsBunnyZtamp);
+    return pluginsData;
+}
+
 /*******
  * API *
  *******/
@@ -543,52 +599,7 @@ API_CALL(PluginManager::Api_ReloadPlugin)
 API_CALL(PluginManager::Api_GetAllPluginsData)
 {
     Q_UNUSED(hRequest);
-
-    if(!account.IsAdmin() && !account.HasAccess(Account::AcServer,Account::Read))
-        return ApiManager::ApiError("Access denied");
-
-    QVariantMap pluginsData;
-    QVariantList pluginsRequired;
-    QVariantList pluginsSystem;
-    QVariantList pluginsBunny;
-    QVariantList pluginsZtamp;
-    QVariantList pluginsBunnyZtamp;
-    QList<QString> list;
-    foreach (PluginInterface * p, listOfPlugins)
-    {
-        QVariantMap currentPluginData;
-        QString pluginsFileName = listOfPluginsFileName.value(p);
-        currentPluginData.insert("Name", p->GetName());
-        currentPluginData.insert("IsEnabled", p->GetEnable());
-        currentPluginData.insert("VisualName", p->GetVisualName());
-        currentPluginData.insert("LocalHppFolder", p->GetLocalHTTPFolder()->absolutePath());
-        currentPluginData.insert("FileName", pluginsFileName);
-        switch (p->GetType()) {
-        case PluginInterface::RequiredPlugin :
-            pluginsRequired.append(currentPluginData);
-            break;
-        case PluginInterface::SystemPlugin :
-            pluginsSystem.append(currentPluginData);
-            break;
-        case PluginInterface::BunnyPlugin :
-            pluginsBunny.append(currentPluginData);
-            break;
-        case PluginInterface::ZtampPlugin :
-            pluginsZtamp.append(currentPluginData);
-            break;
-        case PluginInterface::BunnyZtampPlugin :
-            pluginsBunnyZtamp.append(currentPluginData);
-            break;
-        default:
-            break;
-        }
-    }
-    pluginsData.insert("Required", pluginsRequired);
-    pluginsData.insert("System", pluginsSystem);
-    pluginsData.insert("Bunny", pluginsBunny);
-    pluginsData.insert("Ztamp", pluginsZtamp);
-    pluginsData.insert("BunnyZtamp", pluginsBunnyZtamp);
-    return ApiManager::ApiVariantMap(pluginsData);
+    return ApiManager::ApiVariantMap(GetPluginsData(account.IsAdmin() || account.HasAccess(Account::AcServer,Account::Read)));
 }
 
 /********************

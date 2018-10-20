@@ -17,7 +17,7 @@ define([
           resolve:{
             "check":function(ojnApiAccount, $location){   
               //check user is logged in
-              if(ojnApiAccount.isInitialized && ojnApiAccount.hasToken() && ojnApiAccount.isUserAdmin()){ 
+              if(ojnApiAccount.isInitialized() && ojnApiAccount.hasToken() && ojnApiAccount.isUserAdmin()){ 
                 // pass
               }else{
                 $location.path('/home');    //redirect user to home.

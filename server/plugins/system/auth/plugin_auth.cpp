@@ -44,12 +44,15 @@ bool PluginAuth::DoAuth(XmppHandler * xmpp, QByteArray const& data, Bunny ** pBu
 	{
 		case 0:
 			// We should receive <?xml version='1.0' encoding='UTF-8'?><stream:stream to='ojn.soete.org' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>"
+            LogDebug("Auth Step 0");
+
 			if(data.startsWith("<?xml version='1.0' encoding='UTF-8'?>"))
 			{
 				// Send an auth Request
 				answer.append("<?xml version='1.0'?><stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' id='2173750751' from='"+ xmpp->GetXmppDomain() + "' version='1.0' xml:lang='en'>");
 				answer.append("<stream:features><mechanisms xmlns='urn:ietf:params:xml:ns:xmpp-sasl'><mechanism>DIGEST-MD5</mechanism><mechanism>PLAIN</mechanism></mechanisms><register xmlns='http://violet.net/features/violet-register'/></stream:features>");
 				xmpp->currentAuthStep = 1;
+                LogDebug("Auth request sent");
 				return true;
 			}
 			LogError("Bad Auth Step 0, disconnect");
@@ -59,6 +62,7 @@ bool PluginAuth::DoAuth(XmppHandler * xmpp, QByteArray const& data, Bunny ** pBu
 			{
 				// Bunny request a register <iq type='get' id='1'><query xmlns='violet:iq:register'/></iq>
 				IQ iq(data);
+                LogDebug("Auth step 1");
 				if(iq.IsValid() && iq.Type() == IQ::Iq_Get && iq.Content() == "<query xmlns='violet:iq:register'/>")
 				{
 					// Send the request
@@ -84,7 +88,8 @@ bool PluginAuth::DoAuth(XmppHandler * xmpp, QByteArray const& data, Bunny ** pBu
 
 		case 2:
 			{
-				// We should receive <response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>...</response>
+                LogDebug("Auth step 2");
+                // We should receive <response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>...</response>
 				QRegExp rx("<response[^>]*>(.*)</response>");
 				if (rx.indexIn(data) != -1)
 				{
@@ -146,7 +151,8 @@ bool PluginAuth::DoAuth(XmppHandler * xmpp, QByteArray const& data, Bunny ** pBu
 
 		case 3:
 			// We should receive <response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>
-			if(data.startsWith("<response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>"))
+            LogDebug("Auth step 3");
+            if(data.startsWith("<response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>"))
 			{
 				// Send success
 				answer.append("<success xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>");
@@ -157,7 +163,8 @@ bool PluginAuth::DoAuth(XmppHandler * xmpp, QByteArray const& data, Bunny ** pBu
 			return false;
 
 		case 4:
-			// We should receive <?xml version='1.0' encoding='UTF-8'?>
+            LogDebug("Auth step 4");
+            // We should receive <?xml version='1.0' encoding='UTF-8'?>
 			if(data.startsWith("<?xml version='1.0' encoding='UTF-8'?>"))
 			{
 				// Send success
@@ -175,7 +182,8 @@ bool PluginAuth::DoAuth(XmppHandler * xmpp, QByteArray const& data, Bunny ** pBu
 
 		case 100: // Register Bunny
 			{
-				// We should receive <iq to='xmpp.nabaztag.com' type='set' id='2'><query xmlns="violet:iq:register"><username>0019db01dbd7</username><password>208e6d83bfb2</password></query></iq>
+                LogDebug("Auth step 100");
+                // We should receive <iq to='xmpp.nabaztag.com' type='set' id='2'><query xmlns="violet:iq:register"><username>0019db01dbd7</username><password>208e6d83bfb2</password></query></iq>
 				IQ iqAuth(data);
 				if(iqAuth.IsValid() && iqAuth.Type() == IQ::Iq_Set)
 				{

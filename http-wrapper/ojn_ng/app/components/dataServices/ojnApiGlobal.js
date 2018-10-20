@@ -108,7 +108,20 @@ angular.module('ojnApiModule')
     };
     
     _getGlobalAbout();
-
+    
+    var _runTestApiCommand = function(url, argString, cb) {
+      if (_ojnStatusOk == true)
+      {
+        var url = _baseApiPath + url + "?" + ojnApiAccount.getTokenUrl() +"&" + argString;
+        $http.get(url).then(
+          function (response) {
+            if (cb) cb(response.data);
+          }
+        );
+        
+      }
+    };
+    
     return {
       getApiGlobalAbout: function () {
         var defer = $q.defer();
@@ -133,7 +146,12 @@ angular.module('ojnApiModule')
         var defer = $q.defer();
         _getListOfApiCalls(function (response) { defer.resolve(response);});
         return defer.promise;
-      }
+      },
+      runTestApi: function (url, argstring) {
+        var defer = $q.defer();
+        _runTestApiCommand(url, argstring, function (response) { defer.resolve(response);});
+        return defer.promise;
+      },
     }
   });
 });

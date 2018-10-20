@@ -150,6 +150,7 @@ angular.module('ojnApiModule')
       }
     };
 
+	// add given bunny mac addr to current account
     var _addBunnyToAccount = function(mac, cb){
       if (ojnApiHelpers.handleSimuRequest(cb))
       {
@@ -160,7 +161,7 @@ angular.module('ojnApiModule')
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
-            ojnngEvents.notifyEvent("UserNotifySucess", "Lapin ajouté au compte avec succès ("+response.data.message+")");
+            ojnngEvents.notifyEvent("UserNotifySuccess", "Lapin ajouté au compte avec succès ("+response.data.message+")");
           else
             ojnngEvents.notifyEvent("UserNotifyError", "Erreur d'ajout du lapin, le serveur à répondu : " + response.data.message);
           if (cb) cb();
@@ -173,12 +174,13 @@ angular.module('ojnApiModule')
       );
     };
 
+	// remove given bunny (by mac addr) from current account
     var _removeBunnyFromAccount = function(mac, cb){
       var url = _accountsApiPath + "/removeBunny?login="+_authLogin+"&"+"token="+_authToken+"&"+"bunnyid="+mac;
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
-            ojnngEvents.notifyEvent("UserNotifySucess", "Lapin retiré du compte avec succès ("+response.data.message+")");
+            ojnngEvents.notifyEvent("UserNotifySuccess", "Lapin retiré du compte avec succès ("+response.data.message+")");
           else
             ojnngEvents.notifyEvent("UserNotifyError", "Erreur : " + response.data.message);
           if (cb) cb();
@@ -217,7 +219,7 @@ angular.module('ojnApiModule')
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
-            ojnngEvents.notifyEvent("UserNotifySucess", "Compte ajouté avec succès ("+response.data.message+")");
+            ojnngEvents.notifyEvent("UserNotifySuccess", "Compte ajouté avec succès ("+response.data.message+")");
           else
             ojnngEvents.notifyEvent("UserNotifyError", response.data.message);
           if (cb) cb();
@@ -230,7 +232,7 @@ angular.module('ojnApiModule')
       );         
     };
     
-    var _GetAllUsersInfos = function(cb) {
+    var _getAllUsersInfos = function(cb) {
       var dummyObj=[
         {login:"Demo1", username:"Demo1", token:"FakeToken", isValid:false, language:"klingon", isAdmin:true},
         {login:"Demo2", username:"Demo2", token:"FakeToken", isValid:false, language:"klingon", isAdmin:false},
@@ -266,7 +268,7 @@ angular.module('ojnApiModule')
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
-            ojnngEvents.notifyEvent("UserNotifySucess", "Compte supprimé avec succès ("+response.data.message+")");
+            ojnngEvents.notifyEvent("UserNotifySuccess", "Compte supprimé avec succès ("+response.data.message+")");
           if (cb) cb();
         },
         function (error){ 
@@ -291,7 +293,7 @@ angular.module('ojnApiModule')
       $http.get(url).then(
         function (response) {
           if (!ojnApiHelpers.isErrorApiStatusMessage(response.data))
-            ojnngEvents.notifyEvent("UserNotifySucess", "("+response.data.message+")");
+            ojnngEvents.notifyEvent("UserNotifySuccess", "("+response.data.message+")");
           else
             ojnngEvents.notifyEvent("UserNotifyError", "("+response.data.message+")");
           if (cb) cb();
@@ -359,7 +361,7 @@ angular.module('ojnApiModule')
       },
       getAllUsersInfos: function() {
         var defer = $q.defer();
-        _GetAllUsersInfos(function (data) { defer.resolve(data);});
+        _getAllUsersInfos(function (data) { defer.resolve(data);});
         return defer.promise;
       },
       removeAccount: function(login) {

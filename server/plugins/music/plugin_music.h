@@ -19,10 +19,11 @@ public:
 	virtual bool OnRFID(Bunny *, QByteArray const&);
 	virtual bool OnRFID(Ztamp *, Bunny *);
 
-	bool OnClick(Bunny *, PluginInterface::ClickType);
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny *, PluginInterface::ClickType);
 
 	// API
-	void InitApiCalls();
+    virtual void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_AddRFID);
 	PLUGIN_BUNNY_API_CALL(Api_RemoveRFID);
 	PLUGIN_BUNNY_API_CALL(Api_getFilesList);

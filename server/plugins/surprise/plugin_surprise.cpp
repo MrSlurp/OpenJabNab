@@ -138,6 +138,7 @@ void PluginSurprise::InitApiCalls()
 	DECLARE_PLUGIN_BUNNY_API_CALL("getFolderList()", PluginSurprise, Api_GetFolderList);
 	DECLARE_PLUGIN_BUNNY_API_CALL("setFrequency(value)", PluginSurprise, Api_SetFrequency);
 	DECLARE_PLUGIN_BUNNY_API_CALL("getFrequency()", PluginSurprise, Api_GetFrequency);
+    DECLARE_PLUGIN_API_CALL("getConfigValues()", PluginSurprise, Api_GetConfigValues);
 }
 
 PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_SetFolder)
@@ -145,6 +146,7 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_SetFolder)
 	Q_UNUSED(account);
 
 	QString folder = hRequest.GetArg("name");
+    // should better check existing folders instead of internally (maybe not) initialized list
 	if(availableSurprises.contains(folder))
 	{
 		// Save new config
@@ -196,4 +198,37 @@ PLUGIN_BUNNY_API_CALL(PluginSurprise::Api_GetFolderList)
 	}
 
 	return ApiManager::ApiList(availableSurprises);
+}
+
+PLUGIN_API_CALL(PluginSurprise::Api_GetConfigValues)
+{
+    Q_UNUSED(account);
+    Q_UNUSED(hRequest);
+
+    // Check available folders and cache them
+    QDir * httpFolder = GetLocalHTTPFolder();
+    QVariantMap configMap;
+    if(httpFolder)
+    {
+        availableSurprises = httpFolder->entryList(QDir::Dirs|QDir::NoDotAndDotDot);
+        auto infoList = httpFolder->entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot);
+
+        QVariantList availableFolders;
+        foreach(auto dir , infoList)
+        {
+            QVariantMap folderInfo;
+            folderInfo.insert("Name", dir.fileName());
+            folderInfo.insert("FileCount", QDir(dir.absoluteFilePath()).entryList(QStringList("*.mp3"), QDir::Files| QDir::NoSymLinks |QDir::NoDotAndDotDot).count());
+            availableFolders.append(folderInfo);
+        }
+        configMap.insert("Folders", availableFolders);
+        delete httpFolder;
+    }
+    else
+        configMap.insert("Folders", QVariantList());
+
+    QVariantList valueList = QVariantList({0,50,100,150,200});
+    configMap.insert("Frequencies", valueList);
+
+    return ApiManager::ApiVariantMap(configMap);
 }

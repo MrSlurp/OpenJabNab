@@ -1,0 +1,59 @@
+﻿<div class="panel panel-info">
+  <div class="panel-heading">
+    <div class="panel-title"><span >Configuration de l'API</span></div>
+  </div>
+  <div class="panel-body">
+  
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <table class="table">
+          <tbody>
+            <tr>
+              <th>Api Violet </th> 
+              <td>{{!selectedBunny.Config.GlobalSettings.VApiEnable ? "Désactivée" : "Activée"}}</td>
+              <td>
+                <button lass="btn btn-default" type="button" ng-click="EnableBunnyVioletApi(selectedBunny, false)" ng-if="selectedBunny.Config.GlobalSettings.VApiEnable">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  <span>Désactiver</span>
+                </button>
+                <button lass="btn btn-default" type="button" ng-click="EnableBunnyVioletApi(selectedBunny, true)" ng-if="!selectedBunny.Config.GlobalSettings.VApiEnable">
+                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  <span>Activer</span>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <th>API Violet publique?</th> 
+              <td>{{!selectedBunny.Config.GlobalSettings.VApiPublic ? "Non" : "Oui"}}</td>
+              <td>
+                <button lass="btn btn-default" type="button" ng-click="SetBunnyVioletApiPublic(selectedBunny, false)" ng-if="selectedBunny.Config.GlobalSettings.VApiPublic">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  <span>Rendre privée</span>
+                </button>
+                <button lass="btn btn-default" type="button" ng-click="SetBunnyVioletApiPublic(selectedBunny, true)" ng-if="!selectedBunny.Config.GlobalSettings.VApiPublic">
+                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  <span>Rendre publique</span>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <th>Lapin insomniaque?</th> 
+              <td>{{!selectedBunny.Config.GlobalSettings.Insomniac ? "Non" : "Oui"}}</td>
+              <td>
+                <button lass="btn btn-default" type="button" ng-click="SetBunnyInsomniac(selectedBunny, false)" ng-if="selectedBunny.Config.GlobalSettings.Insomniac">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  <span>Le laisser dormir</span>
+                </button>
+                <button lass="btn btn-default" type="button" ng-click="SetBunnyInsomniac(selectedBunny, true)" ng-if="!selectedBunny.Config.GlobalSettings.Insomniac">
+                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  <span>Le rendre Insomniac</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>              
+    
+  </div>
+</div>

@@ -20,12 +20,12 @@ private slots:
 public:
 	PluginAirquality();
 	virtual ~PluginAirquality();
-	bool OnClick(Bunny *, PluginInterface::ClickType);
-	bool OnRFID(Bunny * b, QByteArray const& tag);
-	void OnCron(Bunny *, QVariant);
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
-	void AfterBunnyUnregistered(Bunny *) {};
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny *, PluginInterface::ClickType);
+    virtual bool OnRFID(Bunny * b, QByteArray const& tag);
+    virtual void OnCron(Bunny *, QVariant);
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
 
 	void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_setDefaultCity);

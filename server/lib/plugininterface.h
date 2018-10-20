@@ -45,8 +45,9 @@ public:
 	// Bunny's Messages
 	virtual void OnInitPacket(const Bunny *, AmbientPacket &, SleepPacket &) {}
 	virtual bool OnClick(Bunny *, ClickType) { return false; }
-	virtual bool OnEarsMove(Bunny *, int, int) { return false; }
-	virtual bool OnRFID(Bunny *, QByteArray const&) { return false; }
+    virtual bool HasClickAction() { return false; }
+    virtual bool OnEarsMove(Bunny *, int, int) { return false; }
+    virtual bool OnRFID(Bunny *, QByteArray const&) { return false; }
 	virtual bool OnRFID(Ztamp *, Bunny *) { return false; }
 
 	// Cron system
@@ -60,6 +61,7 @@ public:
 	virtual void OnBunnyConnect(Bunny *) {}
 	virtual void OnBunnyDisconnect(Bunny *) {}
 	
+
 	// Settings
 	QVariant GetSettings(QString const& key, QVariant const& defaultValue = QVariant()) const;
 	void SetSettings(QString const& key, QVariant const& value);

@@ -2,6 +2,7 @@
 
 define([
   'angular',
+  'app/components/dataServices/ojnApiModule', 
 ], function () {
 angular.module('ojnApiModule')
   .service('ojnApiHelpers', function () {

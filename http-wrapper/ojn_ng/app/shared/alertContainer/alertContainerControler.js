@@ -38,7 +38,7 @@ define([
       _addAlert(param);
       _processAlerts();
     });
-    ojnngEvents.subscribe("UserNotifySucess" ,function(param){
+    ojnngEvents.subscribe("UserNotifySuccess" ,function(param){
       _addSuccess(param);
       _processAlerts();
     });

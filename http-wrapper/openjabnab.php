@@ -1,18 +1,18 @@
 <?php
 	$socket = fsockopen("127.0.0.1", 8080);
 	if(!$socket)
-        http_response_code(503);
+				http_response_code(503);
 	else
 	{
 		// Types :
 		// 1 = GET
 		// 2 = Normal POST
 		// 3 = Raw POST
-    
-    // php7 replaced HTTP_RAW_POST_DATA with file_get_contents("php://input")
-    $postdata = file_get_contents("php://input");
+		
+		// php7 replaced HTTP_RAW_POST_DATA with file_get_contents("php://input")
+		$postdata = file_get_contents("php://input");
 		//if(isset($GLOBALS['HTTP_RAW_POST_DATA']))
-    if(isset($postdata))
+		if(isset($postdata))
 			$type = 3;
 		else if (count($_POST))
 			$type = 2;
@@ -28,7 +28,7 @@
 				$header_key = str_replace("_", "-", $header_key);
 				$headers .= $header_key . ": " . $value . "\r\n";
 			}
-      // header is now one key value per text line
+			// header is now one key value per text line
 		}
 		switch($type)
 		{
@@ -51,14 +51,14 @@
 				$requestdata = $headers . "\x00" . $_SERVER['REQUEST_URI'] . "\x00" . $postdata;
 				break;
 		}
-    // +5 for lenght(4) and type (1)
+		// +5 for lenght(4) and type (1)
 		$requestlen = 5 + strlen($requestdata);
-    // join all into a buffer 
-    // L for unsigned 32bit
-    // C for unsigned char
-    // a for null padded string
+		// join all into a buffer 
+		// L for unsigned 32bit
+		// C for unsigned char
+		// a for null padded string
 		$request = pack("LCa*", $requestlen, $type, $requestdata);
-    // write socket to openjab nab server
+		// write socket to openjab nab server
 		fwrite($socket, $request);
 		while (!feof($socket)) 
 			echo fgets($socket, 128);

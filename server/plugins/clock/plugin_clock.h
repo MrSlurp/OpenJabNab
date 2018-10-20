@@ -15,12 +15,13 @@ class PluginClock : public PluginInterface
 public:
 	PluginClock();
 	virtual ~PluginClock();
-	void OnCron(Bunny*, QVariant);
-	bool OnClick(Bunny*, PluginInterface::ClickType);
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
+    virtual void OnCron(Bunny*, QVariant);
+    virtual bool HasClickAction() { return true; }
+    virtual bool OnClick(Bunny*, PluginInterface::ClickType);
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
 	
-	void InitApiCalls();
+    virtual void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_SetVoice);
 	PLUGIN_BUNNY_API_CALL(Api_GetVoiceList);
 

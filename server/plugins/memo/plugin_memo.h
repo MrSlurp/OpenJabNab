@@ -13,13 +13,12 @@ public:
 	PluginMemo();
 	virtual ~PluginMemo();
 
-	void OnBunnyConnect(Bunny *);
-	void OnBunnyDisconnect(Bunny *);
-	void OnCron(Bunny *, QVariant);
-	void AfterBunnyUnregistered(Bunny *) {};
+    virtual void OnBunnyConnect(Bunny *);
+    virtual void OnBunnyDisconnect(Bunny *);
+    virtual void OnCron(Bunny *, QVariant);
 
 	// API
-	void InitApiCalls();
+    virtual void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_AddWebcast);
 	PLUGIN_BUNNY_API_CALL(Api_RemoveWebcast);
 	PLUGIN_BUNNY_API_CALL(Api_ListWebcast);

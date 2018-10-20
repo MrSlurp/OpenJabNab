@@ -42,6 +42,7 @@ void XmppHandler::Disconnect()
 
 void XmppHandler::HandleBunnyXmppMessage()
 {
+    //LogDebug("enter HandleBunnyXmppMessage()");
 	QByteArray data = incomingXmppSocket->readAll();
 	bool handled = false;
 	if(data != " ") {

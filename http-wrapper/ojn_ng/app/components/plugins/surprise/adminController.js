@@ -14,9 +14,6 @@ define([
         $scope.AllUsers = [];
         $scope.PluginsData = [];
         
-        $scope.currentApiTest = {Url:"", ParamString:"", lastResponse:""};
-        //$scope.currentTestApi. = "";
-        
         ojnApiGlobal.getListOfApiCalls().then(function(data) {
           $scope.ApiFull = data;
         });
@@ -36,27 +33,6 @@ define([
         };
         _updateUsers();
         
-        $scope.setApiTestFields = function(rootPath, apiFamilly, cat, func){
-          $scope.currentApiTest.Url = $scope.MakeApiFunctionPath(rootPath, apiFamilly, cat, func);
-          $scope.currentApiTest.ParamString = $scope.MakeApiUrlArgumentsString(func.parameters);
-        };
-        
-        $scope.MakeApiFunctionPath = function(rootPath, apiFamilly, cat, func) {
-        
-          if (cat == 'Api' && !apiFamilly.Name && rootPath != 'bunny/')
-            return "/"+rootPath+func.functionName;
-          else if (cat=='Api' && !apiFamilly.Name && rootPath == 'bunny/')
-            return "/bunny/<Bunny Mac>/"+func.functionName;
-          else if (cat=='Api' && apiFamilly.Name)
-            return "/plugin/"+apiFamilly.Name+"/"+func.functionName;
-          else if (cat=='Bunny' && apiFamilly.Name)
-            return "/bunny/<Bunny Mac>/"+apiFamilly.Name+"/"+func.functionName;
-          else if (cat=='Ztamp' && apiFamilly.Name)
-            return "/ztamp/<ztamp serial>/"+apiFamilly.Name+"/"+func.functionName;
-          
-          return "???"
-        };
-        
         $scope.MakeApiFunctionArgumentsString = function(functionArgs) {
           var ret = "(";
           var index = 0;
@@ -71,13 +47,11 @@ define([
           return ret;
         };
         
-        $scope.MakeApiUrlArgumentsString = function(functionArgs, withQuestionMark) {
+        $scope.MakeApiUrlArgumentsString = function(functionArgs) {
           if (functionArgs.length == 0)
             return ""
             
-          var ret ="";
-          if (withQuestionMark)
-            ret += "?";
+          var ret = "?";
           var index = 0;
           for (var arg in functionArgs)
           {
@@ -88,12 +62,6 @@ define([
               ret += "&";
           }
           return ret;
-        };
-        
-        $scope.TestApi = function(url, arg) {
-          ojnApiGlobal.runTestApi(url, arg).then(function(data) {
-            $scope.currentApiTest.lastResponse = JSON.stringify(data);
-          });
         };
         
         $scope.UserDelete = function(userLogin) {

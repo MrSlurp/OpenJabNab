@@ -25,7 +25,7 @@ public slots:
 	void Disconnect();
 
 protected:
-	virtual ~XmppHandler() {};
+    virtual ~XmppHandler() {}
 
 private slots:
 	void HandleBunnyXmppMessage();

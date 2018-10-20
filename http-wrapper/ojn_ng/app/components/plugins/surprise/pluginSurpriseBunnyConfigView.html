@@ -1,6 +1,6 @@
 ﻿<td>{{pluginInfo.VisualName}}</td>
-<td ng-if="ShowInternals" >{{pluginInfo.Name}}</td>
-<td ng-if="ShowInternals" >{{pluginInfo.FileName}}</td>
+<td>{{pluginInfo.Name}}</td>
+<td>{{pluginInfo.FileName}}</td>
 <td>{{pluginInfo.IsEnabled}}</td>
 <td>
   <div class="btn-group" role="group" aria-label="...">
@@ -14,11 +14,11 @@
   <div class="btn-group" role="group" aria-label="...">
     <button type="button"  class="btn btn-default" 
             ng-click="PluginReload(pluginInfo.Name)" >
-      <span class="glyphicon glyphicon-minus" aria-hidden="true" style="color:red" ng-disabled="pluginInfo.IsEnabled" ></span>
+      <span class="glyphicon glyphicon-minus" aria-hidden="true" style="color:red" ></span>
     </button>
     <button type="button"  class="btn btn-default" 
             ng-click="PluginReload(pluginInfo.Name)" >
-      <span class="glyphicon glyphicon-plus" aria-hidden="true" style="color:blue" ng-disabled="!pluginInfo.IsEnabled" ></span>
+      <span class="glyphicon glyphicon-plus" aria-hidden="true" style="color:blue" ></span>
     </button>
   </div>
 </td>
