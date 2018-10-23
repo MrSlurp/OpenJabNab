@@ -18,11 +18,15 @@
 
 Q_EXPORT_PLUGIN2(plugin_ephemeride, PluginEphemeride)
 
-PluginEphemeride::PluginEphemeride():PluginInterface("ephemeride", "Ephemeride",BunnyPlugin) {}
+PluginEphemeride::PluginEphemeride():PluginInterface("ephemeride", "Ephemeride",BunnyPlugin)
+{
+    _hasClickAction = true;
+    _hasUserPage = true;
+}
 
 PluginEphemeride::~PluginEphemeride()
 {
-	Cron::UnregisterAll(this);
+    Cron::UnregisterAll(this);
 }
 
 bool PluginEphemeride::Init()

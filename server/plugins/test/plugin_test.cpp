@@ -9,6 +9,7 @@ Q_EXPORT_PLUGIN2(plugin_test, PluginTest)
 
 PluginTest::PluginTest():PluginInterface("test", "Test choregraphy generation",BunnyPlugin)
 {
+    _hasUserPage = true;
 	angle = 0;
 }
 

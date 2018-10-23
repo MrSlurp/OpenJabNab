@@ -8,21 +8,25 @@ define([
   'app/components/dataServices/ojnApiModule',
   'app/components/dataServices/ojnApiGlobal',
   'app/components/dataServices/ojnApiAccount',
+  //'app/components/dataServices/ojnApiPlugins',
+  'app/shared/alertContainer/index',
   'app/components/home/index',
   'app/components/bunnies/index',
   'app/components/admin/index',
-  'app/shared/alertContainer/index',
+  //'app/components/plugins/surprise/index',
 ],
 function (angular, angularRoute) {
 
   var app = angular.module('ojnapp', [
     'ngRoute',
+    'ui.bootstrap',
     'ojnngModule',
     'ojnApiModule',
+    //'ojnApiPlugins',
     'homeModule',
     'bunniesModule',
     'adminModule',
-    //'ui.bootstrap',
+    //'pluginSurpriseModule'
   ]);
   app.config([
     '$routeProvider',

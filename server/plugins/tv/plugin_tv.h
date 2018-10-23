@@ -23,7 +23,6 @@ public:
 	
 	virtual bool Init();
 	
-    virtual bool HasClickAction() { return true; }
 	virtual bool OnClick(Bunny *, PluginInterface::ClickType);
 	virtual void OnCron(Bunny * b, QVariant);
 	virtual void OnBunnyConnect(Bunny *);

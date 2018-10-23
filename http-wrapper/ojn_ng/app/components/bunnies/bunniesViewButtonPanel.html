@@ -11,15 +11,15 @@
         <div class="dropdown" style="{min-width:270px;}">
           <button class="btn btn-default dropdown-toggle" type="button"  
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            {{selectedBunny != undefined? (selectedBunny.selectedSimpleClickAction == undefined ? "Aucune" : selectedBunny.selectedSimpleClickAction ) : "NA"}}
+            {{selectedBunny != undefined? (selectedBunny.selectedSimpleClickPlugin == undefined ? "Aucune" : selectedBunny.selectedSimpleClickPlugin.VisualName ) : "NA"}}
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" >
             <li  >
-              <a href="javascript:void(0);" ng-click="selectedBunny.selectedSimpleClickAction = undefined">none</a>
+              <a href="javascript:void(0);" ng-click="SelectSimpleClickPlugin(undefined)">none</a>
             </li>
             <li ng-repeat="plg in selectedBunny.Config.Plugins | filter: {HasClick : true, BunnyEnabled : true}" >
-              <a href="javascript:void(0);" ng-click="selectedBunny.selectedSimpleClickAction = plg.Name">{{plg.Name}}</a>
+              <a href="javascript:void(0);" ng-click="SelectSimpleClickPlugin(plg.Name)">{{plg.VisualName}}</a>
             </li>
           </ul>
         </div>          
@@ -30,27 +30,18 @@
         <div class="dropdown" style="{min-width:270px;}">
           <button class="btn btn-default dropdown-toggle" type="button"  
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            {{selectedBunny != undefined? (selectedBunny.selectedDoubleClickAction == undefined ? "Aucune" : selectedBunny.selectedDoubleClickAction ) : "NA"}}
+            {{selectedBunny != undefined? (selectedBunny.selectedDoubleClickPlugin == undefined ? "Aucune" : selectedBunny.selectedDoubleClickPlugin.VisualName ) : "NA"}}
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" >
             <li  >
-              <a href="javascript:void(0);" ng-click="selectedBunny.selectedDoubleClickAction = undefined">none</a>
+              <a href="javascript:void(0);" ng-click="SelectDoubleClickPlugin(undefined)">none</a>
             </li>
             <li ng-repeat="plg in selectedBunny.Config.Plugins | filter: {HasClick : true, BunnyEnabled : true}" >
-              <a href="javascript:void(0);" ng-click="selectedBunny.selectedDoubleClickAction = plg.Name">{{plg.Name}}</a>
+              <a href="javascript:void(0);" ng-click="SelectDoubleClickPlugin(plg.Name)">{{plg.VisualName}}</a>
             </li>
           </ul>
         </div>          
-        
-        <!--
-        <select class="form-control" ng-model="selectedBunny.selectedDoubleClickAction" >
-          <option value="none">None</option> 
-          <option ng-repeat="plg in selectedBunny.Config.Plugins" 
-                  ng-if="plg.HasClick && plg.BunnyEnabled"
-                  value="{{plg.Name}}">{{plg.Name}}</option>
-        </select>
-        -->
       </div>
       <div class="form-group">
         <button type="button" class="btn btn-default" ng-click="SaveButtonAction()" > 

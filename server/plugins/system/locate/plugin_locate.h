@@ -11,7 +11,7 @@ class PluginLocate : public PluginInterface
 
 public:
 	PluginLocate();
-	virtual ~PluginLocate() {};
+    virtual ~PluginLocate() {}
 	virtual bool HttpRequestHandle(HTTPRequest &);
 
 	virtual void InitApiCalls();

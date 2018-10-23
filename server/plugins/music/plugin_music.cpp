@@ -18,7 +18,11 @@
 
 Q_EXPORT_PLUGIN2(plugin_music, PluginMusic)
 
-PluginMusic::PluginMusic():PluginInterface("music", "Music", BunnyZtampPlugin) {}
+PluginMusic::PluginMusic():PluginInterface("music", "Music", BunnyZtampPlugin)
+{
+    _hasClickAction = true;
+    _hasUserPage = true;
+}
 
 bool PluginMusic::Init()
 {

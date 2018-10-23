@@ -1,32 +1,41 @@
-﻿<td>{{pluginInfo.VisualName}}</td>
-<td ng-if="ShowInternals" >{{pluginInfo.Name}}</td>
-<td ng-if="ShowInternals" >{{pluginInfo.FileName}}</td>
-<td>{{pluginInfo.IsEnabled}}</td>
-<td>
-  <div class="btn-group" role="group" aria-label="...">
+﻿<td class="col-md-3" >{{pluginInfo.VisualName}}</td>
+<td class="col-md-1" >
+  <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:green" ng-if="pluginInfo.Enabled" ></span>
+  <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:red" ng-if="!pluginInfo.Enabled" ></span>
+</td>
+<td class="col-md-1" >
+  <div class="btn-group" role="group" aria-label="..." ng-if="pluginInfo.HasAdminPage == true" >
     <button type="button"  class="btn btn-default" 
             ng-click="" >
       <span class="glyphicon glyphicon-cog" aria-hidden="true" ></span>
     </button>
   </div>
 </td>
-<td>
+<td class="col-md-2" >
   <div class="btn-group" role="group" aria-label="...">
     <button type="button"  class="btn btn-default" 
-            ng-click="PluginReload(pluginInfo.Name)" >
-      <span class="glyphicon glyphicon-minus" aria-hidden="true" style="color:red" ng-disabled="pluginInfo.IsEnabled" ></span>
+            ng-click="PluginEnable(pluginInfo.Name)" 
+            ng-disabled="pluginInfo.Enabled" 
+            ng-style="!pluginInfo.Enabled ? {color:'blue'} : {}" >
+      <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span>
     </button>
     <button type="button"  class="btn btn-default" 
-            ng-click="PluginReload(pluginInfo.Name)" >
-      <span class="glyphicon glyphicon-plus" aria-hidden="true" style="color:blue" ng-disabled="!pluginInfo.IsEnabled" ></span>
+            ng-click="PluginDisable(pluginInfo.Name)" 
+            ng-disabled="!pluginInfo.Enabled" 
+            ng-style="pluginInfo.Enabled ? {color:'red'} : {}" >
+      <span class="glyphicon glyphicon-minus" aria-hidden="true" ></span>
     </button>
   </div>
 </td>
-<td>
+<td class="col-md-1" >
   <div class="btn-group" role="group" aria-label="...">
     <button type="button"  class="btn btn-default" 
-            ng-click="PluginReload(pluginInfo.Name)" >
-      <span class="glyphicon glyphicon-repeat" aria-hidden="true" style="color:green" ></span>
+            ng-click="PluginReload(pluginInfo.Name)" 
+            ng-disabled="!pluginInfo.Enabled" 
+            ng-style="pluginInfo.Enabled ? {color:'green'} : {}" >
+      <span class="glyphicon glyphicon-repeat" aria-hidden="true" ></span>
     </button>
   </div>
-<td>
+</td>
+<td class="col-md-2" ng-if="ShowInternals" >{{pluginInfo.Name}}</td>
+<td class="col-md-2" ng-if="ShowInternals" >{{pluginInfo.FileName}}</td>

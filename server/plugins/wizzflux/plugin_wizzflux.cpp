@@ -13,7 +13,9 @@
 
 Q_EXPORT_PLUGIN2(plugin_wizzflux, PluginWizzflux)
 
-PluginWizzflux::PluginWizzflux():PluginInterface("wizzflux", "Various Flux by Wizz.cc", BunnyZtampPlugin) {
+PluginWizzflux::PluginWizzflux():PluginInterface("wizzflux", "Various Flux by Wizz.cc", BunnyZtampPlugin)
+{
+    _hasAdminPage = true;
 	Flist = GetSettings("ListFlux", QStringList()).toStringList();
 	if(Flist.count() == 0)
 	{

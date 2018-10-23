@@ -11,7 +11,7 @@ class PluginColorbreathing : public PluginInterface
 
 public:
 	PluginColorbreathing();
-	virtual ~PluginColorbreathing() {};
+    virtual ~PluginColorbreathing() {}
 	void OnInitPacket(const Bunny *, AmbientPacket &, SleepPacket &);
 	void InitApiCalls();
 

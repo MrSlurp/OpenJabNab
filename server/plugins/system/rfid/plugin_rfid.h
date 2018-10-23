@@ -11,7 +11,7 @@ class PluginRFID : public PluginInterface
 
 public:
 	PluginRFID();
-	virtual ~PluginRFID() {};
+    virtual ~PluginRFID() {}
 	virtual bool HttpRequestHandle(HTTPRequest &);
 
 	void InitApiCalls();

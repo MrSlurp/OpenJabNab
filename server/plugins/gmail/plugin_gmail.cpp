@@ -14,6 +14,7 @@ Q_EXPORT_PLUGIN2(plugin_gmail, PluginGmail)
 
 PluginGmail::PluginGmail():PluginInterface("gmail", "Gmail Configuration",BunnyPlugin)
 {
+    _hasUserPage = true;
 }
 
 PluginGmail::~PluginGmail()

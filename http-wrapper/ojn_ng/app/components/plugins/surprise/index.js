@@ -1,6 +1,5 @@
 ﻿'use strict';
 
 define([
-    'app/components/plugins/suprise/ojnPluginSurpriseModule',
-    'app/components/plugins/suprise/ojnPluginSurpriseApi',
+    'app/components/plugins/surprise/pluginSurpriseController',
 ], function () { });

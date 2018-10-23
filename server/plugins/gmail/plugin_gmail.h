@@ -11,22 +11,22 @@
 
 class PluginGmail : public PluginInterface
 {
-Q_OBJECT
-Q_INTERFACES(PluginInterface)
+    Q_OBJECT
+    Q_INTERFACES(PluginInterface)
 
-public:
-PluginGmail();
-virtual ~PluginGmail();
-void OnCron(Bunny*, QVariant);
-void OnBunnyConnect(Bunny *);
-void OnBunnyDisconnect(Bunny *);
-void InitApiCalls();
-PLUGIN_BUNNY_API_CALL(Api_SetConfig);
-PLUGIN_BUNNY_API_CALL(Api_GetConfig);
+    public:
+    PluginGmail();
+    virtual ~PluginGmail();
+    void OnCron(Bunny*, QVariant);
+    void OnBunnyConnect(Bunny *);
+    void OnBunnyDisconnect(Bunny *);
+    void InitApiCalls();
+    PLUGIN_BUNNY_API_CALL(Api_SetConfig);
+    PLUGIN_BUNNY_API_CALL(Api_GetConfig);
 
 private:
-QMap<Bunny*, QString> bunnyList;
-QTcpSocket *socket;
+    QMap<Bunny*, QString> bunnyList;
+    QTcpSocket *socket;
     int emailsCount;
     int connectionId;
     QXmlStreamReader xml;
@@ -36,8 +36,6 @@ QTcpSocket *socket;
 
 private slots:
     void readData(const QHttpResponseHeader &);
-
-
 
 };
 

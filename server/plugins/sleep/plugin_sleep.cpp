@@ -11,7 +11,10 @@
 
 Q_EXPORT_PLUGIN2(plugin_sleep, PluginSleep)
 
-PluginSleep::PluginSleep():PluginInterface("sleep", "Advanced sleep and wake up",BunnyPlugin) {}
+PluginSleep::PluginSleep():PluginInterface("sleep", "Advanced sleep and wake up",BunnyPlugin)
+{
+    _hasUserPage = true;
+}
 
 PluginSleep::~PluginSleep()
 {

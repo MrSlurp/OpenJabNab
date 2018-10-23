@@ -20,7 +20,6 @@ private slots:
 public:
 	PluginAirquality();
 	virtual ~PluginAirquality();
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
     virtual bool OnRFID(Bunny * b, QByteArray const& tag);
     virtual void OnCron(Bunny *, QVariant);

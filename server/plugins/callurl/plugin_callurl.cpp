@@ -16,6 +16,8 @@ Q_EXPORT_PLUGIN2(plugin_callurl, PluginCallURL)
 
 PluginCallURL::PluginCallURL():PluginInterface("callurl", "Plugin to call an URL")
 {
+    _hasClickAction = true;
+    _hasUserPage = true;
 }
 
 PluginCallURL::~PluginCallURL()

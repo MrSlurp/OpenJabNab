@@ -21,7 +21,6 @@ private slots:
 public:
 	PluginWeather();
 	virtual ~PluginWeather();
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
     virtual bool OnRFID(Bunny * b, QByteArray const& tag);
     virtual void OnCron(Bunny *, QVariant);

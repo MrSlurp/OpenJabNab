@@ -23,6 +23,8 @@ Q_EXPORT_PLUGIN2(plugin_ratp, PluginRatp)
 
 PluginRatp::PluginRatp():PluginInterface("ratp", "RATP : Prochains passages")
 {
+    _hasClickAction = true;
+    _hasUserPage = true;
 }
 
 PluginRatp::~PluginRatp() {}

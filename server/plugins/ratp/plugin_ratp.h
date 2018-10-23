@@ -22,7 +22,6 @@ public:
 	PluginRatp();
 	virtual ~PluginRatp();
 	
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
     virtual void OnCron(Bunny *, QVariant);
     virtual bool OnRFID(Bunny * b, QByteArray const& tag);

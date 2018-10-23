@@ -13,6 +13,7 @@ Q_EXPORT_PLUGIN2(plugin_tts, PluginTTS)
 
 PluginTTS::PluginTTS():PluginInterface("tts", "TTS Plugin, Send Text to Bunny",BunnyZtampPlugin)
 {
+    _hasUserPage = true;
 }
 
 /*******

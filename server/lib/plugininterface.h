@@ -45,10 +45,26 @@ public:
 	// Bunny's Messages
 	virtual void OnInitPacket(const Bunny *, AmbientPacket &, SleepPacket &) {}
 	virtual bool OnClick(Bunny *, ClickType) { return false; }
-    virtual bool HasClickAction() { return false; }
+
+    bool HasClickAction() { return _hasClickAction; }
+    bool HasAdminPage() { return _hasAdminPage; }
+    bool HasUserPage() { return _hasUserPage; }
+
     virtual bool OnEarsMove(Bunny *, int, int) { return false; }
     virtual bool OnRFID(Bunny *, QByteArray const&) { return false; }
 	virtual bool OnRFID(Ztamp *, Bunny *) { return false; }
+
+    QVariantMap GetPluginInfos()
+    {
+        QVariantMap pluginInfo;
+        pluginInfo.insert("Name", GetName());
+        pluginInfo.insert("VisualName", GetVisualName());
+        pluginInfo.insert("Enabled", GetEnable());
+        pluginInfo.insert("HasClick", HasClickAction());
+        pluginInfo.insert("HasUserPage", HasUserPage());
+        pluginInfo.insert("HasAdminPage", HasAdminPage());
+        return pluginInfo;
+    }
 
 	// Cron system
 	virtual void OnCron(Bunny*, QVariant) {}
@@ -83,12 +99,17 @@ protected:
 
 	QSettings * settings;
 
+    bool _hasUserPage;
+    bool _hasAdminPage;
+    bool _hasClickAction;
+
 private:
 	QString pluginName;
 	PluginType pluginType;
 	QString pluginVisualName;
 	bool pluginEnable;
 	QString httpFolder;
+
 };
 
 #include "plugininterface_inline.h"

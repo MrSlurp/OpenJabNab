@@ -310,11 +310,8 @@ QVariantMap PluginManager::GetPluginsData(bool bForAdmin)
         if (!p->GetEnable() && !bForAdmin)
             continue;
 
-        QVariantMap currentPluginData;
+        QVariantMap currentPluginData = p->GetPluginInfos();
         QString pluginsFileName = listOfPluginsFileName.value(p);
-        currentPluginData.insert("Name", p->GetName());
-        currentPluginData.insert("IsEnabled", p->GetEnable());
-        currentPluginData.insert("VisualName", p->GetVisualName());
         if (bForAdmin)
         {
             currentPluginData.insert("LocalHppFolder", p->GetLocalHTTPFolder()->absolutePath());

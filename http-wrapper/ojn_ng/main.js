@@ -28,6 +28,7 @@ var dependencies = [
     'app/components/home/index',
     'app/components/bunnies/index',
     'app/components/admin/index',
+    //'app/components/plugins/surprise/index',
     'ojnapp'
 ];
 

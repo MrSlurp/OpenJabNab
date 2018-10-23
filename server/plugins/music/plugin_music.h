@@ -19,7 +19,6 @@ public:
 	virtual bool OnRFID(Bunny *, QByteArray const&);
 	virtual bool OnRFID(Ztamp *, Bunny *);
 
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
 
 	// API

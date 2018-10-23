@@ -11,7 +11,7 @@ class PluginTTS : public PluginInterface
 
 public:
 	PluginTTS();
-	virtual ~PluginTTS() {};
+    virtual ~PluginTTS() {}
 
 	// API
 	void InitApiCalls();

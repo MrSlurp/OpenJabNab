@@ -22,7 +22,6 @@ public:
 	virtual ~PluginEphemeride();
 	virtual bool Init();
 	
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
     virtual void OnCron(Bunny *, QVariant);
     virtual void OnBunnyConnect(Bunny *);

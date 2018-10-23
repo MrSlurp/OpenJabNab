@@ -18,7 +18,11 @@
 
 Q_EXPORT_PLUGIN2(plugin_tv, PluginTV)
 
-PluginTV::PluginTV():PluginInterface("tv", "Programme TV",BunnyZtampPlugin) {}
+PluginTV::PluginTV():PluginInterface("tv", "Programme TV",BunnyZtampPlugin)
+{
+    _hasUserPage = true;
+    _hasClickAction = true;
+}
 
 PluginTV::~PluginTV()
 {

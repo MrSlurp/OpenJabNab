@@ -25,8 +25,17 @@
           </div>
         </uib-tab>
         <uib-tab heading="Configuration des plugins actifs">
-          <div class="col-md-12">
-            <!--<ng-include src="'./app/components/bunnies/bunniesViewButtonPanel.html'" /> --->
+          <div class="row">
+            <div class="col-md-6" ng-repeat="activePlugin in selectedBunny.Config.Plugins | filter :{ BunnyEnabled:true , HasUserPage : true}">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                  <div class="panel-title"><span >{{activePlugin.VisualName}}</span></div>
+                </div>
+                <div class="panel-body">
+                  <ng-include src="GetPluginUserViewUri(activePlugin.Name)">
+                </div>
+              </div>
+            </div>
           </div>
         </uib-tab>
         <uib-tab heading="Activer/Désactiver les Plugins">

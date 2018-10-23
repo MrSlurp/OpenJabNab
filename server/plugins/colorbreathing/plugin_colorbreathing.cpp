@@ -11,6 +11,8 @@ Q_EXPORT_PLUGIN2(plugin_colorbreathing, PluginColorbreathing)
 
 PluginColorbreathing::PluginColorbreathing():PluginInterface("colorbreathing", "Change breathing color", BunnyPlugin)
 {
+    _hasUserPage = true;
+
 	availableColors["none"]   = 0;
 	availableColors["blue"]   = 1;
 	availableColors["green"]  = 2;

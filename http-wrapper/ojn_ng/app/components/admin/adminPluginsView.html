@@ -22,29 +22,27 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Plugin full name</th>
-              <th ng-if="ShowInternals" scope="col">Plugin short name</th>
-              <th ng-if="ShowInternals" scope="col">Library file</th>
-              <th scope="col">Is Enabled</th>
-              <th scope="col">Configure</th>
-              <th scope="col">Reload</th>
+              <th class="col-md-3" scope="col">Plugin full name</th>
+              <th class="col-md-1" scope="col">Enabled</th>
+              <th class="col-md-1" scope="col">Configure</th>
+              <th class="col-md-1" scope="col">Reload</th>
+              <th class="col-md-2" ng-if="ShowInternals" scope="col">Plugin short name</th>
+              <th class="col-md-2" ng-if="ShowInternals" scope="col">Library file</th>
             </tr>
           </thead>            
           <tbody>
             <tr ng-repeat="pluginInfo in PluginsData.Required">
-              <td>{{pluginInfo.VisualName}}</td>
-              <td ng-if="ShowInternals" >{{pluginInfo.Name}}</td>
-              <td ng-if="ShowInternals" >{{pluginInfo.FileName}}</td>
-              <td>{{pluginInfo.IsEnabled}}</td>
-              <td>
-                <div class="btn-group" role="group" aria-label="...">
+              <td class="col-md-3" >{{pluginInfo.VisualName}}</td>
+              <td class="col-md-1" >{{pluginInfo.Enabled}}</td>
+              <td class="col-md-1" >
+                <div class="btn-group" role="group" aria-label="..." ng-if="pluginInfo.HasAdminPage == true" >
                   <button type="button"  class="btn btn-default" 
                           ng-click="" >
                     <span class="glyphicon glyphicon-cog" aria-hidden="true" ></span>
                   </button>
                 </div>
               </td>
-              <td>
+              <td class="col-md-1" >
                 <div class="btn-group" role="group" aria-label="...">
                   <button type="button"  class="btn btn-default" 
                           ng-click="PluginReload(pluginInfo.Name)" >
@@ -52,6 +50,8 @@
                   </button>
                 </div>
               </td>
+              <td class="col-md-2" ng-if="ShowInternals" >{{pluginInfo.Name}}</td>
+              <td class="col-md-2" ng-if="ShowInternals" >{{pluginInfo.FileName}}</td>
             </tr>
           </tbody>
         </table>
@@ -75,19 +75,11 @@
         </div>
         <table class="table">
           <thead>
-            <tr>
-              <th scope="col">Plugin full name</th>
-              <th ng-if="ShowInternals" scope="col">Plugin short name</th>
-              <th ng-if="ShowInternals" scope="col">Library file</th>
-              <th scope="col">Is Enabled</th>
-              <th scope="col">Configure</th>
-              <th scope="col">Activate/Deactivate</th>
-              <th scope="col">Reload</th>
-            </tr>
-          </thead>            
+            <tr ng-include src="'./app/components/admin/adminFullPluginsTableHeader.html'" />
+          </thead>
           <tbody>
-            <tr ng-repeat="pluginInfo in PluginsData.System" ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" >
-            </tr>
+            <tr ng-repeat="pluginInfo in PluginsData.System | orderBy:['Enabled', 'VisualName']" 
+                ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" />
           </tbody>
         </table>                
       </div>
@@ -110,19 +102,11 @@
         </div>
         <table class="table">
           <thead>
-            <tr>
-              <th scope="col">Plugin full name</th>
-              <th ng-if="ShowInternals" scope="col">Plugin short name</th>
-              <th ng-if="ShowInternals" scope="col">Library file</th>
-              <th scope="col">Is Enabled</th>
-              <th scope="col">Configure</th>
-              <th scope="col">Activate/Deactivate</th>
-              <th scope="col">Reload</th>
-            </tr>
-          </thead>            
+            <tr ng-include src="'./app/components/admin/adminFullPluginsTableHeader.html'" />
+          </thead>
           <tbody>
-            <tr ng-repeat="pluginInfo in PluginsData.Bunny" ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" >
-            </tr>
+            <tr ng-repeat="pluginInfo in PluginsData.Bunny | orderBy:['Enabled', 'VisualName']" 
+                ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" />
           </tbody>
         </table>                
       </div>
@@ -144,19 +128,11 @@
         </div>
         <table class="table">
           <thead>
-            <tr>
-              <th scope="col">Plugin full name</th>
-              <th ng-if="ShowInternals" scope="col">Plugin short name</th>
-              <th ng-if="ShowInternals" scope="col">Library file</th>
-              <th scope="col">Is Enabled</th>
-              <th scope="col">Configure</th>
-              <th scope="col">Activate/Deactivate</th>
-              <th scope="col">Reload</th>
-            </tr>
-          </thead>            
+            <tr ng-include src="'./app/components/admin/adminFullPluginsTableHeader.html'" />
+          </thead>
           <tbody>
-            <tr ng-repeat="pluginInfo in PluginsData.BunnyZtamp" ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'" >
-            </tr>
+            <tr ng-repeat="pluginInfo in PluginsData.BunnyZtamp | orderBy:['Enabled', 'VisualName']" 
+                ng-include src="'./app/components/admin/adminFullPluginsTableRowCol.html'"  />
           </tbody>
         </table>                
       </div>

@@ -1,6 +1,10 @@
 
 inline PluginInterface::PluginInterface(QString name, QString visualName, PluginType type):pluginName(name), pluginType(type)
 {
+    _hasUserPage = false;
+    _hasAdminPage = false;
+    _hasClickAction = false;
+
 	// The visual name is more user-friendly (for visual-side only)
 	if(visualName != QString())
 		pluginVisualName = visualName;

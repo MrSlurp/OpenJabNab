@@ -31,7 +31,7 @@ angular.module('ojnApiModule')
           if (cb) cb();
         }
       );
-    }
+    };
     
     var _getFullConfig = function(mac, cb)
     {
@@ -49,7 +49,7 @@ angular.module('ojnApiModule')
           if (cb) cb();
         }
       );
-    }
+    };
     
     var _setButtonsClickPlugins = function(mac, simpleClickPlugin, doubleClickPlugin)
     {
@@ -96,6 +96,6 @@ angular.module('ojnApiModule')
       setButtonsActions: function (mac, simpleClick, doubleClick) {
         _setButtonsClickPlugins(mac, simpleClick, doubleClick);
       }
-    }
+    };
   });
 });

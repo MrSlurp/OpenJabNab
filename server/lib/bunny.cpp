@@ -909,12 +909,9 @@ API_CALL(Bunny::Api_getBunnyFullConfig)
         if (bSkip)
             continue;
 
-        QVariantMap pluginConfig;
-        pluginConfig.insert("Name", p->GetName());
-        pluginConfig.insert("VisualName", p->GetVisualName());
-        pluginConfig.insert("Enabled", p->GetEnable());
+        QVariantMap pluginConfig = p->GetPluginInfos();
+        // add current bunny "enabled" status
         pluginConfig.insert("BunnyEnabled", (bool)listOfPluginsPtr.contains(p));
-        pluginConfig.insert("HasClick", p->HasClickAction());
 
         if (PluginsSettings.contains(p->GetName()))
             pluginConfig.insert("BunnyPluginConfig" ,PluginsSettings[p->GetName()].toMap());

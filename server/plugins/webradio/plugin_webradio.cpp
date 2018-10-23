@@ -11,6 +11,9 @@ Q_EXPORT_PLUGIN2(plugin_webradio, PluginWebradio)
 
 PluginWebradio::PluginWebradio():PluginInterface("webradio", "WebRadio", BunnyZtampPlugin)
 {
+    _hasUserPage = true;
+    _hasClickAction = true;
+
 	presets.clear();
 	presets.insert("Ado FM", "http://ice3.infomaniak.ch/start-adofm-high.mp3");
 	presets.insert("BBC World Service", "http://bbcwssc.ic.llnwd.net/stream/bbcwssc_mp1_ws-eieuk");

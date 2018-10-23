@@ -15,7 +15,6 @@ public:
 	PluginCallURL();
 	virtual ~PluginCallURL();
 
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
     virtual bool OnRFID(Bunny * b, QByteArray const& tag);
     virtual void OnCron(Bunny *, QVariant);

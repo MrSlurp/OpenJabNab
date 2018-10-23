@@ -11,6 +11,8 @@ Q_EXPORT_PLUGIN2(plugin_clock, PluginClock)
 
 PluginClock::PluginClock():PluginInterface("clock", "Clock",BunnyPlugin)
 {
+    _hasUserPage = true;
+
 	Cron::Register(this, 60, 0, 0, NULL);
 	// Check available folders
 	QDir * httpFolder = GetLocalHTTPFolder();

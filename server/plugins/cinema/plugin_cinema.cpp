@@ -18,7 +18,11 @@
 
 Q_EXPORT_PLUGIN2(plugin_cinema, PluginCinema)
 
-PluginCinema::PluginCinema():PluginInterface("cinema", "Sorties cinema de la semaine",BunnyZtampPlugin) { }
+PluginCinema::PluginCinema():PluginInterface("cinema", "Sorties cinema de la semaine",BunnyZtampPlugin)
+{
+    _hasClickAction = true;
+    _hasUserPage = true;
+}
 
 PluginCinema::~PluginCinema()
 {

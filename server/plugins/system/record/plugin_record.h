@@ -11,7 +11,7 @@ class PluginRecord : public PluginInterface
 
 public:
 	PluginRecord();
-	virtual ~PluginRecord() {};
+    virtual ~PluginRecord() {}
 	virtual bool HttpRequestHandle(HTTPRequest &);
 private:
 	QDir recordFolder;

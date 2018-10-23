@@ -11,7 +11,7 @@ class PluginEars : public PluginInterface
 public:
 	PluginEars();
 	virtual ~PluginEars();
-	bool OnEarsMove(Bunny *, int, int);
+    virtual bool OnEarsMove(Bunny *, int, int);
 
 	void InitApiCalls();
 	PLUGIN_BUNNY_API_CALL(Api_getFriend);

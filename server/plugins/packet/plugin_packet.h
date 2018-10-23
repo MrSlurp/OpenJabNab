@@ -10,7 +10,9 @@ class PluginPacket : public PluginInterface
 
 public:
 	PluginPacket();
-	virtual ~PluginPacket() {};
+    virtual ~PluginPacket() {}
+
+    virtual bool HasUserPage() { return true; }
 
 	// API
 	void InitApiCalls();

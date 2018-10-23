@@ -5,7 +5,10 @@
 #include "messagepacket.h"
 Q_EXPORT_PLUGIN2(plugin_ears, PluginEars)
 
-PluginEars::PluginEars():PluginInterface("ears", "Ears Pairing with another Bunny",BunnyPlugin) { }
+PluginEars::PluginEars():PluginInterface("ears", "Ears Pairing with another Bunny",BunnyPlugin)
+{
+    _hasUserPage = true;
+}
 
 PluginEars::~PluginEars() {}
 

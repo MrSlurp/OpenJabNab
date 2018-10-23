@@ -11,7 +11,6 @@ class PluginTest : public PluginInterface
 public:
 	PluginTest();
 	virtual ~PluginTest();
-    virtual bool HasClickAction() { return true; }
     virtual bool OnClick(Bunny *, PluginInterface::ClickType);
     virtual bool HttpRequestHandle(HTTPRequest &);
     virtual void InitApiCalls();

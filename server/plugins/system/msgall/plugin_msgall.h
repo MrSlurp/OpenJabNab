@@ -11,6 +11,7 @@ class PluginMsgall : public PluginInterface
 public:
 	PluginMsgall();
 	virtual ~PluginMsgall();
+
 void InitApiCalls();
 	PLUGIN_API_CALL(Api_Say);
 };

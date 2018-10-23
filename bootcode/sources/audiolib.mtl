@@ -9,7 +9,7 @@ const WAV_BUFFER_STARTSIZE=80000;;
 const WAV_BUFFER_MAXSIZE=400000;;
 
 const WAV_END_TIMEOUT=500;;
-const WAV_NET_TIMEOUT=15000;;
+const WAV_NET_TIMEOUT=5000;;
 
 var wav_end_timeout;;
 
@@ -90,6 +90,8 @@ fun _wavplaycb i =
 	if wav_fifo==nil then
 	(
 		// nothing in fifo
+		if wav_state==WAV_EOF then (set wav_buffering=0);
+    
 		if wav_state==WAV_EOF then playFeed nil nil nil
 		else if !wav_buffering then (
 			Audiowln ">>>>buffering";
@@ -177,6 +179,7 @@ fun _wavcbhttp httpreq req=
 	(
 		Audiowln ">>>>>>>>>>>>>>>>>>>>>>>>>>>>><end of file";
 		set wav_state=WAV_EOF;
+		set wav_buffering=0;
 		if wav_fifo!=nil then set wav_fifo=conc wav_fifo (wavgetzeros)::nil;
 		if wav_index==nil then
 		(

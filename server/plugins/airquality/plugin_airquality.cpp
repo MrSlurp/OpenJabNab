@@ -21,6 +21,9 @@ Q_EXPORT_PLUGIN2(plugin_airquality, PluginAirquality)
 
 PluginAirquality::PluginAirquality():PluginInterface("airquality", "Air quality plugin", BunnyZtampPlugin)
 {
+    _hasClickAction = true;
+    _hasUserPage = true;
+
 	std::unique_ptr<QDir> dir(GetLocalHTTPFolder());
 	if(dir.get())
 	{

@@ -125,6 +125,14 @@ define([
           }
         };
         
+        $scope.PluginReload = function(pluginName) {
+        };
+        
+        $scope.PluginEnable = function(pluginName) {
+        };
+        
+        $scope.PluginDisable = function(pluginName) {
+        };
         
     });
 });
